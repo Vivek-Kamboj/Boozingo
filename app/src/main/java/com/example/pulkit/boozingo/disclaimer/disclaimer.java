@@ -67,6 +67,7 @@ public class disclaimer extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(disclaimer.this,Cities.class));
+                finish();
             }
         });
 

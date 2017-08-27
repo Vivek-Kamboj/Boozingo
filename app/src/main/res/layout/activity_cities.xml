@@ -13,121 +13,106 @@
         android:layout_height="wrap_content"
         android:clipToPadding="false">
 
+        <FrameLayout
+            android:id="@+id/top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#000000">
 
+
+            <ImageButton
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/back_white"
+                android:elevation="2dp"
+                android:src="@drawable/back_ripple" />
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bar"
-                app:layout_heightPercent="50%"
-                android:id="@+id/top"/>
+                android:layout_height="280dp"
+                android:alpha="0.65"
+                android:id="@+id/banner"
+                android:background="@drawable/bar" />
+        </FrameLayout>
 
-            <TextView
-                android:id="@+id/text1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:text="@string/app_name"
-                android:textColor="#FFFFFF"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="@string/app_name"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/text2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                app:layout_marginTopPercent="25%"
-                android:text="Search your city"
-                android:textColor="#FFFFFF"
-                android:textSize="25sp" />
-
-            <LinearLayout
-                android:id="@+id/l1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_marginTopPercent="35%"
-                android:orientation="horizontal">
-
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.1" />
-
-                <EditText
-                    android:id="@+id/search_text"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.8"
-                    android:background="@drawable/rounded_corners"
-                    android:hint="Enter city"
-                    android:padding="10dp"
-                    android:textSize="17sp"
-                    android:inputType="textCapWords" />
-
-
-
-
-                <RelativeLayout
-                    android:id="@+id/search_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.15"
-                    android:background="@drawable/search"
-                    android:gravity="center">
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/search_icon" />
-
-
-                </RelativeLayout>
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.1" />
-            </LinearLayout>
+        <TextView
+            android:id="@+id/text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Search your city"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp"
+            app:layout_marginTopPercent="28%" />
 
         <LinearLayout
-            android:id="@+id/l2"
+            android:id="@+id/l1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@+id/l1"
-            android:elevation="10dp">
+            app:layout_marginTopPercent="38%">
 
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.1" />
+                android:layout_weight="0.08" />
 
-
-            <android.support.v7.widget.RecyclerView
+            <EditText
+                android:id="@+id/search_text"
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="0.8"
-                android:id="@+id/recycler"
-                android:layout_height="wrap_content"
-                android:background="#000000">
+                android:background="@drawable/rounded_corners"
+                android:hint="Enter city"
+                android:inputType="textCapWords"
+                android:padding="10dp"
+                android:textColor="#000000"
+                android:textSize="17sp" />
 
-            </android.support.v7.widget.RecyclerView>
+
+            <RelativeLayout
+                android:id="@+id/search_button_city"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.15"
+                android:background="@drawable/search"
+                android:clickable="true"
+                android:descendantFocusability="beforeDescendants"
+                android:elevation="1dp"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/search_button_city_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#0000"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:src="@drawable/search_icon" />
+
+            </RelativeLayout>
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.15" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.1" />
+                android:layout_weight="0.08" />
         </LinearLayout>
-
 
 
         <HorizontalScrollView
@@ -147,7 +132,7 @@
 
                 <LinearLayout
                     android:id="@+id/city1"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="0.2"
                     android:gravity="center_horizontal"
@@ -156,16 +141,17 @@
 
                     <ImageView
                         android:id="@+id/im1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="0.8"
-                        android:maxWidth="50dp"
-                        android:src="@drawable/city1" />
+                        android:maxWidth="70dp"
+                        android:minWidth="70dp" />
 
                     <TextView
                         android:id="@+id/t1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="Delhi"
                         android:textColor="#000000"
                         android:textSize="12sp" />
@@ -174,7 +160,7 @@
 
                 <LinearLayout
                     android:id="@+id/city2"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@id/city1"
                     android:layout_weight="0.2"
@@ -185,16 +171,17 @@
 
                     <ImageView
                         android:id="@+id/im2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="0.8"
-                        android:maxWidth="50dp"
-                        android:src="@drawable/city2" />
+                        android:maxWidth="70dp"
+                        android:minWidth="70dp" />
 
                     <TextView
                         android:id="@+id/t2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="Lucknow"
                         android:textColor="#000000"
                         android:textSize="12sp" />
@@ -202,7 +189,7 @@
 
                 <LinearLayout
                     android:id="@+id/city3"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@id/city2"
                     android:layout_weight="0.2"
@@ -216,13 +203,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="0.8"
-                        android:maxWidth="50dp"
-                        android:src="@drawable/city3" />
+                        android:maxWidth="70dp"
+                        android:minWidth="70dp" />
 
                     <TextView
                         android:id="@+id/t3"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="Kanpur"
                         android:textColor="#000000"
                         android:textSize="12sp" />
@@ -231,7 +219,7 @@
 
                 <LinearLayout
                     android:id="@+id/city4"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@id/city3"
                     android:layout_weight="0.2"
@@ -245,13 +233,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="0.8"
-                        android:maxWidth="50dp"
-                        android:src="@drawable/city4" />
+                        android:maxWidth="70dp"
+                        android:minWidth="70dp" />
 
                     <TextView
                         android:id="@+id/t4"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="Mumbai"
                         android:textColor="#000000"
                         android:textSize="12sp" />
@@ -260,7 +249,7 @@
 
                 <LinearLayout
                     android:id="@+id/city5"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@id/city4"
                     android:layout_weight="0.2"
@@ -274,13 +263,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="0.8"
-                        android:maxWidth="50dp"
-                        android:src="@drawable/city5" />
+                        android:maxWidth="70dp"
+                        android:minWidth="70dp" />
 
                     <TextView
                         android:id="@+id/t5"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="Pune"
                         android:textColor="#000000"
                         android:textSize="12sp" />
@@ -291,7 +281,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.2"
-                    android:maxWidth="50dp"
+                    android:maxWidth="70dp"
                     android:padding="10dp"
                     android:src="@drawable/view_more"
                     app:layout_widthPercent="20%" />
@@ -316,24 +306,14 @@
                 android:clipToPadding="false"
                 android:paddingBottom="4dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:paddingLeft="5dp"
-                    android:text="15% off on drinks"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp"
-                    android:translationZ="5dp" />
 
                 <ImageButton
                     android:id="@+id/ad1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/temp1"
+                    android:src="@drawable/ripple"
                     android:elevation="4dp"
-                    android:foreground="@drawable/dark_top"
-                    android:src="@drawable/ripple" />
+                    android:background="@drawable/loading" />
             </FrameLayout>
 
 
@@ -348,23 +328,13 @@
                 android:clipToPadding="false"
                 android:paddingBottom="4dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:paddingLeft="5dp"
-                    android:text="15% off on drinks"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp"
-                    android:translationZ="5dp" />
 
                 <ImageButton
                     android:id="@+id/ad2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/temp2"
+                    android:background="@drawable/loading"
                     android:elevation="4dp"
-                    android:foreground="@drawable/dark_top"
                     android:src="@drawable/ripple" />
             </FrameLayout>
 
@@ -389,23 +359,12 @@
                 android:clipToPadding="false"
                 android:paddingBottom="4dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:paddingLeft="5dp"
-                    android:text="15% off on drinks"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp"
-                    android:translationZ="5dp" />
-
                 <ImageButton
                     android:id="@+id/ad3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/temp3"
+                    android:background="@drawable/loading"
                     android:elevation="4dp"
-                    android:foreground="@drawable/dark_top"
                     android:src="@drawable/ripple" />
             </FrameLayout>
 
@@ -421,24 +380,13 @@
                 android:clipToPadding="false"
                 android:paddingBottom="4dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:paddingLeft="5dp"
-                    android:text="15% off on drinks"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp"
-                    android:translationZ="5dp" />
-
 
                 <ImageButton
                     android:id="@+id/ad4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/temp4"
+                    android:background="@drawable/loading"
                     android:elevation="4dp"
-                    android:foreground="@drawable/dark_top"
                     android:src="@drawable/ripple" />
             </FrameLayout>
 
@@ -455,24 +403,13 @@
             android:paddingBottom="5dp"
             app:layout_heightPercent="25%">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:paddingLeft="5dp"
-                android:text="15% off on drinks"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                android:translationZ="5dp" />
-
 
             <ImageButton
                 android:id="@+id/ad5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/temp5"
+                android:background="@drawable/loading"
                 android:elevation="4dp"
-                android:foreground="@drawable/dark_top"
                 android:src="@drawable/ripple" />
 
         </FrameLayout>

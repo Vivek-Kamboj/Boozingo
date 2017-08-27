@@ -2,6 +2,7 @@ package com.example.pulkit.boozingo.splash_screen;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -62,9 +63,9 @@ public class SplashScreen2 extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                image.setBackground(getDrawable(R.drawable.tagline));
-                image.startAnimation(animationFadeIn);
-         //       rel.setVisibility(View.VISIBLE);
+                image.setBackgroundColor(Color.WHITE);
+                startActivity(new Intent(SplashScreen2.this, disclaimer.class));
+                finish();
             }
 
             @Override

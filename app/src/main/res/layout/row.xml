@@ -1,15 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/container">
+    android:layout_height="105dp"
+    android:layout_marginTop="5dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:background="@color/white"
+    android:src="@drawable/ripple">
 
-    <TextView
+    <ImageView
+        android:id="@+id/image"
+        android:background="@drawable/temp3"
+        app:layout_widthPercent="25%"
+        android:layout_marginLeft="5dp"
+        app:layout_heightPercent="75%"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ripple"/>
+
+    <android.support.percent.PercentRelativeLayout
+        android:id="@+id/details"
+        android:layout_height="80dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/image"
+        app:layout_widthPercent="55%"
+        android:layout_centerVertical="true">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_alignParentTop="true"
+            android:text="Aura"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/name"
+            android:text="Address: Nehru Enclave, Gomti Nagar"
+            android:textColor="#979797"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/address"
+            android:text="Hours: Open Today - 12PM - 12 AM"
+            android:textColor="#979797"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_below="@+id/time"
+            android:layout_marginTop="3dp">
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="@drawable/ic_favorite_black_24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="15 Likes"
+                android:textSize="12sp"/>
+
+
+        </LinearLayout>
+
+
+    </android.support.percent.PercentRelativeLayout>
+
+    <ImageView
+        android:id="@+id/line"
+        android:layout_width="0.5dp"
+        android:layout_height="80dp"
+        android:layout_toRightOf="@+id/details"
+        android:background="#cdcdcd"
+        android:layout_centerVertical="true"/>
+
+    <ImageView
+        android:id="@+id/call"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_toRightOf="@+id/line"
+        android:src="@mipmap/ic_launcher"
+        app:layout_widthPercent="15%"
+        android:clickable="true"
+        android:layout_centerVertical="true"/>
+
+    <ImageView
+        android:id="@+id/line2"
+        android:layout_height="0.5dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:id="@+id/top"/>
+        android:background="#cdcdcd"
+        android:layout_alignParentBottom="true"/>
 
-</LinearLayout>
+</android.support.percent.PercentRelativeLayout>
