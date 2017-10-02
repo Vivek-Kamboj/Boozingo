@@ -11,11 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.pulkit.boozingo.R;
-import com.example.pulkit.boozingo.model.smallBarDetails;
+import com.example.pulkit.boozingo.model.smallPubDetails;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class Adapter_bars extends RecyclerView.Adapter<Adapter_bars.RecHolder> {
+public class Adapter_pub extends RecyclerView.Adapter<Adapter_pub.RecHolder> {
 
     Context c;
 
@@ -24,43 +25,47 @@ public class Adapter_bars extends RecyclerView.Adapter<Adapter_bars.RecHolder> {
         void onItemClick(int p);
     }
 
-    Adapter_bars.ItemClickCallback itemClickCallback;
+    Adapter_pub.ItemClickCallback itemClickCallback;
 
-    public void setItemClickCallback(Adapter_bars.ItemClickCallback itemClickCallback) {
+    public void setItemClickCallback(Adapter_pub.ItemClickCallback itemClickCallback) {
         this.itemClickCallback = itemClickCallback;
     }
 
-
     //adapter
-    public List<smallBarDetails> list;
+    public List<smallPubDetails> list;
     public LayoutInflater layoutInflater;
 
-    Adapter_bars(List<smallBarDetails> list, Context c) {
+    Adapter_pub(List<smallPubDetails> list, Context c) {
         this.list = list;
         this.c = c;
         this.layoutInflater = LayoutInflater.from(c);
     }
 
     @Override
-    public Adapter_bars.RecHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public Adapter_pub.RecHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = layoutInflater.inflate(R.layout.row, parent, false);
-        return new Adapter_bars.RecHolder(view);
+        return new Adapter_pub.RecHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(Adapter_bars.RecHolder holder, final int position) {
+    public void onBindViewHolder(Adapter_pub.RecHolder holder, final int position) {
 
-        holder.name.setText(list.get(position).getBar_name());
-        holder.address.setText(list.get(position).getBar_address());
-        holder.time.setText(list.get(position).getBar_time());
+        holder.name.setText(list.get(position).getPub_name());
+        holder.address.setText(list.get(position).getPub_address());
+        holder.time.setText(list.get(position).getPub_time());
         holder.call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri call = Uri.parse("tel:" + list.get(position).getBar_contact());
+                Uri call = Uri.parse("tel:" + list.get(position).getPub_contact());
                 Intent surf = new Intent(Intent.ACTION_DIAL, call);
                 c.startActivity(surf);
             }
         });
+
+        Picasso.with(c)
+                .load(list.get(position).getPub_pic())
+                .fit()
+                .into(holder.image);
     }
 
     @Override
@@ -69,7 +74,7 @@ public class Adapter_bars extends RecyclerView.Adapter<Adapter_bars.RecHolder> {
     }
 
 
-    public void setItem(smallBarDetails item, int p) {
+    public void setItem(smallPubDetails item, int p) {
         this.list.set(p, item);
     }
 
@@ -79,7 +84,7 @@ public class Adapter_bars extends RecyclerView.Adapter<Adapter_bars.RecHolder> {
 
         View view;
         TextView name,address,time;
-        ImageView call;
+        ImageView call,image;
 
         public RecHolder(View itemView) {
             super(itemView);
@@ -88,6 +93,7 @@ public class Adapter_bars extends RecyclerView.Adapter<Adapter_bars.RecHolder> {
             address = (TextView) itemView.findViewById(R.id.address);
             time = (TextView) itemView.findViewById(R.id.time);
             call = (ImageView) itemView.findViewById(R.id.call);
+            image = (ImageView) itemView.findViewById(R.id.image);
             view = itemView.findViewById(R.id.container);
             view.setOnClickListener(this);
         }
@@ -98,8 +104,6 @@ public class Adapter_bars extends RecyclerView.Adapter<Adapter_bars.RecHolder> {
                 itemClickCallback.onItemClick(getAdapterPosition());
             }
         }
-
-
     }
 
 

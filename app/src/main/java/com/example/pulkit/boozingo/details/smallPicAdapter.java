@@ -34,7 +34,7 @@ public class smallPicAdapter extends RecyclerView.Adapter<smallPicAdapter.picHol
     public void onBindViewHolder(picHolder holder, int position) {
 
         String string = list.get(position);
-        switch (position){
+/*        switch (position){
             case 0: holder.pic.setImageResource(R.drawable.boozingo);
                 break;
             case 1: holder.pic.setImageResource(R.drawable.glass);
@@ -49,7 +49,7 @@ public class smallPicAdapter extends RecyclerView.Adapter<smallPicAdapter.picHol
                 break;
             case 6: holder.pic.setImageResource(R.drawable.open_book);
                 break;
-        }
+        }*/
 
     }
 

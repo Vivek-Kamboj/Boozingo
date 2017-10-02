@@ -2,13 +2,13 @@ package com.example.pulkit.boozingo.model;
 
 public class smallBarDetails {
 
-    String id, bar_name, bar_address, bar_cost, bar_time, bar_not_working_day, bar_contact;
+    String id, bar_name, bar_address, bar_cost, bar_time, bar_not_working_day, bar_contact,bar_pic;
 
     smallBarDetails() {
 
     }
 
-    public smallBarDetails(String bar_address, String bar_contact, String bar_cost, String bar_name, String bar_not_working_day, String bar_time, String id) {
+    public smallBarDetails(String bar_address, String bar_contact, String bar_cost, String bar_name, String bar_not_working_day, String bar_time, String id, String pic) {
         this.bar_address = bar_address;
         this.bar_contact = bar_contact;
         this.bar_cost = bar_cost;
@@ -16,6 +16,7 @@ public class smallBarDetails {
         this.bar_not_working_day = bar_not_working_day;
         this.bar_time = bar_time;
         this.id = id;
+        this.bar_pic = pic;
     }
 
     public String getBar_address() {
@@ -69,8 +70,18 @@ public class smallBarDetails {
     public String getId() {
         return id;
     }
+
+    public String getBar_pic() {
+        return bar_pic;
+    }
+
+    public void setBar_pic(String bar_pic) {
+        this.bar_pic = bar_pic;
+    }
+
 /*
     public void setId(String id) {
         this.id = id;
     }*/
+
 }

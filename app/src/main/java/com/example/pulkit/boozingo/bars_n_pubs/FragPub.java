@@ -2,7 +2,6 @@ package com.example.pulkit.boozingo.bars_n_pubs;
 
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,9 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.pulkit.boozingo.R;
-import com.example.pulkit.boozingo.details.barDetails;
-import com.example.pulkit.boozingo.helper.HttpHandler;
-import com.example.pulkit.boozingo.model.smallBarDetails;
+import com.example.pulkit.boozingo.details.detailsActivityPub;
+import com.example.pulkit.boozingo.model.smallPubDetails;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,17 +21,19 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.pulkit.boozingo.bars_n_pubs.bars_n_pubs.bars;
+import static com.example.pulkit.boozingo.Boozingo.url;
+import static com.example.pulkit.boozingo.bars_n_pubs.bars_n_pubs.pubs;
 
-public class BarFragment extends Fragment implements Adapter_bars.ItemClickCallback {
+public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
 
     private static final int DATASET_COUNT = 60;
-    public static List<smallBarDetails> mDataset = new ArrayList<>();
+    public static List<smallPubDetails> mDataset = new ArrayList<>();
     RecyclerView recview;
-    Adapter_bars adapter;
+    Adapter_pub adapter;
     int j = 0,i=0;
+    smallPubDetails smallDetail;
 
-    public BarFragment() {
+    public FragPub() {
         // Required empty public constructor
     }
 
@@ -53,7 +54,7 @@ public class BarFragment extends Fragment implements Adapter_bars.ItemClickCallb
         recview = (RecyclerView) rootView.findViewById(R.id.recycler);
         recview.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        adapter = new Adapter_bars(mDataset, getContext());
+        adapter = new Adapter_pub(mDataset, getContext());
         recview.setAdapter(adapter);
         adapter.setItemClickCallback(this);
 
@@ -69,26 +70,28 @@ public class BarFragment extends Fragment implements Adapter_bars.ItemClickCallb
 
     @Override
     public void onItemClick(int p) {
-        Intent i = new Intent(getActivity(), barDetails.class);
+        Intent i = new Intent(getActivity(), detailsActivityPub.class);
         i.putExtra("type","bar");
-        i.putExtra("position",p);
+        i.putExtra("id",mDataset.get(p).getId());
         startActivity(i);
     }
 
     private void initDataset() throws JSONException {
 
-        for (i=0; i < bars.length(); i++) {
-            JSONObject object = bars.getJSONObject(i);
-            String address, name, timing,contact;
+
+        for (i=0; i < pubs.length(); i++) {
+            JSONObject object = pubs.getJSONObject(i);
+            String pic;
 
 
-            name = object.getString("bar_name");
-            address = object.getString("bar_address");
-            timing = object.getString("bar_time");
-            contact = object.getString("bar_contact");
+            Gson gson = new Gson();
+            smallDetail = gson.fromJson(object.toString(), smallPubDetails.class);
+            pic = object.getString("pub_images");
+            pic = pic.substring(2,pic.length()-2);
+            pic = url +"/storage/" +pic;
 
-            smallBarDetails temp = new smallBarDetails(address,contact,"",name,"",timing,"");
-            mDataset.add(temp);
+            smallDetail.setPub_pic(pic);
+            mDataset.add(smallDetail);
             adapter.notifyDataSetChanged();
         }
     }

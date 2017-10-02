@@ -1,6 +1,8 @@
 package com.example.pulkit.boozingo.bars_n_pubs;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -16,11 +18,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.helper.HttpHandler;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,8 +43,11 @@ public class bars_n_pubs extends AppCompatActivity {
     private ViewPager viewPager;
     String city;
     TextView city_name;
+    ImageView city_image;
     String TAG = "TAG";
-    public static JSONArray bars, beer_shops, liquor_shops, lounges, model_shops, night_clubs, pubs;
+    ProgressDialog pDialog;
+    public static JSONArray bars = new JSONArray(), pubs = new JSONArray(), shops = new JSONArray(),
+            lounges = new JSONArray(), clubs = new JSONArray();
 
 
     @Override
@@ -50,27 +58,43 @@ public class bars_n_pubs extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        bars = new JSONArray();
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         city = getIntent().getStringExtra("city");
+   //    city = "Lucknow";
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         toolbar.setTitleTextColor(getResources().getColor(R.color.transparent));
         city_name = (TextView) findViewById(R.id.city_name);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
+        city_image = (ImageView) findViewById(R.id.city_image);
 
         city_name.setText(city);
 
+
+        pDialog = new ProgressDialog(bars_n_pubs.this);
+        pDialog.setMessage("Please wait...");
+        pDialog.setCancelable(true);
+        pDialog.show();
+
+
+        setupViewPager(viewPager);
+ //       tabLayout.setupWithViewPager(viewPager);
+
+        new net().execute();
 
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new BarFragment(), "All");
-        adapter.addFragment(new BarFragment(), "Bar");
-        adapter.addFragment(new BarFragment(), "Lounges");
-        adapter.addFragment(new BarFragment(), "Restaurants");
+        adapter.addFragment(new FragBar(), "Bars");
+        adapter.addFragment(new FragPub(), "Pubs");
+        adapter.addFragment(new FragLounge(), "Lounges");
+        adapter.addFragment(new FragShop(), "Shops");
+        adapter.addFragment(new FragShop(), "Night Club");
         viewPager.setAdapter(adapter);
     }
 
@@ -117,18 +141,34 @@ public class bars_n_pubs extends AppCompatActivity {
             if (jsonStr != null) {
                 try {
                     JSONObject object = new JSONObject(jsonStr);
+                    JSONObject data = object.getJSONObject("city_detail");
+                    final String pic_url = url + "/storage/"+ data.getString("city_image");
                     bars = object.getJSONArray("bars");
+
+                    //change pubs ro rest
+                    pubs = object.getJSONArray("pubs");
+
+                    shops = object.getJSONArray("beer_shops");
+
+                    lounges = object.getJSONArray("lounges");
+
+                    clubs = object.getJSONArray("night_clubs");
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+
                             setupViewPager(viewPager);
                             tabLayout.setupWithViewPager(viewPager);
 
+                            Picasso.with(bars_n_pubs.this)
+                                    .load(pic_url)
+                                    .fit()
+                                    .into(city_image);
+
+                            pDialog.dismiss();
                         }
                     });
-
-                    //          images = object.getJSONArray("images");
 
                 } catch (JSONException e) {
                     e.printStackTrace();

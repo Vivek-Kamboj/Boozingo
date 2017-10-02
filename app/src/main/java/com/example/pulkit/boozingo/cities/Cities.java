@@ -55,10 +55,10 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
 
     public static String city = "";
     RelativeLayout rl;
-    TextView textView;
+    TextView textView,fact1,fact2;
     EditText search;
     ImageButton img, back;
-    ImageView im1, im2, im3, im4, im5, ad1, ad2, ad3, ad4, ad5, banner;
+    ImageView im1, im2, im3, im4, im5, banner, factimg1, factimg2;
     String TAG = "TAG";
     public static int TYPE_WIFI = 1;
     public static int TYPE_MOBILE = 2;
@@ -70,18 +70,14 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
     Target target;
     LinearLayout l1, l2, l3, l4, l5;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_cities);
-
-        //    overridePendingTransition(R.anim.slide_in_2, R.anim.slide_out_2);
-
-        //      Fresco.initialize(this);
-
+        setContentView(R.layout.temp3);
 
         img = (ImageButton) findViewById(R.id.search_button_city_2);
         back = (ImageButton) findViewById(R.id.back);
@@ -93,11 +89,13 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         im3 = (ImageView) findViewById(R.id.im3);
         im4 = (ImageView) findViewById(R.id.im4);
         im5 = (ImageView) findViewById(R.id.im5);
-        ad1 = (ImageView) findViewById(R.id.ad1);
-        ad2 = (ImageView) findViewById(R.id.ad2);
-        ad3 = (ImageView) findViewById(R.id.ad3);
-        ad4 = (ImageView) findViewById(R.id.ad4);
-        ad5 = (ImageView) findViewById(R.id.ad5);
+
+        factimg1 = (ImageView) findViewById(R.id.cim1);
+        factimg2 = (ImageView) findViewById(R.id.cim2);
+
+        fact1 = (TextView) findViewById(R.id.ct1);
+        fact2 = (TextView) findViewById(R.id.ct2);
+
         l1 = (LinearLayout) findViewById(R.id.city1);
         l2 = (LinearLayout) findViewById(R.id.city2);
         l3 = (LinearLayout) findViewById(R.id.city3);
@@ -268,66 +266,6 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
 
                                           }
 
-
-                                          n = images.length();
-
-                                          for (int i = 0; i < 1; i++) {
-                                              JSONObject c = images.getJSONObject(i);
-
-                                              final String image = c.getString("image_url");
-
-                                              String temp = url + "/storage/" + image;
-
-                                              switch (i) {
-                                                  case 0:
-                                                /*     Glide.with(Cities.this)
-                                                             .load(temp)
-                                                             .into(ad1);*/
-
-
-                                                      Picasso.with(Cities.this)
-                                                              .load(temp)
-                                                              .fit()
-                                                              .into(ad1);
-                                                      //       break;
-                                                  case 1:
-
-
-                                                      Picasso.with(Cities.this)
-                                                              .load(temp)
-                                                              .fit()
-                                                              .into(ad2);
-                                                      //     break;
-                                                  case 2:
-
-                                                      Picasso.with(Cities.this)
-                                                              .load(temp)
-                                                              .fit()
-                                                              .into(ad3);
-                                                      //   break;
-                                                  case 3:
-
-
-                                                      Picasso.with(Cities.this)
-                                                              .load(temp)
-                                                              .fit()
-                                                              .into(ad4);
-                                                      // break;
-                                                  case 4:
-
-                                                      Picasso.with(Cities.this)
-                                                              .load(temp)
-                                                              .fit()
-                                                              .into(ad5);
-
-
-                                                      break;
-
-                                              }
-
-                                          }
-
-
                                           JSONObject c = images.getJSONObject(1);
 
                                           final String image = c.getString("image_url");
@@ -386,9 +324,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                           }
                                       });
 
-
                                   }
-
                               }
                           }
 

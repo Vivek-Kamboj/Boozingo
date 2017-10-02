@@ -1,0 +1,299 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none">
+
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#f0f0f0">
+
+        <FrameLayout
+            android:id="@+id/layout"
+            android:layout_width="match_parent"
+            android:clipToPadding="false"
+            android:foreground="@drawable/ripple"
+            app:layout_heightPercent="32%">
+
+            <ImageButton
+                android:id="@id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/back_white"
+                android:clickable="true"
+                android:elevation="2dp"
+                android:focusable="true"
+                android:src="@drawable/back_ripple" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/dots"
+            android:layout_below="@+id/layout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_heightPercent="2%"
+            app:layout_widthPercent="25%">
+
+            <ImageView
+                android:id="@+id/dot1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/dot" />
+
+            <ImageView
+                android:id="@+id/dot2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/dot" />
+
+            <ImageView
+                android:id="@+id/dot3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/dot" />
+
+            <ImageView
+                android:id="@+id/dot4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/dot" />
+
+            <ImageView
+                android:id="@+id/dot5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/dot" />
+
+            <ImageView
+                android:id="@+id/dot6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/dot" />
+        </LinearLayout>
+
+        <android.support.percent.PercentRelativeLayout
+            android:id="@+id/prl2"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/dots"
+            app:layout_heightPercent="13%">
+
+            <LinearLayout
+                android:id="@+id/ll1"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_heightPercent="50%">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Aura"
+                    android:layout_marginRight="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="(Lounge)"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/ll1"
+                android:gravity="center"
+                android:text="Nehru Enclave, Gomti Nagar"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_heightPercent="30%" />
+
+            <LinearLayout
+                android:id="@+id/ll2"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/address"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_heightPercent="30%">
+
+                <TextView
+                    android:id="@+id/open"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:text="Open today ."
+                    android:textColor="#19dc40"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/timings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="12PM-12AM"
+                    android:textColor="#19dc40"
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
+            </LinearLayout>
+        </android.support.percent.PercentRelativeLayout>
+
+
+        <ImageView
+            android:id="@+id/booze"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/prl2"
+            android:background="@drawable/booze_or_not"
+            app:layout_heightPercent="3%"
+            app:layout_widthPercent="28%" />
+
+        <RelativeLayout
+            android:id="@+id/rl3"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/booze"
+            android:layout_marginTop="5dp"
+            android:gravity="top">
+
+            <TextView
+                android:id="@+id/textview1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="10dp"
+                android:text="Speciality"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:fontFamily="cursive"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/speciality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toRightOf="@+id/textview1"
+                android:gravity="left"
+                android:text="@string/quote"
+                android:textColor="#757575"
+                android:textSize="10sp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/show"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/speciality"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/textview1"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="Show More"
+                android:textColor="@color/colorAccent"
+                android:textSize="10sp" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/line1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/rl3"
+            android:layout_margin="5dp"
+            android:background="#cdcdcd" />
+
+        <HorizontalScrollView
+            android:id="@+id/icon_holder"
+            android:layout_below="@+id/line1"
+            app:layout_heightPercent="7%"
+            app:layout_widthPercent="100%"
+            android:fillViewport="true"
+            android:scrollbars="none">
+            <LinearLayout
+                android:id="@+id/icons"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
+
+
+        <android.support.percent.PercentRelativeLayout
+            android:id="@+id/ll4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/icon_holder"
+            app:layout_heightPercent="30%">
+
+            <ImageView
+                android:id="@+id/line0"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#757575" />
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/line0"
+                android:orientation="horizontal"
+                app:layout_heightPercent="85%" />
+
+
+            <Button
+                android:id="@+id/locator"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@mipmap/ic_locator"
+                app:layout_heightPercent="30%"
+                app:layout_widthPercent="15%" />
+
+
+            <ImageView
+                android:id="@+id/line4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/map"
+                android:background="#757575" />
+
+        </android.support.percent.PercentRelativeLayout>
+
+
+        <ImageView
+            android:id="@+id/line2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/ll4"
+            android:layout_margin="5dp"
+            android:background="#cdcdcd" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_below="@+id/line2"
+            android:gravity="center"
+            android:text="@string/supreme"
+            android:textColor="#FF4081"
+            android:textSize="10sp"
+            app:layout_heightPercent="4%" />
+
+    </android.support.percent.PercentRelativeLayout>
+</ScrollView>
