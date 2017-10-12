@@ -94,7 +94,7 @@ public class bars_n_pubs extends AppCompatActivity {
         adapter.addFragment(new FragPub(), "Pubs");
         adapter.addFragment(new FragLounge(), "Lounges");
         adapter.addFragment(new FragShop(), "Shops");
-        adapter.addFragment(new FragShop(), "Night Club");
+        adapter.addFragment(new FragClub(), "Night Club");
         viewPager.setAdapter(adapter);
     }
 

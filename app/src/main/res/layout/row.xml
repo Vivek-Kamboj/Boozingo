@@ -4,31 +4,47 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="105dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
     android:layout_marginTop="5dp"
+    android:background="@drawable/bar_row_clicked"
+    android:clickable="true"
+    android:elevation="2dp"
+    android:focusable="true"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:clickable="true"
-    android:focusable="true"
-    android:background="#ffffff"
+    android:padding="2.5dp"
     android:src="@drawable/ripple">
 
-    <ImageView
-        android:id="@+id/image"
-        android:background="@drawable/temp3"
-        app:layout_widthPercent="25%"
-        android:layout_marginLeft="5dp"
-        app:layout_heightPercent="75%"
+
+
+    <LinearLayout
         android:layout_centerVertical="true"
-        android:src="@drawable/ripple"/>
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/ripple"
+        app:layout_heightPercent="75%"
+        app:layout_widthPercent="25%"
+        android:id="@+id/image_holder"
+        android:gravity="center"
+        android:padding="1.3dp"
+        android:background="@color/black">
+
+        <ImageView
+            android:background="@drawable/temp3"
+            android:id="@+id/image"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
 
     <android.support.percent.PercentRelativeLayout
         android:id="@+id/details"
         android:layout_height="80dp"
-        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/image"
-        app:layout_widthPercent="55%"
-        android:layout_centerVertical="true">
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@+id/image_holder"
+        app:layout_widthPercent="55%">
 
         <TextView
             android:id="@+id/name"
@@ -62,29 +78,24 @@
         android:id="@+id/line"
         android:layout_width="0.5dp"
         android:layout_height="80dp"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/details"
-        android:background="#cdcdcd"
-        android:layout_centerVertical="true"/>
+        android:background="#cdcdcd" />
 
     <ImageView
         android:id="@+id/call"
         android:layout_height="70dp"
-        android:layout_marginTop="10dp"
+        android:layout_centerVertical="true"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="3dp"
+        android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/line"
-        android:src="@mipmap/ic_launcher"
-        app:layout_widthPercent="15%"
         android:clickable="true"
+        android:elevation="5dp"
         android:focusable="true"
-        android:layout_centerVertical="true"/>
+        android:src="@drawable/phone_3"
+        app:layout_widthPercent="18%" />
 
-    <ImageView
-        android:id="@+id/line2"
-        android:layout_height="0.5dp"
-        android:layout_width="match_parent"
-        android:background="#cdcdcd"
-        android:layout_alignParentBottom="true"/>
 
 </android.support.percent.PercentRelativeLayout>

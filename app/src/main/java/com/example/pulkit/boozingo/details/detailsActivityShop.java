@@ -54,7 +54,7 @@ public class detailsActivityShop extends AppCompatActivity implements OnMapReady
 
     ViewPager viewPager;
     ImageButton back;
-    String TAG = "TAG", id = "5", text, geo_location, latitudeShop, longitudeShop, image;
+    String TAG = "TAG", id = "2", text, geo_location, latitudeShop, longitudeShop, image;
     String images[]= new String[6];
     picPagerAdapter adapter;
     LinearLayout icons;
@@ -104,7 +104,7 @@ public class detailsActivityShop extends AppCompatActivity implements OnMapReady
         timing = (TextView) findViewById(R.id.timings);
         address = (TextView) findViewById(R.id.address);
         icons = (LinearLayout) findViewById(R.id.icons);
-        transparent = (ImageView) findViewById(R.id.imagetrans);
+ //       transparent = (ImageView) findViewById(R.id.imagetrans);
         scroll = (ScrollView) findViewById(R.id.scroll);
 
 
@@ -191,38 +191,7 @@ public class detailsActivityShop extends AppCompatActivity implements OnMapReady
             }
         });
 
-        for (int i = 0; i < 15; i++) {
-            View child = View.inflate(getBaseContext(), R.layout.smallpicrow, null);
-            View x = child.findViewById(R.id.pic);
 
-            switch (i) {
-                case 0:
-                    x.setBackground(getDrawable(R.drawable.boozingo));
-                    x.setContentDescription("Hail Boozingo");
-                    break;
-                case 1:
-                    x.setBackground(getDrawable(R.drawable.booze));
-                    x.setContentDescription("Booze Served");
-
-                    break;
-                case 2:
-                    x.setBackground(getDrawable(R.drawable.food));
-                    x.setContentDescription("Food Served");
-                    break;
-                case 3:
-                    x.setBackground(getDrawable(R.drawable.cutlery));
-                    break;
-                case 4:
-                    x.setBackground(getDrawable(R.drawable.sitting));
-                    x.setContentDescription("Sitting Available");
-                    break;
-                default:
-                    x.setBackground(getDrawable(R.drawable.music));
-                    x.setContentDescription("Music Available");
-                    break;
-            }
-            icons.addView(child);
-        }
         speciality.setText(text.substring(0, 100) + "...");
 
         show.setOnClickListener(new View.OnClickListener() {
@@ -292,6 +261,7 @@ public class detailsActivityShop extends AppCompatActivity implements OnMapReady
                     details = gson.fromJson(userJson, detailsShop.class);
 
                     runOnUiThread(new Runnable() {
+                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                         @Override
                         public void run() {
 
@@ -299,7 +269,6 @@ public class detailsActivityShop extends AppCompatActivity implements OnMapReady
                             address.setText(details.getShop_address());
                             type.setText("(" + getIntent().getStringExtra("type") + ")");
                             timing.setText(details.getShop_time());
-                            speciality.setText(details.getShop_details());
                             geo_location = details.getShop_geolocation();
 
 
@@ -315,7 +284,7 @@ public class detailsActivityShop extends AppCompatActivity implements OnMapReady
                                 image = image.substring(2, image.length() - 2);
                                 image = image.replaceAll("\\\\", "");
 
-                                for(int i=0,x=0;i<image.length();x++){
+                                for(int i=0,x=0;i<image.length() && x<6;x++){
                                     int j = image.indexOf(',',i);
                                     if(j==-1) {
                                         images[x] = url + "/storage/" +  image.substring(i, image.length());
@@ -333,6 +302,8 @@ public class detailsActivityShop extends AppCompatActivity implements OnMapReady
                             adapter = new picPagerAdapter(detailsActivityShop.this, images);
                             viewPager.setAdapter(adapter);
 
+                            facilities();
+
                             pDialog.dismiss();
                         }
                     });
@@ -343,6 +314,68 @@ public class detailsActivityShop extends AppCompatActivity implements OnMapReady
             }
 
             return null;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void facilities() {
+        for (int i = 0; i < 7; i++) {
+            View child = View.inflate(getBaseContext(), R.layout.smallpicrow, null);
+            View x = child.findViewById(R.id.pic);
+            TextView text = (TextView) child.findViewById(R.id.text);
+
+            switch (i) {
+               /* case 0:
+                    if(details.getShop_food().equals("both") || details.getShop_food().equals("veg")) {
+                        x.setBackground(getDrawable(R.drawable.veg));
+                        text.setText("Veg");
+                        icons.addView(child);
+                    }
+                    break;
+                case 1:
+                    if(details.getShop_food().equals("both") || details.getShop_food().equals("nonveg")) {
+                        x.setBackground(getDrawable(R.drawable.non_veg));
+                        text.setText("Non Veg");
+                        icons.addView(child);
+                    }
+                    break;
+                case 2:
+                    if(details.getShop_sitting_facility().equals("yes")) {
+                        x.setBackground(getDrawable(R.drawable.sitting));
+                        text.setText("Sitting");
+                        icons.addView(child);
+                    }
+                    break;
+                case 3:
+                    if(details.getShop_music().equals("available")) {
+                        x.setBackground(getDrawable(R.drawable.music));
+                        text.setText("Music");
+                        icons.addView(child);
+                    }
+                    break;
+                case 4:
+                    if(details.getShop_ac().equals("ac")) {
+                        x.setBackground(getDrawable(R.drawable.ac));
+                        text.setText("Ac");
+                        icons.addView(child);
+                    }
+                    break;*/
+                case 5:
+                    if(details.getShop_payment().equals("cash") || details.getShop_payment().equals("all") ) {
+                        x.setBackground(getDrawable(R.drawable.cash));
+                        text.setText("Cash");
+                        icons.addView(child);
+                    }
+                    break;
+                case 6:
+                    if(details.getShop_payment().equals("credit/debit card") || details.getShop_payment().equals("all") ) {
+                        x.setBackground(getDrawable(R.drawable.card));
+                        text.setText("Card");
+                        icons.addView(child);
+                    }
+                    break;
+            }
+
         }
     }
 

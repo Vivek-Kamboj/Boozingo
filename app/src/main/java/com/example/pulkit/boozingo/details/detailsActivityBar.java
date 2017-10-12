@@ -104,7 +104,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
         timing = (TextView) findViewById(R.id.timings);
         address = (TextView) findViewById(R.id.address);
         icons = (LinearLayout) findViewById(R.id.icons);
-        transparent = (ImageView) findViewById(R.id.imagetrans);
+  //      transparent = (ImageView) findViewById(R.id.imagetrans);
         scroll = (ScrollView) findViewById(R.id.scroll);
 
 
@@ -261,6 +261,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
                     details = gson.fromJson(userJson, detailsBar.class);
 
                     runOnUiThread(new Runnable() {
+                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                         @Override
                         public void run() {
 
@@ -283,7 +284,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
                                 image = image.substring(2, image.length() - 2);
                                 image = image.replaceAll("\\\\", "");
 
-                                for(int i=0,x=0;i<image.length();x++){
+                                for(int i=0,x=0;i<image.length() && x<6;x++){
                                     int j = image.indexOf(',',i);
                                     if(j==-1) {
                                         images[x] = url + "/storage/" +  image.substring(i, image.length());
@@ -316,56 +317,65 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void facilities() {
         for (int i = 0; i < 7; i++) {
             View child = View.inflate(getBaseContext(), R.layout.smallpicrow, null);
             View x = child.findViewById(R.id.pic);
+            TextView text = (TextView) child.findViewById(R.id.text);
 
             switch (i) {
                 case 0:
                     if(details.getBar_food().equals("both") || details.getBar_food().equals("veg")) {
                         x.setBackground(getDrawable(R.drawable.veg));
-                        x.setContentDescription("Veg");
+                        text.setText("Veg");
+                        icons.addView(child);
                     }
                     break;
                 case 1:
                     if(details.getBar_food().equals("both") || details.getBar_food().equals("nonveg")) {
                         x.setBackground(getDrawable(R.drawable.non_veg));
-                        x.setContentDescription("Non Veg");
+                        text.setText("Non Veg");
+                        icons.addView(child);
                     }
                     break;
                 case 2:
                     if(details.getBar_sitting_facility().equals("yes")) {
                         x.setBackground(getDrawable(R.drawable.sitting));
-                        x.setContentDescription("Sitting");
+                        text.setText("Sitting");
+                        icons.addView(child);
                     }
                     break;
                 case 3:
                     if(details.getBar_music().equals("available")) {
                         x.setBackground(getDrawable(R.drawable.music));
-                        x.setContentDescription("Music");
+                        text.setText("Music");
+                        icons.addView(child);
                     }
                     break;
                 case 4:
                     if(details.getBar_ac().equals("ac")) {
                         x.setBackground(getDrawable(R.drawable.ac));
-                        x.setContentDescription("Ac");
+                        text.setText("Ac");
+                        icons.addView(child);
                     }
                     break;
                 case 5:
                     if(details.getBar_payment().equals("cash") || details.getBar_payment().equals("all") ) {
                         x.setBackground(getDrawable(R.drawable.cash));
-                        x.setContentDescription("Cash");
+                        text.setText("Cash");
+                        icons.addView(child);
                     }
                     break;
                 case 6:
                     if(details.getBar_payment().equals("credit/debit card") || details.getBar_payment().equals("all") ) {
                         x.setBackground(getDrawable(R.drawable.card));
-                        x.setContentDescription("Card");
+                        text.setText("Card");
+                        icons.addView(child);
                     }
                     break;
             }
-            icons.addView(child);
+
         }
     }
 

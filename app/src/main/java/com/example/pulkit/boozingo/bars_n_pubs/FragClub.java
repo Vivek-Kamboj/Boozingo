@@ -83,7 +83,7 @@ public class FragClub extends Fragment implements Adapter_club.ItemClickCallback
 
             Gson gson = new Gson();
             smallDetail = gson.fromJson(object.toString(), smallClubDetails.class);
-            pic = object.getString("club_images");
+            pic = object.getString("night_club_images");
 
             int comma = pic.indexOf(',');
             if(comma == -1)

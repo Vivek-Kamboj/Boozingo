@@ -55,10 +55,10 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
 
     public static String city = "";
     RelativeLayout rl;
-    TextView textView,fact1,fact2;
+    TextView textView, fact1, fact2;
     EditText search;
     ImageButton img, back;
-    ImageView im1, im2, im3, im4, im5, banner, factimg1, factimg2;
+    ImageView im1, im2, im3, im4, im5, banner, factimg1, factimg2,view_more;
     String TAG = "TAG";
     public static int TYPE_WIFI = 1;
     public static int TYPE_MOBILE = 2;
@@ -89,12 +89,16 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         im3 = (ImageView) findViewById(R.id.im3);
         im4 = (ImageView) findViewById(R.id.im4);
         im5 = (ImageView) findViewById(R.id.im5);
+        view_more = (ImageView) findViewById(R.id.view_more);
 
         factimg1 = (ImageView) findViewById(R.id.cim1);
         factimg2 = (ImageView) findViewById(R.id.cim2);
 
         fact1 = (TextView) findViewById(R.id.ct1);
         fact2 = (TextView) findViewById(R.id.ct2);
+
+        fact1.setVisibility(View.GONE);
+        fact2.setVisibility(View.GONE);
 
         l1 = (LinearLayout) findViewById(R.id.city1);
         l2 = (LinearLayout) findViewById(R.id.city2);
@@ -130,21 +134,14 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         l3.setOnClickListener(this);
         l4.setOnClickListener(this);
         l5.setOnClickListener(this);
+        view_more.setOnClickListener(this);
         search.setOnClickListener(this);
         rl.setOnClickListener(this);
 
 
         back.setVisibility(View.GONE);
 
-        //if(!getCallingActivity().getClassName().equals(MainSearch.class.getClass().getName()))
-
-
         Uri uri = Uri.parse("http://35.160.58.203/storage/bar-images/July2017/2kcOKeS88yWLcadKLMBz.jpeg");
-
-        //    view1.setImageURI(uri);
-        //    view2.setImageURI(uri);
-        //  view3.setImageURI(uri);
-        //   view1.getHierarchy().setPlaceholderImage(R.drawable.city);
 
 
     }
@@ -155,39 +152,35 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
             search.setHint("");
             Intent i = new Intent(Cities.this, MainSearch.class);
             startActivity(i);
-        }
-        else if (v == rl) {
+        } else if (v == rl) {
             Intent i = new Intent(Cities.this, bars_n_pubs.class);
             city = search.getText().toString();
             if (!TextUtils.isEmpty(city)) {
                 i.putExtra("city", city);
                 startActivity(i);
             }
-        }
-        else if (v == l1) {
+        } else if (v == l1) {
             Intent i = new Intent(Cities.this, bars_n_pubs.class);
             i.putExtra("city", "Delhi");
             startActivity(i);
-        }
-
-        else if (v == l2) {
+        } else if (v == l2) {
             Intent i = new Intent(Cities.this, bars_n_pubs.class);
             i.putExtra("city", "Lucknow");
             startActivity(i);
-        }
-        else if (v == l3) {
+        } else if (v == l3) {
             Intent i = new Intent(Cities.this, bars_n_pubs.class);
             i.putExtra("city", "Kanpur");
             startActivity(i);
-        }
-        else if (v == l4) {
+        } else if (v == l4) {
             Intent i = new Intent(Cities.this, bars_n_pubs.class);
             i.putExtra("city", "Mumbai");
             startActivity(i);
-        }
-        else if (v == l5) {
+        } else if (v == l5) {
             Intent i = new Intent(Cities.this, bars_n_pubs.class);
             i.putExtra("city", "Pune");
+            startActivity(i);
+        } else if (v == view_more) {
+            Intent i = new Intent(Cities.this, MainSearch.class);
             startActivity(i);
         }
 
@@ -266,13 +259,17 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
 
                                           }
 
-                                          JSONObject c = images.getJSONObject(1);
+                                          n = images.length();
 
-                                          final String image = c.getString("image_url");
+                                          for (int i = 0; i < n - 1; i++) {
+                                              JSONObject c = images.getJSONObject(i);
 
-                                          String temp = url + "/storage/" + image;
+                                              final String image = c.getString("image_url");
+                                              String f = c.getString("purpose");
 
-                                          target = new Target() {
+                                              String temp = url + "/storage/" + image;
+
+/*                                        target = new Target() {
                                               @Override
                                               public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                                   banner.setBackground(new BitmapDrawable(Cities.this.getResources(), bitmap));
@@ -289,15 +286,35 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
 
                                               }
                                           };
+*/
 
-                                          Picasso.with(Cities.this)
-                                                  .load(temp)
-                                                  .into(target);
+                                              switch (i) {
+                                                  case 0:
+                                                      Glide.with(Cities.this)
+                                                              .load(temp)
+                                                              .into(factimg1);
+
+                                                      fact1.setText(f);
+                                                      break;
+                                                  case 1:
+                                                      Glide.with(Cities.this)
+                                                              .load(temp)
+                                                              .into(banner);
+                                                      break;
+                                                  case 2:
+                                                      Glide.with(Cities.this)
+                                                              .load(temp)
+                                                              .into(factimg2);
+
+                                                      fact2.setText(f);
+
+                                                      pDialog.dismiss();
+                                                      break;
+                                              }
+                                          }
 
 
-                                      } catch (
-                                              final JSONException e
-                                              )
+                                      } catch (final JSONException e)
 
                                       {
                                           Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -312,6 +329,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                           });
 
                                       }
+
                                   } else {
                                       Log.e(TAG, "Couldn't get json from server.");
                                       runOnUiThread(new Runnable() {

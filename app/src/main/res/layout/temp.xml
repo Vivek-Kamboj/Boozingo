@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:clipToPadding="false"
             android:foreground="@drawable/ripple"
-            app:layout_heightPercent="32%">
+            app:layout_heightPercent="40%">
 
             <ImageButton
                 android:id="@id/back"
@@ -161,15 +161,15 @@
             android:id="@+id/booze"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/prl2"
-            android:background="@drawable/booze_or_not"
-            app:layout_heightPercent="3%"
+            android:background="@drawable/booz_served"
+            app:layout_heightPercent="3.5%"
             app:layout_widthPercent="28%" />
 
         <RelativeLayout
             android:id="@+id/rl3"
             android:layout_width="match_parent"
             android:layout_below="@+id/booze"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="0dp"
             android:gravity="top">
 
             <TextView
@@ -180,7 +180,7 @@
                 android:layout_marginLeft="10dp"
                 android:text="Speciality"
                 android:textColor="@color/black"
-                android:textSize="17sp"
+                android:textSize="18sp"
                 android:fontFamily="cursive"
                 android:textStyle="bold" />
 
@@ -189,12 +189,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
                 android:layout_toRightOf="@+id/textview1"
                 android:gravity="left"
                 android:text="@string/quote"
                 android:textColor="#757575"
-                android:textSize="10sp"
+                android:textSize="13sp"
                 android:textStyle="italic" />
 
             <TextView
@@ -208,7 +209,7 @@
                 android:gravity="center"
                 android:text="Show More"
                 android:textColor="@color/colorAccent"
-                android:textSize="10sp" />
+                android:textSize="12sp" />
         </RelativeLayout>
 
         <ImageView
@@ -216,13 +217,14 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/rl3"
-            android:layout_margin="5dp"
+            android:layout_margin="3dp"
             android:background="#cdcdcd" />
 
         <HorizontalScrollView
             android:id="@+id/icon_holder"
             android:layout_below="@+id/line1"
-            app:layout_heightPercent="7%"
+            app:layout_heightPercent="10%"
+            android:layout_margin="3dp"
             app:layout_widthPercent="100%"
             android:fillViewport="true"
             android:scrollbars="none">
@@ -240,8 +242,9 @@
             android:id="@+id/ll4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_below="@+id/icon_holder"
-            app:layout_heightPercent="30%">
+            app:layout_heightPercent="35%">
 
             <ImageView
                 android:id="@+id/line0"
@@ -263,7 +266,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:background="@mipmap/ic_locator"
-                app:layout_heightPercent="30%"
+                app:layout_heightPercent="25%"
                 app:layout_widthPercent="15%" />
 
 

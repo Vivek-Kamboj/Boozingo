@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <ImageView
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:id="@+id/pic"
+        android:layout_width="30dp"
+        android:layout_height="27dp"
         android:layout_margin="5dp"
-        android:scaleType="fitXY"
-        android:id="@+id/pic"/>
-</android.support.percent.PercentRelativeLayout>
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pic"
+        android:textSize="7sp"
+        android:textColor="#00c853"
+        android:gravity="center"/>
+</RelativeLayout>
