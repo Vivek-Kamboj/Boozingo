@@ -1,14 +1,22 @@
 package com.example.pulkit.boozingo.details;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
+import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -67,6 +75,13 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
     ProgressDialog pDialog;
     SupportMapFragment mapFragment;
 
+    PercentRelativeLayout container;
+    public static int TYPE_WIFI = 1;
+    public static int TYPE_MOBILE = 2;
+    public static int TYPE_NOT_CONNECTED = 0;
+    private Snackbar snackbar;
+    private boolean internetConnected = true;
+    
     private Location mLastLocation;
     double latitude;
     double longitude;
@@ -105,6 +120,7 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
         address = (TextView) findViewById(R.id.address);
         icons = (LinearLayout) findViewById(R.id.icons);
     //    transparent = (ImageView) findViewById(R.id.imagetrans);
+        container = (PercentRelativeLayout) findViewById(R.id.container);
         scroll = (ScrollView) findViewById(R.id.scroll);
 
 
@@ -265,11 +281,11 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
                         @Override
                         public void run() {
 
-                            name.setText(details.getClub_name());
-                            address.setText(details.getClub_address());
+                            name.setText(details.getNight_club_name());
+                            address.setText(details.getNight_club_address());
                             type.setText("(" + getIntent().getStringExtra("type") + ")");
-                            timing.setText(details.getClub_time());
-                            geo_location = details.getClub_geolocation();
+                            timing.setText(details.getNight_club_time());
+                            geo_location = details.getNight_club_geolocation();
 
 
                             int comma = geo_location.indexOf(',');
@@ -319,56 +335,61 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void facilities() {
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 8; i++) {
             View child = View.inflate(getBaseContext(), R.layout.smallpicrow, null);
             View x = child.findViewById(R.id.pic);
             TextView text = (TextView) child.findViewById(R.id.text);
 
             switch (i) {
                 case 0:
-                    if(details.getClub_food().equals("both") || details.getClub_food().equals("veg")) {
+                    x.setBackground(getDrawable(R.drawable.boozingo));
+                    text.setText("Boozingo");
+                    icons.addView(child);
+                    break;
+                case 1:
+                    if(details.getNight_club_food().equals("both") || details.getNight_club_food().equals("veg")) {
                         x.setBackground(getDrawable(R.drawable.veg));
                         text.setText("Veg");
                         icons.addView(child);
                     }
                     break;
-                case 1:
-                    if(details.getClub_food().equals("both") || details.getClub_food().equals("nonveg")) {
+                case 2:
+                    if(details.getNight_club_food().equals("both") || details.getNight_club_food().equals("nonveg")) {
                         x.setBackground(getDrawable(R.drawable.non_veg));
                         text.setText("Non Veg");
                         icons.addView(child);
                     }
                     break;
-                case 2:
-                    if(details.getClub_sitting_facility().equals("yes")) {
+                case 3:
+                    if(details.getNight_club_sitting_facility().equals("yes")) {
                         x.setBackground(getDrawable(R.drawable.sitting));
                         text.setText("Sitting");
                         icons.addView(child);
                     }
                     break;
-                case 3:
-                    if(details.getClub_music().equals("available")) {
+                case 4:
+                    if(details.getNight_club_music().equals("available")) {
                         x.setBackground(getDrawable(R.drawable.music));
                         text.setText("Music");
                         icons.addView(child);
                     }
                     break;
-                case 4:
-                    if(details.getClub_ac().equals("ac")) {
+                case 5:
+                    if(details.getNight_club_ac().equals("ac")) {
                         x.setBackground(getDrawable(R.drawable.ac));
                         text.setText("Ac");
                         icons.addView(child);
                     }
                     break;
-                case 5:
-                    if(details.getClub_payment().equals("cash") || details.getClub_payment().equals("all") ) {
+                case 6:
+                    if(details.getNight_club_payment().equals("cash") || details.getNight_club_payment().equals("all") ) {
                         x.setBackground(getDrawable(R.drawable.cash));
                         text.setText("Cash");
                         icons.addView(child);
                     }
                     break;
-                case 6:
-                    if(details.getClub_payment().equals("credit/debit card") || details.getClub_payment().equals("all") ) {
+                case 7:
+                    if(details.getNight_club_payment().equals("credit/debit card") || details.getNight_club_payment().equals("all") ) {
                         x.setBackground(getDrawable(R.drawable.card));
                         text.setText("Card");
                         icons.addView(child);
@@ -383,13 +404,6 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         locationHelper.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        locationHelper.checkPlayServices();
     }
 
     @Override
@@ -424,5 +438,100 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+
+
+
+
+    private void registerInternetCheckReceiver() {
+        IntentFilter internetFilter = new IntentFilter();
+        internetFilter.addAction("android.net.wifi.STATE_CHANGE");
+        internetFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(broadcastReceiver, internetFilter);
+    }
+
+    public BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String status = getConnectivityStatusString(context);
+            setSnackbarMessage(status, false);
+        }
+    };
+
+    public static int getConnectivityStatus(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (null != activeNetwork) {
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                return TYPE_WIFI;
+
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return TYPE_MOBILE;
+        }
+        return TYPE_NOT_CONNECTED;
+    }
+
+    public static String getConnectivityStatusString(Context context) {
+        int conn = getConnectivityStatus(context);
+        String status = null;
+        if (conn == TYPE_WIFI) {
+            status = "Wifi enabled";
+        } else if (conn == TYPE_MOBILE) {
+            status = "Mobile data enabled";
+        } else if (conn == TYPE_NOT_CONNECTED) {
+            status = "Not connected to Internet";
+        }
+        return status;
+    }
+
+    private void setSnackbarMessage(String status, boolean showBar) {
+        String internetStatus = "";
+        if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
+            internetStatus = "Internet Connected";
+        } else {
+            internetStatus = "Lost Internet Connection";
+        }
+        snackbar = Snackbar
+                .make(container, internetStatus, Snackbar.LENGTH_LONG)
+                .setAction("X", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        snackbar.dismiss();
+                    }
+                });
+
+        // Changing message text color
+        snackbar.setActionTextColor(Color.WHITE);
+        // Changing action button text color
+        View sbView = snackbar.getView();
+
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        if (internetStatus.equalsIgnoreCase("Lost Internet Connection")) {
+            if (internetConnected) {
+                snackbar.show();
+                internetConnected = false;
+            }
+        } else {
+            if (!internetConnected) {
+                internetConnected = true;
+                snackbar.show();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        locationHelper.checkPlayServices();
+        registerInternetCheckReceiver();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(broadcastReceiver);
+    }
 
 }

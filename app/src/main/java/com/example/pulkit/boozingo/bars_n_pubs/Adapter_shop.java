@@ -51,20 +51,20 @@ public class Adapter_shop extends RecyclerView.Adapter<Adapter_shop.RecHolder> {
     @Override
     public void onBindViewHolder(Adapter_shop.RecHolder holder, final int position) {
 
-        holder.name.setText(list.get(position).getShop_name());
-        holder.address.setText(list.get(position).getShop_address());
-        holder.time.setText(list.get(position).getShop_time());
+        holder.name.setText(list.get(position).getBeer_shop_name());
+        holder.address.setText(list.get(position).getBeer_shop_address());
+        holder.time.setText(list.get(position).getBeer_shop_time());
         holder.call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri call = Uri.parse("tel:" + list.get(position).getShop_contact());
+                Uri call = Uri.parse("tel:" + list.get(position).getBeer_shop_contact());
                 Intent surf = new Intent(Intent.ACTION_DIAL, call);
                 c.startActivity(surf);
             }
         });
 
         Picasso.with(c)
-                .load(list.get(position).getShop_pic())
+                .load(list.get(position).getBeer_shop_pic())
                 .fit()
                 .into(holder.image);
     }

@@ -37,16 +37,16 @@
                 android:layout_height="match_parent"
                 android:alpha="0.65"
                 android:background="@drawable/bar" />
-            <!--
-               <ImageView
-                   android:id="@+id/text1"
-                   android:layout_alignParentTop="true"
-                   android:layout_centerHorizontal="true"
-                   android:layout_marginTop="10dp"
-                   android:background="@drawable/icon_trans"
-                   app:layout_heightPercent="25%"
-                   app:layout_widthPercent="25%" />
-             -->
+
+            <ImageView
+                android:id="@+id/text1"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:background="@mipmap/boozingo_icon_grey"
+                app:layout_heightPercent="20%"
+                app:layout_widthPercent="15%" />
+
 
         </android.support.percent.PercentRelativeLayout>
 

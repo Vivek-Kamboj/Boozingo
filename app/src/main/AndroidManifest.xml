@@ -17,11 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".splash_screen.SplashScreen2">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".disclaimer.disclaimer" />
         <activity android:name=".disclaimer.terms_n_conditions" />
@@ -44,7 +40,16 @@
         <activity android:name=".details.detailsActivityPub" />
         <activity android:name=".details.detailsActivityShop" />
         <activity android:name=".details.detailsActivityLounge" />
-        <activity android:name=".details.detailsActivityClub"></activity>
+        <activity android:name=".details.detailsActivityClub" />
+
+        <activity android:name=".splash"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -10,6 +10,8 @@ public class Boozingo extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-   //     Fresco.initialize(this);
+
+
+
     }
 }

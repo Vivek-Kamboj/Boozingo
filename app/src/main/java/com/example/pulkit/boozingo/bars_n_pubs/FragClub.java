@@ -94,7 +94,7 @@ public class FragClub extends Fragment implements Adapter_club.ItemClickCallback
 
             pic = url +"/storage/" +pic;
 
-            smallDetail.setClub_pic(pic);
+            smallDetail.setNight_club_pic(pic);
             mDataset.add(smallDetail);
             adapter.notifyDataSetChanged();
         }

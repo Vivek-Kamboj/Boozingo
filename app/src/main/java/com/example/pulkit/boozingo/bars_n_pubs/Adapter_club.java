@@ -51,20 +51,20 @@ public class Adapter_club extends RecyclerView.Adapter<Adapter_club.RecHolder> {
     @Override
     public void onBindViewHolder(Adapter_club.RecHolder holder, final int position) {
 
-        holder.name.setText(list.get(position).getClub_name());
-        holder.address.setText(list.get(position).getClub_address());
-        holder.time.setText(list.get(position).getClub_time());
+        holder.name.setText(list.get(position).getNight_club_name());
+        holder.address.setText(list.get(position).getNight_club_address());
+        holder.time.setText(list.get(position).getNight_club_time());
         holder.call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri call = Uri.parse("tel:" + list.get(position).getClub_contact());
+                Uri call = Uri.parse("tel:" + list.get(position).getNight_club_contact());
                 Intent surf = new Intent(Intent.ACTION_DIAL, call);
                 c.startActivity(surf);
             }
         });
 
         Picasso.with(c)
-                .load(list.get(position).getClub_pic())
+                .load(list.get(position).getNight_club_pic())
                 .fit()
                 .into(holder.image);
     }

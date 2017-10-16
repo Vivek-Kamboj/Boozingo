@@ -23,92 +23,47 @@ public class detailsShop {
         this.beer_shop_time = beer_shop_time;
     }
 
-    public String getShop_address() {
+    public String getBeer_shop_address() {
         return beer_shop_address;
     }
 
-    public void setShop_address(String beer_shop_address) {
-        this.beer_shop_address = beer_shop_address;
-    }
-
-    public String getShop_booze_served() {
+    public String getBeer_shop_booze_served() {
         return beer_shop_booze_served;
     }
 
-    public void setShop_booze_served(String beer_shop_booze_served) {
-        this.beer_shop_booze_served = beer_shop_booze_served;
-    }
-
-    public String getShop_contact() {
+    public String getBeer_shop_contact() {
         return beer_shop_contact;
     }
 
-    public void setShop_contact(String beer_shop_contact) {
-        this.beer_shop_contact = beer_shop_contact;
-    }
-
-    public String getShop_cost() {
+    public String getBeer_shop_cost() {
         return beer_shop_cost;
     }
 
-    public void setShop_cost(String beer_shop_cost) {
-        this.beer_shop_cost = beer_shop_cost;
-    }
-
-    public String getShop_details() {
+    public String getBeer_shop_details() {
         return beer_shop_details;
     }
 
-    public void setShop_details(String beer_shop_details) {
-        this.beer_shop_details = beer_shop_details;
-    }
-
-    public String getShop_geolocation() {
+    public String getBeer_shop_geolocation() {
         return beer_shop_geolocation;
     }
 
-    public void setShop_geolocation(String beer_shop_geolocation) {
-        this.beer_shop_geolocation = beer_shop_geolocation;
-    }
-
-    public String getShop_images() {
+    public String getBeer_shop_images() {
         return beer_shop_images;
     }
 
-    public void setShop_images(String beer_shop_images) {
-        this.beer_shop_images = beer_shop_images;
-    }
-
-    public String getShop_name() {
+    public String getBeer_shop_name() {
         return beer_shop_name;
     }
 
-    public void setShop_name(String beer_shop_name) {
-        this.beer_shop_name = beer_shop_name;
-    }
-
-    public String getShop_not_working_day() {
+    public String getBeer_shop_not_working_day() {
         return beer_shop_not_working_day;
     }
 
-    public void setShop_not_working_day(String beer_shop_not_working_day) {
-        this.beer_shop_not_working_day = beer_shop_not_working_day;
-    }
-
-    public String getShop_payment() {
+    public String getBeer_shop_payment() {
         return beer_shop_payment;
     }
 
-    public void setShop_payment(String beer_shop_payment) {
-        this.beer_shop_payment = beer_shop_payment;
-    }
-
-    public String getShop_time() {
+    public String getBeer_shop_time() {
         return beer_shop_time;
     }
-
-    public void setShop_time(String beer_shop_time) {
-        this.beer_shop_time = beer_shop_time;
-    }
-
 }

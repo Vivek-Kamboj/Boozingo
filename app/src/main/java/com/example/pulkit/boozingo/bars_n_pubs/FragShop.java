@@ -95,7 +95,7 @@ public class FragShop extends Fragment implements Adapter_shop.ItemClickCallback
 
             pic = url +"/storage/" +pic;
 
-            smallDetail.setShop_pic(pic);
+            smallDetail.setBeer_shop_pic(pic);
             mDataset.add(smallDetail);
             adapter.notifyDataSetChanged();
         }
