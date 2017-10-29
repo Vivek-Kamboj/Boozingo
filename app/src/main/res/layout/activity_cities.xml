@@ -144,7 +144,7 @@
                         android:id="@+id/im1"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.8" />
+                        android:layout_weight="0.8"/>
 
                     <TextView
                         android:id="@+id/t1"
@@ -172,7 +172,7 @@
                         android:id="@+id/im2"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.8" />
+                        android:layout_weight="0.8"/>
 
                     <TextView
                         android:id="@+id/t2"
@@ -199,7 +199,7 @@
                         android:id="@+id/im3"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.8" />
+                        android:layout_weight="0.8"/>
 
                     <TextView
                         android:id="@+id/t3"
@@ -227,7 +227,7 @@
                         android:id="@+id/im4"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.8" />
+                        android:layout_weight="0.8"/>
 
                     <TextView
                         android:id="@+id/t4"
@@ -255,7 +255,7 @@
                         android:id="@+id/im5"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.8" />
+                        android:layout_weight="0.8"/>
 
                     <TextView
                         android:id="@+id/t5"

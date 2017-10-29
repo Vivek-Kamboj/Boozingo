@@ -25,6 +25,7 @@ import com.example.pulkit.boozingo.R;
 
 public class disclaimer extends AppCompatActivity {
 
+    Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +36,7 @@ public class disclaimer extends AppCompatActivity {
 
         setContentView(R.layout.activity_disclaimer);
 
-        final Dialog dialog = new Dialog(disclaimer.this);
+        dialog= new Dialog(disclaimer.this);
         dialog.setContentView(R.layout.disclaimer);
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -46,6 +47,7 @@ public class disclaimer extends AppCompatActivity {
             public void onClick(View textView) {
                 startActivity(new Intent(disclaimer.this, terms_n_conditions.class));
             }
+
             @Override
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
@@ -53,8 +55,8 @@ public class disclaimer extends AppCompatActivity {
             }
         };
         ss.setSpan(clickableSpan, 53, 75, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss.setSpan(new UnderlineSpan(),54,74,0);
-        ss.setSpan(new StyleSpan(Typeface.BOLD),54,74,0);
+        ss.setSpan(new UnderlineSpan(), 54, 74, 0);
+        ss.setSpan(new StyleSpan(Typeface.BOLD), 54, 74, 0);
 
         TextView text = (TextView) dialog.findViewById(R.id.text2);
         text.setText(ss);
@@ -66,7 +68,7 @@ public class disclaimer extends AppCompatActivity {
         dialogButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(disclaimer.this,Cities.class));
+                startActivity(new Intent(disclaimer.this, Cities.class));
                 finish();
             }
         });
@@ -74,12 +76,20 @@ public class disclaimer extends AppCompatActivity {
         dialogButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
                 finish();
             }
         });
 
         dialog.setCancelable(false);
         dialog.show();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (dialog != null) {
+            dialog.dismiss();
+            dialog = null;
+        }
     }
 }

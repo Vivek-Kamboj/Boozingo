@@ -51,8 +51,12 @@ public class Adapter_lounge extends RecyclerView.Adapter<Adapter_lounge.RecHolde
     @Override
     public void onBindViewHolder(Adapter_lounge.RecHolder holder, final int position) {
 
+        String add = list.get(position).getLounge_address();
+        if(add.length()>60)
+            add = add.substring(0,60) + "...";
+
         holder.name.setText(list.get(position).getLounge_name());
-        holder.address.setText(list.get(position).getLounge_address());
+        holder.address.setText(add);
         holder.time.setText(list.get(position).getLounge_time());
         holder.call.setOnClickListener(new View.OnClickListener() {
             @Override

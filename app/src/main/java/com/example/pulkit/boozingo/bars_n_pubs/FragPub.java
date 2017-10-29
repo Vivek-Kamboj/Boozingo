@@ -71,7 +71,7 @@ public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
     @Override
     public void onItemClick(int p) {
         Intent i = new Intent(getActivity(), detailsActivityPub.class);
-        i.putExtra("type","bar");
+        i.putExtra("type","pub");
         i.putExtra("id",mDataset.get(p).getId());
         startActivity(i);
     }
@@ -87,8 +87,16 @@ public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
             Gson gson = new Gson();
             smallDetail = gson.fromJson(object.toString(), smallPubDetails.class);
             pic = object.getString("pub_images");
-            pic = pic.substring(2,pic.length()-2);
+
+            int comma = pic.indexOf(',');
+            if(comma == -1)
+                comma = pic.length()-1;
+
+            pic = pic.substring(2,comma-1);
+            pic = pic.replaceAll("\\\\", "");
+
             pic = url +"/storage/" +pic;
+
 
             smallDetail.setPub_pic(pic);
             mDataset.add(smallDetail);

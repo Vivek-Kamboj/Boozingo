@@ -2,7 +2,7 @@ package com.example.pulkit.boozingo.model;
 
 public class smallPubDetails {
 
-    String id, pub_name, pub_address, pub_cost, pub_time, pub_not_working_day, pub_contact,pub_pic;
+    String id="", pub_name="", pub_address="", pub_cost="", pub_time="", pub_not_working_day="", pub_contact,pub_pic="";
 
     smallPubDetails() {
 
@@ -24,34 +24,34 @@ public class smallPubDetails {
     }
 
     public String getPub_address() {
-        return pub_address;
+        return pub_address.trim();
     }
 
     public String getPub_contact() {
-        return pub_contact;
+        return pub_contact.trim();
     }
 
     public String getPub_cost() {
-        return pub_cost;
+        return pub_cost.trim();
     }
 
     public String getPub_name() {
-        return pub_name;
+        return pub_name.trim();
     }
 
     public String getPub_not_working_day() {
-        return pub_not_working_day;
+        return pub_not_working_day.trim();
     }
 
     public String getPub_pic() {
-        return pub_pic;
+        return pub_pic.trim();
     }
 
     public String getPub_time() {
-        return pub_time;
+        return pub_time.trim();
     }
 
     public void setPub_pic(String pub_pic) {
-        this.pub_pic = pub_pic;
+        this.pub_pic = pub_pic.trim();
     }
 }

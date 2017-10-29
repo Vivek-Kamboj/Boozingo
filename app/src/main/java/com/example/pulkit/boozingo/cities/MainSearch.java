@@ -192,28 +192,34 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
                         list.add("No Match Found");
                     }*/
 
-                } catch (final JSONException e) {
+                } catch (final JSONException e)
+                {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(),
-                                    "Json parsing error: " + e.getMessage(),
+                                    "Problem retrieving data. Restart application.",
                                     Toast.LENGTH_LONG)
                                     .show();
+                            pDialog.dismiss();
+
                         }
                     });
 
                 }
+
             } else {
                 Log.e(TAG, "Couldn't get json from server.");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(getApplicationContext(),
-                                "Couldn't get json from server. Check LogCat for possible errors!",
+                                "Network problem. Check network connection.",
                                 Toast.LENGTH_LONG)
                                 .show();
+                        pDialog.dismiss();
+
                     }
                 });
 

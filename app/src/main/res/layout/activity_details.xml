@@ -2,13 +2,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none">
+    android:scrollbars="none"
+    android:id="@+id/scroll">
 
     <android.support.percent.PercentRelativeLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f0f0f0"
-        android:id="@+id/container">
+        android:background="#f0f0f0">
 
         <FrameLayout
             android:id="@+id/layout"
@@ -86,22 +87,25 @@
         <android.support.percent.PercentRelativeLayout
             android:id="@+id/prl2"
             android:layout_width="match_parent"
-            android:layout_below="@+id/dots"
-            app:layout_heightPercent="13%">
+            android:layout_height="match_parent"
+            android:layout_below="@+id/dots">
 
             <LinearLayout
                 android:id="@+id/ll1"
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:gravity="center"
-                app:layout_heightPercent="50%">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="Aura"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:layout_marginRight="5dp"
+                    android:text="Aura"
                     android:textColor="@color/black"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -110,8 +114,8 @@
                     android:id="@+id/type"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="(Lounge)"
                     android:gravity="center"
+                    android:text="(Lounge)"
                     android:textColor="@color/black"
                     android:textSize="12sp"
                     android:textStyle="italic" />
@@ -120,26 +124,27 @@
             <TextView
                 android:id="@+id/address"
                 android:layout_width="match_parent"
-                android:layout_below="@+id/ll1"
+                android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_below="@+id/ll1"
                 android:text="Nehru Enclave, Gomti Nagar"
                 android:textColor="@color/black"
-                android:textSize="12sp"
-                app:layout_heightPercent="30%" />
+                android:textSize="12sp" />
 
             <LinearLayout
                 android:id="@+id/ll2"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/address"
                 android:gravity="center"
-                android:orientation="horizontal"
-                app:layout_heightPercent="30%">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/open"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginRight="5dp"
+                    android:gravity="bottom"
                     android:text="Open today ."
                     android:textColor="#19dc40"
                     android:textSize="12sp"
@@ -149,7 +154,7 @@
                     android:id="@+id/timings"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="center"
+                    android:gravity="bottom"
                     android:text="12PM-12AM"
                     android:textColor="#19dc40"
                     android:textSize="12sp"
@@ -179,10 +184,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="10dp"
+                android:fontFamily="cursive"
                 android:text="Speciality"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:fontFamily="cursive"
                 android:textStyle="bold" />
 
             <TextView
@@ -190,8 +195,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/textview1"
                 android:gravity="left"
                 android:text="@string/quote"
@@ -224,18 +229,18 @@
         <HorizontalScrollView
             android:id="@+id/icon_holder"
             android:layout_below="@+id/line1"
-            app:layout_heightPercent="10%"
             android:layout_margin="3dp"
-            app:layout_widthPercent="100%"
             android:fillViewport="true"
-            android:scrollbars="none">
+            android:scrollbars="none"
+            app:layout_heightPercent="10%"
+            app:layout_widthPercent="100%">
+
             <LinearLayout
                 android:id="@+id/icons"
-                android:layout_height="match_parent"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
-            </LinearLayout>
+                android:orientation="horizontal"/>
         </HorizontalScrollView>
 
 
@@ -243,8 +248,8 @@
             android:id="@+id/ll4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_below="@+id/icon_holder"
+            android:layout_marginTop="5dp"
             app:layout_heightPercent="35%">
 
             <ImageView
@@ -261,6 +266,17 @@
                 android:orientation="horizontal"
                 app:layout_heightPercent="85%" />
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imagetrans"
+                android:layout_alignTop="@+id/map"
+                android:layout_alignBottom="@+id/map"
+                android:layout_alignEnd="@+id/map"
+                android:layout_alignRight="@+id/map"
+                android:layout_alignLeft="@+id/map"
+                android:layout_alignStart="@+id/map"
+                android:src="@color/transparent"/>
 
             <Button
                 android:id="@+id/locator"

@@ -22,6 +22,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -62,7 +63,7 @@ public class detailsActivityPub extends AppCompatActivity implements OnMapReadyC
 
     ViewPager viewPager;
     ImageButton back;
-    String TAG = "TAG", id = "2", text, geo_location, latitudePub, longitudePub, image;
+    String TAG = "TAG", id = "1", text, geo_location, latitudePub, longitudePub, image;
     String images[]= new String[6];
     picPagerAdapter adapter;
     LinearLayout icons;
@@ -92,7 +93,7 @@ public class detailsActivityPub extends AppCompatActivity implements OnMapReadyC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.temp);
+        setContentView(R.layout.activity_details);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // location initialise
@@ -119,7 +120,7 @@ public class detailsActivityPub extends AppCompatActivity implements OnMapReadyC
         timing = (TextView) findViewById(R.id.timings);
         address = (TextView) findViewById(R.id.address);
         icons = (LinearLayout) findViewById(R.id.icons);
-//        transparent = (ImageView) findViewById(R.id.imagetrans);
+        transparent = (ImageView) findViewById(R.id.imagetrans);
         container = (PercentRelativeLayout) findViewById(R.id.container);
         scroll = (ScrollView) findViewById(R.id.scroll);
 
@@ -229,6 +230,32 @@ public class detailsActivityPub extends AppCompatActivity implements OnMapReadyC
             }
         });
 
+        // for scrolling map fragment
+        transparent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disallow ScrollView to intercept touch events.
+                        scroll.requestDisallowInterceptTouchEvent(true);
+                        // Disable touch on transparent view
+                        return false;
+
+                    case MotionEvent.ACTION_UP:
+                        // Allow ScrollView to intercept touch events.
+                        scroll.requestDisallowInterceptTouchEvent(false);
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        scroll.requestDisallowInterceptTouchEvent(true);
+                        return false;
+
+                    default:
+                        return true;
+                }
+            }
+        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -248,7 +275,7 @@ public class detailsActivityPub extends AppCompatActivity implements OnMapReadyC
                 .title("Marker"));
 
         map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(Float.parseFloat(latitudePub), Float.parseFloat(longitudePub))));
-        map.animateCamera(CameraUpdateFactory.zoomTo(8));
+        map.animateCamera(CameraUpdateFactory.zoomTo(14));
     }
 
 
@@ -266,7 +293,7 @@ public class detailsActivityPub extends AppCompatActivity implements OnMapReadyC
             if (jsonStr != null) {
                 try {
                     final JSONObject object = new JSONObject(jsonStr);
-                    JSONArray array = object.getJSONArray("pubs_detail");
+                    JSONArray array = object.getJSONArray("pub");
 
                     JSONObject temp = array.getJSONObject(0);
                     String userJson = temp.toString();
@@ -288,7 +315,7 @@ public class detailsActivityPub extends AppCompatActivity implements OnMapReadyC
                             geo_location = details.getPub_geolocation();
 
 
-                            int comma = geo_location.indexOf(',');
+                            int comma = geo_location.indexOf('-');
                             latitudePub = geo_location.substring(0, comma);
                             longitudePub = geo_location.substring(comma + 1);
 
@@ -324,9 +351,36 @@ public class detailsActivityPub extends AppCompatActivity implements OnMapReadyC
                         }
                     });
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                } catch (final JSONException e)
+                {
+                    Log.e(TAG, "Json parsing error: " + e.getMessage());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    "Problem retrieving data. Restart application.",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                            pDialog.dismiss();
+
+                        }
+                    });
+
                 }
+
+            } else {
+                Log.e(TAG, "Couldn't get json from server.");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(),
+                                "Network problem. Check network connection.",
+                                Toast.LENGTH_LONG)
+                                .show();
+                        pDialog.dismiss();
+
+                    }
+                });
             }
 
             return null;

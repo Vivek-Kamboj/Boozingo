@@ -51,8 +51,12 @@ public class Adapter_shop extends RecyclerView.Adapter<Adapter_shop.RecHolder> {
     @Override
     public void onBindViewHolder(Adapter_shop.RecHolder holder, final int position) {
 
+        String add = list.get(position).getBeer_shop_address();
+        if(add.length()>60)
+            add = add.substring(0,60) + "...";
+
         holder.name.setText(list.get(position).getBeer_shop_name());
-        holder.address.setText(list.get(position).getBeer_shop_address());
+        holder.address.setText(add);
         holder.time.setText(list.get(position).getBeer_shop_time());
         holder.call.setOnClickListener(new View.OnClickListener() {
             @Override

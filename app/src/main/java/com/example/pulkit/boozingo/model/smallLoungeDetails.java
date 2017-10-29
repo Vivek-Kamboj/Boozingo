@@ -2,7 +2,8 @@ package com.example.pulkit.boozingo.model;
 
 public class smallLoungeDetails {
 
-    String id, lounge_name, lounge_address, lounge_cost, lounge_time, lounge_not_working_day, lounge_contact, lounge_pic;
+    String id="", lounge_name="", lounge_address="", lounge_cost="", lounge_time="", lounge_not_working_day="",
+            lounge_contact="", lounge_pic="";
 
     smallLoungeDetails() {
 
@@ -20,35 +21,35 @@ public class smallLoungeDetails {
     }
 
     public String getId() {
-        return id;
+        return id.trim();
     }
 
     public String getLounge_address() {
-        return lounge_address;
+        return lounge_address.trim();
     }
 
     public String getLounge_contact() {
-        return lounge_contact;
+        return lounge_contact.trim();
     }
 
     public String getLounge_cost() {
-        return lounge_cost;
+        return lounge_cost.trim();
     }
 
     public String getLounge_name() {
-        return lounge_name;
+        return lounge_name.trim();
     }
 
     public String getLounge_not_working_day() {
-        return lounge_not_working_day;
+        return lounge_not_working_day.trim();
     }
 
     public String getLounge_pic() {
-        return lounge_pic;
+        return lounge_pic.trim();
     }
 
     public String getLounge_time() {
-        return lounge_time;
+        return lounge_time.trim();
     }
 
     public void setLounge_pic(String lounge_pic) {

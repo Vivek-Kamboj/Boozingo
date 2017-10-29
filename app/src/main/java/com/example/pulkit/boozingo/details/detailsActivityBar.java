@@ -22,6 +22,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -63,7 +64,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
     ViewPager viewPager;
     ImageButton back;
     String TAG = "TAG", id = "2", text, geo_location, latitudeBar, longitudeBar, image;
-    String images[]= new String[6];
+    String images[] = new String[6];
     picPagerAdapter adapter;
     LinearLayout icons;
     TextView show, speciality, name, type, address, timing;
@@ -92,7 +93,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.temp);
+        setContentView(R.layout.activity_details);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // location initialise
@@ -119,10 +120,9 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
         timing = (TextView) findViewById(R.id.timings);
         address = (TextView) findViewById(R.id.address);
         icons = (LinearLayout) findViewById(R.id.icons);
-  //      transparent = (ImageView) findViewById(R.id.imagetrans);
-container = (PercentRelativeLayout) findViewById(R.id.container);
+        container = (PercentRelativeLayout) findViewById(R.id.container);
         scroll = (ScrollView) findViewById(R.id.scroll);
-
+        transparent = (ImageView)findViewById(R.id.imagetrans);
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
@@ -141,7 +141,6 @@ container = (PercentRelativeLayout) findViewById(R.id.container);
 
         if (locationHelper.checkPlayServices()) {
             locationHelper.buildGoogleApiClient();
-
         }
 
         new Handler().postDelayed(new Runnable() {
@@ -229,6 +228,33 @@ container = (PercentRelativeLayout) findViewById(R.id.container);
             }
         });
 
+        // for scrolling map fragment
+        transparent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disallow ScrollView to intercept touch events.
+                        scroll.requestDisallowInterceptTouchEvent(true);
+                        // Disable touch on transparent view
+                        return false;
+
+                    case MotionEvent.ACTION_UP:
+                        // Allow ScrollView to intercept touch events.
+                        scroll.requestDisallowInterceptTouchEvent(false);
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        scroll.requestDisallowInterceptTouchEvent(true);
+                        return false;
+
+                    default:
+                        return true;
+                }
+            }
+        });
+
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -248,7 +274,7 @@ container = (PercentRelativeLayout) findViewById(R.id.container);
                 .title("Marker"));
 
         map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(Float.parseFloat(latitudeBar), Float.parseFloat(longitudeBar))));
-        map.animateCamera(CameraUpdateFactory.zoomTo(8));
+        map.animateCamera(CameraUpdateFactory.zoomTo(14));
     }
 
 
@@ -266,7 +292,7 @@ container = (PercentRelativeLayout) findViewById(R.id.container);
             if (jsonStr != null) {
                 try {
                     final JSONObject object = new JSONObject(jsonStr);
-                    JSONArray array = object.getJSONArray("bars_detail");
+                    JSONArray array = object.getJSONArray("bar");
 
                     JSONObject temp = array.getJSONObject(0);
                     String userJson = temp.toString();
@@ -288,7 +314,7 @@ container = (PercentRelativeLayout) findViewById(R.id.container);
                             geo_location = details.getBar_geolocation();
 
 
-                            int comma = geo_location.indexOf(',');
+                            int comma = geo_location.indexOf('-');
                             latitudeBar = geo_location.substring(0, comma);
                             longitudeBar = geo_location.substring(comma + 1);
 
@@ -300,15 +326,14 @@ container = (PercentRelativeLayout) findViewById(R.id.container);
                                 image = image.substring(2, image.length() - 2);
                                 image = image.replaceAll("\\\\", "");
 
-                                for(int i=0,x=0;i<image.length() && x<6;x++){
-                                    int j = image.indexOf(',',i);
-                                    if(j==-1) {
-                                        images[x] = url + "/storage/" +  image.substring(i, image.length());
+                                for (int i = 0, x = 0; i < image.length() && x < 6; x++) {
+                                    int j = image.indexOf(',', i);
+                                    if (j == -1) {
+                                        images[x] = url + "/storage/" + image.substring(i, image.length());
                                         break;
-                                    }
-                                    else
-                                        images[x] = url + "/storage/" +  image.substring(i,j-1);
-                                    i=j+2;
+                                    } else
+                                        images[x] = url + "/storage/" + image.substring(i, j - 1);
+                                    i = j + 2;
                                 }
 
                             } catch (JSONException e) {
@@ -324,9 +349,35 @@ container = (PercentRelativeLayout) findViewById(R.id.container);
                         }
                     });
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                } catch (final JSONException e) {
+                    Log.e(TAG, "Json parsing error: " + e.getMessage());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    "Problem retrieving data. Restart application.",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                            pDialog.dismiss();
+
+                        }
+                    });
+
                 }
+
+            } else {
+                Log.e(TAG, "Couldn't get json from server.");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(),
+                                "Network problem. Check network connection.",
+                                Toast.LENGTH_LONG)
+                                .show();
+                        pDialog.dismiss();
+
+                    }
+                });
             }
 
             return null;
@@ -342,54 +393,54 @@ container = (PercentRelativeLayout) findViewById(R.id.container);
 
             switch (i) {
                 case 0:
-                        x.setBackground(getDrawable(R.drawable.boozingo));
-                        text.setText("Boozingo");
-                        icons.addView(child);
+                    x.setBackground(getDrawable(R.drawable.boozingo));
+                    text.setText("Boozingo");
+                    icons.addView(child);
                     break;
                 case 1:
-                    if(details.getBar_food().equals("both") || details.getBar_food().equals("veg")) {
+                    if (details.getBar_food().equals("both") || details.getBar_food().equals("veg")) {
                         x.setBackground(getDrawable(R.drawable.veg));
                         text.setText("Veg");
                         icons.addView(child);
                     }
                     break;
                 case 2:
-                    if(details.getBar_food().equals("both") || details.getBar_food().equals("nonveg")) {
+                    if (details.getBar_food().equals("both") || details.getBar_food().equals("nonveg")) {
                         x.setBackground(getDrawable(R.drawable.non_veg));
                         text.setText("Non Veg");
                         icons.addView(child);
                     }
                     break;
                 case 3:
-                    if(details.getBar_sitting_facility().equals("yes")) {
+                    if (details.getBar_sitting_facility().equals("yes")) {
                         x.setBackground(getDrawable(R.drawable.sitting));
                         text.setText("Sitting");
                         icons.addView(child);
                     }
                     break;
                 case 4:
-                    if(details.getBar_music().equals("available")) {
+                    if (details.getBar_music().equals("available")) {
                         x.setBackground(getDrawable(R.drawable.music));
                         text.setText("Music");
                         icons.addView(child);
                     }
                     break;
                 case 5:
-                    if(details.getBar_ac().equals("ac")) {
+                    if (details.getBar_ac().equals("ac")) {
                         x.setBackground(getDrawable(R.drawable.ac));
                         text.setText("Ac");
                         icons.addView(child);
                     }
                     break;
                 case 6:
-                    if(details.getBar_payment().equals("cash") || details.getBar_payment().equals("all") ) {
+                    if (details.getBar_payment().equals("cash") || details.getBar_payment().equals("all")) {
                         x.setBackground(getDrawable(R.drawable.cash));
                         text.setText("Cash");
                         icons.addView(child);
                     }
                     break;
                 case 7:
-                    if(details.getBar_payment().equals("credit/debit card") || details.getBar_payment().equals("all") ) {
+                    if (details.getBar_payment().equals("credit/debit card") || details.getBar_payment().equals("all")) {
                         x.setBackground(getDrawable(R.drawable.card));
                         text.setText("Card");
                         icons.addView(child);
@@ -437,9 +488,6 @@ container = (PercentRelativeLayout) findViewById(R.id.container);
     public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
-
-
 
 
     private void registerInternetCheckReceiver() {

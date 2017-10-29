@@ -50,8 +50,12 @@ public class Adapter_pub extends RecyclerView.Adapter<Adapter_pub.RecHolder> {
     @Override
     public void onBindViewHolder(Adapter_pub.RecHolder holder, final int position) {
 
+        String add = list.get(position).getPub_address();
+        if(add.length()>60)
+            add = add.substring(0,60) + "...";
+
         holder.name.setText(list.get(position).getPub_name());
-        holder.address.setText(list.get(position).getPub_address());
+        holder.address.setText(add);
         holder.time.setText(list.get(position).getPub_time());
         holder.call.setOnClickListener(new View.OnClickListener() {
             @Override

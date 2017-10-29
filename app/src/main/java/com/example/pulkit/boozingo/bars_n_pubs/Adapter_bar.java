@@ -51,8 +51,12 @@ public class Adapter_bar extends RecyclerView.Adapter<Adapter_bar.RecHolder> {
     @Override
     public void onBindViewHolder(Adapter_bar.RecHolder holder, final int position) {
 
+        String add = list.get(position).getBar_address();
+        if(add.length()>60)
+            add = add.substring(0,60) + "...";
+
         holder.name.setText(list.get(position).getBar_name());
-        holder.address.setText(list.get(position).getBar_address());
+        holder.address.setText(add);
         holder.time.setText(list.get(position).getBar_time());
         holder.call.setOnClickListener(new View.OnClickListener() {
             @Override

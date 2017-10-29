@@ -77,7 +77,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.temp3);
+        setContentView(R.layout.activity_cities);
 
         img = (ImageButton) findViewById(R.id.search_button_city_2);
         back = (ImageButton) findViewById(R.id.back);
@@ -314,17 +314,18 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                           }
 
 
-                                      } catch (final JSONException e)
-
+                                      }catch (final JSONException e)
                                       {
                                           Log.e(TAG, "Json parsing error: " + e.getMessage());
                                           runOnUiThread(new Runnable() {
                                               @Override
                                               public void run() {
                                                   Toast.makeText(getApplicationContext(),
-                                                          "Json parsing error: " + e.getMessage(),
+                                                          "Problem retrieving data. Restart application.",
                                                           Toast.LENGTH_LONG)
                                                           .show();
+                                                  pDialog.dismiss();
+
                                               }
                                           });
 
@@ -336,12 +337,13 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                           @Override
                                           public void run() {
                                               Toast.makeText(getApplicationContext(),
-                                                      "Couldn't get json from server. Check LogCat for possible errors!",
+                                                      "Network problem. Check network connection.",
                                                       Toast.LENGTH_LONG)
                                                       .show();
+                                              pDialog.dismiss();
+
                                           }
                                       });
-
                                   }
                               }
                           }

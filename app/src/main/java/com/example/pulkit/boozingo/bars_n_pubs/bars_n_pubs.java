@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.pulkit.boozingo.R;
@@ -185,12 +186,35 @@ public class bars_n_pubs extends AppCompatActivity {
                         }
                     });
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                }  catch (final JSONException e)
+                {
+                    Log.e(TAG, "Json parsing error: " + e.getMessage());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    "Problem retrieving data. Restart application.",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    });
+
                 }
+
+            } else {
+                Log.e(TAG, "Couldn't get json from server.");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(),
+                                "Network problem. Check network connection.",
+                                Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
             }
 
-            return null;
+                return null;
         }
     }
 
