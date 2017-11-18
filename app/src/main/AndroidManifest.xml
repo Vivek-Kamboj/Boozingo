@@ -12,8 +12,10 @@
     <application
         android:name=".Boozingo"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/launcher_icon"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".splash_screen.SplashScreen2">
@@ -42,7 +44,8 @@
         <activity android:name=".details.detailsActivityLounge" />
         <activity android:name=".details.detailsActivityClub" />
 
-        <activity android:name=".splash"
+        <activity
+            android:name=".splash"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

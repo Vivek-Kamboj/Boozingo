@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.pulkit.boozingo.LocationUtil.LocationFinder;
 import com.example.pulkit.boozingo.LocationUtil.LocationHelper;
+import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.helper.HttpHandler;
 import com.example.pulkit.boozingo.model.detailsBar;
@@ -45,6 +46,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
@@ -88,6 +90,9 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
     double longitude;
     LocationHelper locationHelper;
 
+    private MarshmallowPermissions marshmallowPermissions;
+
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +106,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
         locationHelper.checkpermission();
 
         id = getIntent().getStringExtra("id");
+        marshmallowPermissions = new MarshmallowPermissions(this);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
 
@@ -222,9 +228,22 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
         locator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String uri = "http://maps.google.com/maps?f=d&hl=en&saddr=" + latitude + "," + longitude + "&daddr=" + latitudeBar + "," + longitudeBar;
-                Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
-                startActivity(Intent.createChooser(intent, "Select an application"));
+
+                if(marshmallowPermissions.checkPermissionForCoarseLocation() && marshmallowPermissions.checkPermissionForFineLocation()) {
+                    String uri = "http://maps.google.com/maps?f=d&hl=en&saddr=" + latitude + "," + longitude + "&daddr=" + latitudeBar + "," + longitudeBar;
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
+                    startActivity(Intent.createChooser(intent, "Select an application"));
+                }
+                else{
+
+                    Toast.makeText(detailsActivityBar.this, "Please allow us to use locations.", Toast.LENGTH_SHORT).show();
+
+                    if (!marshmallowPermissions.checkPermissionForCoarseLocation())
+                        marshmallowPermissions.requestPermissionForCoarseLocation();
+
+                    if (!marshmallowPermissions.checkPermissionForFineLocation())
+                        marshmallowPermissions.requestPermissionForFineLocation();
+                }
             }
         });
 
@@ -271,10 +290,23 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap map) {
         map.addMarker(new MarkerOptions()
                 .position(new LatLng(Float.parseFloat(latitudeBar), Float.parseFloat(longitudeBar)))
-                .title("Marker"));
+                .title(getIntent().getStringExtra("type").toUpperCase()));
 
+  /*      map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(Float.parseFloat(latitudeBar), Float.parseFloat(longitudeBar))));
+  //      map.animateCamera(CameraUpdateFactory.zoomTo(14));
+
+        map.animateCamera(CameraUpdateFactory.zoomIn());
+        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+        map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
         map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(Float.parseFloat(latitudeBar), Float.parseFloat(longitudeBar))));
-        map.animateCamera(CameraUpdateFactory.zoomTo(14));
+*/
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(Float.parseFloat(latitudeBar), Float.parseFloat(longitudeBar)))
+                .zoom(15)
+                .build();
+        //Zoom in and animate the camera.
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
     }
 
 
@@ -482,7 +514,6 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
                                            @NonNull int[] grantResults) {
         // redirects to utils
         locationHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
     }
 
     public void showToast(String message) {

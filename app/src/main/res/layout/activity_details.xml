@@ -294,6 +294,8 @@
                 android:layout_below="@+id/map"
                 android:background="#757575" />
 
+
+
         </android.support.percent.PercentRelativeLayout>
 
 
