@@ -9,7 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.details.detailsActivityBar;
 import com.example.pulkit.boozingo.model.smallBarDetails;
@@ -31,6 +33,10 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
     Adapter_bar adapter;
     smallBarDetails smallDetail;
 
+
+    private MarshmallowPermissions marshmallowPermissions;
+
+
     public FragBar() {
         // Required empty public constructor
     }
@@ -47,6 +53,9 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
         // Inflate the layout for this fragment
 
         mDataset.clear();
+
+        marshmallowPermissions = new MarshmallowPermissions(getActivity());
+
 
         View rootView = inflater.inflate(R.layout.fragment_bar, container, false);
         recview = (RecyclerView) rootView.findViewById(R.id.recycler);
@@ -71,7 +80,18 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
         Intent i = new Intent(getActivity(), detailsActivityBar.class);
         i.putExtra("type","bar");
         i.putExtra("id",mDataset.get(p).getId());
-        startActivity(i);
+
+
+        if (!marshmallowPermissions.checkPermissionForFineLocation())
+            marshmallowPermissions.requestPermissionForFineLocation();
+
+        if(marshmallowPermissions.checkPermissionForFineLocation())
+            startActivity(i);
+        else{
+            Toast.makeText(getActivity(), "Give Permission", Toast.LENGTH_SHORT).show();
+            marshmallowPermissions.requestPermissionForFineLocation();
+        }
+
     }
 
     private void initDataset() throws JSONException {

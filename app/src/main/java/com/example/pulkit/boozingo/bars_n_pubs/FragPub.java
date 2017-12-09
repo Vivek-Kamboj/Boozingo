@@ -73,6 +73,8 @@ public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
         Intent i = new Intent(getActivity(), detailsActivityPub.class);
         i.putExtra("type","pub");
         i.putExtra("id",mDataset.get(p).getId());
+
+
         startActivity(i);
     }
 

@@ -69,6 +69,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
     PercentRelativeLayout layout;
     Target target;
     LinearLayout l1, l2, l3, l4, l5;
+    String internetStatus = "Lost Internet Connection";
 
 
     @Override
@@ -220,6 +221,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                                       .centerCrop()
                                                       .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                                                       .apply(RequestOptions.circleCropTransform())
+                                                      .override(150,150)
                                                       .priority(Priority.HIGH);
 
                                               switch (i) {
@@ -287,11 +289,15 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                               }
                                           };
 */
+                                              RequestOptions options2 = new RequestOptions()
+                                                      .override(800,600);
+
 
                                               switch (i) {
                                                   case 0:
                                                       Glide.with(Cities.this)
                                                               .load(temp)
+                                                              .apply(options2)
                                                               .into(factimg1);
 
                                                       fact1.setText(f);
@@ -299,11 +305,13 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                                   case 1:
                                                       Glide.with(Cities.this)
                                                               .load(temp)
+                                                              .apply(options2)
                                                               .into(banner);
                                                       break;
                                                   case 2:
                                                       Glide.with(Cities.this)
                                                               .load(temp)
+                                                              .apply(options2)
                                                               .into(factimg2);
 
                                                       fact2.setText(f);
@@ -405,8 +413,14 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void setSnackbarMessage(String status, boolean showBar) {
-        String internetStatus = "";
+
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
+            // if connection is made after page is build. It needs to be reloaded
+            if(internetStatus.equals("Lost Internet Connection")){
+                internetStatus = "Internet Connected";
+                startActivity(new Intent(this,Cities.class));
+                finish();
+            }
             internetStatus = "Internet Connected";
         } else {
             internetStatus = "Lost Internet Connection";

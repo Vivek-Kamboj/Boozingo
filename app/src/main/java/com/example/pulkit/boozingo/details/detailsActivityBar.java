@@ -237,9 +237,11 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
                 else{
 
                     Toast.makeText(detailsActivityBar.this, "Please allow us to use locations.", Toast.LENGTH_SHORT).show();
+/*
 
                     if (!marshmallowPermissions.checkPermissionForCoarseLocation())
                         marshmallowPermissions.requestPermissionForCoarseLocation();
+*/
 
                     if (!marshmallowPermissions.checkPermissionForFineLocation())
                         marshmallowPermissions.requestPermissionForFineLocation();
