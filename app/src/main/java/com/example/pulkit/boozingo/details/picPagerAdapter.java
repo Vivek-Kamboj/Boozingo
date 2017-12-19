@@ -41,7 +41,8 @@ public class picPagerAdapter extends PagerAdapter{
 
         ImageView imageView = (ImageView) itemView.findViewById(R.id.pic);
         Glide.with(context)
-                .load(images[position])
+                .load(R.raw.bars)
+   //             .load(images[position])
                 .into(imageView);
    //     imageView.setImageResource(images[position]);
 

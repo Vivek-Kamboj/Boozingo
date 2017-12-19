@@ -1,10 +1,18 @@
 package com.example.pulkit.boozingo.cities;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pulkit.boozingo.R;
@@ -49,6 +58,15 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
     View back;
     int bold;
     int num=0;
+    CoordinatorLayout layout;
+
+    // for snack bar
+    public static int TYPE_WIFI = 1;
+    public static int TYPE_MOBILE = 2;
+    public static int TYPE_NOT_CONNECTED = 0;
+    private Snackbar snackbar;
+    private boolean internetConnected = true;
+    String internetStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +78,7 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.search);
-
+        internetStatus = getString(R.string.net);
 
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         toolbar = new Toolbar(getBaseContext());
@@ -68,6 +86,7 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
 
         search = (EditText) findViewById(R.id.search);
         back = findViewById(R.id.back);
+        layout = (CoordinatorLayout) findViewById(R.id.layout);
 
         city = "";
         new city_search().execute();
@@ -142,14 +161,20 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
 
     @Override
     public void onItemClick(int p) {
-        if(num == 0){
+
+        if (num == 0) {
             Cities.city = fullList.get(p);
             finish();
-        }
-        else if (num ==1) {
+        } else if (num == 1) {
             Cities.city = list.get(p);
             finish();
         }
+
+        /*if(internetStatus.equals(getString(R.string.net))) {
+
+        }
+        else
+            Toast.makeText(MainSearch.this, "Check network connection.", Toast.LENGTH_SHORT).show();*/
     }
 
 
@@ -237,6 +262,97 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
             adapter.notifyDataSetChanged();
 
         }
+    }
+
+
+// functions for snack bar
+    private void registerInternetCheckReceiver() {
+        IntentFilter internetFilter = new IntentFilter();
+        internetFilter.addAction("android.net.wifi.STATE_CHANGE");
+        internetFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(broadcastReceiver, internetFilter);
+    }
+
+    public BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String status = getConnectivityStatusString(context);
+            setSnackbarMessage(status, false);
+        }
+    };
+
+    public static int getConnectivityStatus(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (null != activeNetwork) {
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                return TYPE_WIFI;
+
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return TYPE_MOBILE;
+        }
+        return TYPE_NOT_CONNECTED;
+    }
+
+    public static String getConnectivityStatusString(Context context) {
+        int conn = getConnectivityStatus(context);
+        String status = null;
+        if (conn == TYPE_WIFI) {
+            status = "Wifi enabled";
+        } else if (conn == TYPE_MOBILE) {
+            status = "Mobile data enabled";
+        } else if (conn == TYPE_NOT_CONNECTED) {
+            status = "Not connected to Internet";
+        }
+        return status;
+    }
+
+    private void setSnackbarMessage(String status, boolean showBar) {
+
+        if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
+
+            internetStatus = getString(R.string.net);
+        } else {
+            internetStatus = getString(R.string.no_net);
+        }
+        snackbar = Snackbar
+                .make(layout, internetStatus, Snackbar.LENGTH_LONG)
+                .setAction("X", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        snackbar.dismiss();
+                    }
+                });
+        // Changing message text color
+        snackbar.setActionTextColor(Color.WHITE);
+        // Changing action button text color
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        if (internetStatus.equalsIgnoreCase(getString(R.string.no_net))) {
+            if (internetConnected) {
+                snackbar.show();
+                internetConnected = false;
+            }
+        } else {
+            if (!internetConnected) {
+                internetConnected = true;
+                snackbar.show();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerInternetCheckReceiver();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(broadcastReceiver);
     }
 
 }

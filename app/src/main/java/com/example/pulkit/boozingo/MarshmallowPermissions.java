@@ -11,6 +11,7 @@ import android.widget.Toast;
 public class MarshmallowPermissions {
 
     public static final int LOCSERV_REQUEST_CODE = 5;
+    public static final int CALL = 4;
     Activity activity;
 
     public MarshmallowPermissions(Activity activity) {
@@ -35,12 +36,25 @@ public class MarshmallowPermissions {
         }
     }
 
+    public boolean checkPermissionForCall() {
+        int result = ContextCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public void requestPermissionForFineLocation() {
         ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCSERV_REQUEST_CODE);
 
     }
 
+    public void requestPermissionForCall() {
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CALL_PHONE}, CALL);
+
+    }
 
     public void requestPermissionForCoarseLocation() {
       /*  if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_COARSE_LOCATION)) {

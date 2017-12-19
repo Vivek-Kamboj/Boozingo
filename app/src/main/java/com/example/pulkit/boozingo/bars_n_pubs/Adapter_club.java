@@ -1,15 +1,21 @@
 package com.example.pulkit.boozingo.bars_n_pubs;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.model.smallClubDetails;
 import com.squareup.picasso.Picasso;
@@ -19,6 +25,7 @@ import java.util.List;
 public class Adapter_club extends RecyclerView.Adapter<Adapter_club.RecHolder> {
 
     Context c;
+    private MarshmallowPermissions marshmallowPermissions;
 
     //interface
     public interface ItemClickCallback {
@@ -40,6 +47,7 @@ public class Adapter_club extends RecyclerView.Adapter<Adapter_club.RecHolder> {
         this.list = list;
         this.c = c;
         this.layoutInflater = LayoutInflater.from(c);
+        marshmallowPermissions = new MarshmallowPermissions((Activity) c);
     }
 
     @Override
@@ -52,8 +60,8 @@ public class Adapter_club extends RecyclerView.Adapter<Adapter_club.RecHolder> {
     public void onBindViewHolder(Adapter_club.RecHolder holder, final int position) {
 
         String add = list.get(position).getNight_club_address();
-        if(add.length()>60)
-            add = add.substring(0,60) + "...";
+        if (add.length() > 60)
+            add = add.substring(0, 60) + "...";
 
         holder.name.setText(list.get(position).getNight_club_name());
         holder.address.setText(add);
@@ -61,9 +69,20 @@ public class Adapter_club extends RecyclerView.Adapter<Adapter_club.RecHolder> {
         holder.call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri call = Uri.parse("tel:" + list.get(position).getNight_club_contact());
-                Intent surf = new Intent(Intent.ACTION_DIAL, call);
-                c.startActivity(surf);
+                if (!marshmallowPermissions.checkPermissionForCall())
+                    marshmallowPermissions.requestPermissionForCall();
+
+                if (marshmallowPermissions.checkPermissionForCall()) {
+
+                    Uri call = Uri.parse("tel:" + list.get(position).getNight_club_contact());
+                    Intent surf = new Intent(Intent.ACTION_CALL, call);
+                    c.startActivity(surf);
+                }
+                else{
+                    Toast.makeText(c, "Give Location Permission", Toast.LENGTH_SHORT).show();
+                    marshmallowPermissions.requestPermissionForCall();
+                }
+
             }
         });
 

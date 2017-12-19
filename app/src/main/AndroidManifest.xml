@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.pulkit.boozingo">
 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -18,9 +19,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".splash_screen.SplashScreen2">
-
-        </activity>
+        <activity android:name=".splash_screen.SplashScreen2"></activity>
         <activity android:name=".disclaimer.disclaimer" />
         <activity android:name=".disclaimer.terms_n_conditions" />
         <activity
@@ -38,12 +37,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".details.detailsActivityBar" />
+        <activity android:name=".details.detailsActivityBar"></activity>
         <activity android:name=".details.detailsActivityPub" />
         <activity android:name=".details.detailsActivityShop" />
         <activity android:name=".details.detailsActivityLounge" />
         <activity android:name=".details.detailsActivityClub" />
-
         <activity
             android:name=".splash"
             android:theme="@style/SplashTheme">
@@ -53,6 +51,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".splash_screen.SplashScreen"></activity>
     </application>
 
 </manifest>

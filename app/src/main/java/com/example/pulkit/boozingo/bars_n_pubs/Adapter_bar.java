@@ -1,5 +1,6 @@
 package com.example.pulkit.boozingo.bars_n_pubs;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.model.smallBarDetails;
 import com.squareup.picasso.Picasso;
@@ -19,6 +22,7 @@ import java.util.List;
 public class Adapter_bar extends RecyclerView.Adapter<Adapter_bar.RecHolder> {
 
     Context c;
+    private MarshmallowPermissions marshmallowPermissions;
 
     //interface
     public interface ItemClickCallback {
@@ -40,6 +44,7 @@ public class Adapter_bar extends RecyclerView.Adapter<Adapter_bar.RecHolder> {
         this.list = list;
         this.c = c;
         this.layoutInflater = LayoutInflater.from(c);
+        marshmallowPermissions = new MarshmallowPermissions((Activity) c);
     }
 
     @Override
@@ -61,14 +66,26 @@ public class Adapter_bar extends RecyclerView.Adapter<Adapter_bar.RecHolder> {
         holder.call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri call = Uri.parse("tel:" + list.get(position).getBar_contact());
-                Intent surf = new Intent(Intent.ACTION_DIAL, call);
-                c.startActivity(surf);
+
+                if (!marshmallowPermissions.checkPermissionForCall())
+                    marshmallowPermissions.requestPermissionForCall();
+
+                if (marshmallowPermissions.checkPermissionForCall()) {
+
+                    Uri call = Uri.parse("tel:" + list.get(position).getBar_contact());
+                    Intent surf = new Intent(Intent.ACTION_CALL, call);
+                    c.startActivity(surf);
+                }
+                else{
+                    Toast.makeText(c, "Give Location Permission", Toast.LENGTH_SHORT).show();
+                    marshmallowPermissions.requestPermissionForCall();
+                }
             }
         });
 
         Picasso.with(c)
-                .load(list.get(position).getBar_pic())
+  //              .load(list.get(position).getBar_pic())
+                .load(R.raw.bars)
                 .fit()
                 .into(holder.image);
     }

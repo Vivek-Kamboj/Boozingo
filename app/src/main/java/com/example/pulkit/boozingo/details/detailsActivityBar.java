@@ -65,13 +65,12 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
 
     ViewPager viewPager;
     ImageButton back;
-    String TAG = "TAG", id = "2", text, geo_location, latitudeBar, longitudeBar, image;
+    String TAG = "TAG", id = "2", text, geo_location, latitudeBar, longitudeBar, image, specs;
     String images[] = new String[6];
     picPagerAdapter adapter;
     LinearLayout icons;
     TextView show, speciality, name, type, address, timing;
     Button locator;
-    List<String> list = new ArrayList<>();
     ImageView transparent, dot1, dot2, dot3, dot4, dot5, dot6;
     ScrollView scroll;
     detailsBar details;
@@ -106,6 +105,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
         locationHelper.checkpermission();
 
         id = getIntent().getStringExtra("id");
+ //       id = "2";
         marshmallowPermissions = new MarshmallowPermissions(this);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -136,14 +136,6 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(true);
         pDialog.show();
-
-        list.add("a");
-        list.add("a");
-        list.add("a");
-        list.add("a");
-        list.add("a");
-        list.add("a");
-
 
         if (locationHelper.checkPlayServices()) {
             locationHelper.buildGoogleApiClient();
@@ -212,10 +204,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
             }
         });
 
-
-        speciality.setText(text.substring(0, 100) + "...");
-
-        show.setOnClickListener(new View.OnClickListener() {
+        /*show.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         speciality.setText(text);
@@ -223,7 +212,9 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
                                     }
                                 }
         );
+*/
 
+        show.setVisibility(View.GONE);
 
         locator.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -346,6 +337,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
                             type.setText("(" + getIntent().getStringExtra("type") + ")");
                             timing.setText(details.getBar_time());
                             geo_location = details.getBar_geolocation();
+                            specs = details.getBar_details();
 
 
                             int comma = geo_location.indexOf('-');
@@ -373,6 +365,25 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
+                            String y;
+
+                            for(int i=0;i<specs.length();){
+                                int x = specs.indexOf('/',i);
+                                if(x<specs.length() && x!=-1) {
+                                    y = speciality.getText() + "\u25CF " + specs.substring(i, x) + "\n";
+                                    speciality.setText(y);
+                                    i = x+1;
+                                }
+                                else{
+                                    y = speciality.getText() + "\u25CF " + specs.substring(i, specs.length());
+                                    speciality.setText(y);
+                                    break;
+                                }
+                            }
+
+
+                            // shuffle images array here
 
                             adapter = new picPagerAdapter(detailsActivityBar.this, images);
                             viewPager.setAdapter(adapter);

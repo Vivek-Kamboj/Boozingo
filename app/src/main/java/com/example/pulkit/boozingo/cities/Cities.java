@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -16,8 +15,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.percent.PercentRelativeLayout;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -34,20 +31,21 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.AssetUriLoader;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.bars_n_pubs.bars_n_pubs;
-import com.example.pulkit.boozingo.disclaimer.disclaimer;
 import com.example.pulkit.boozingo.helper.HttpHandler;
-import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
 
 import static com.example.pulkit.boozingo.Boozingo.url;
 
@@ -69,7 +67,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
     PercentRelativeLayout layout;
     Target target;
     LinearLayout l1, l2, l3, l4, l5;
-    String internetStatus = "Lost Internet Connection";
+    String internetStatus;
 
 
     @Override
@@ -95,11 +93,8 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         factimg1 = (ImageView) findViewById(R.id.cim1);
         factimg2 = (ImageView) findViewById(R.id.cim2);
 
-        fact1 = (TextView) findViewById(R.id.ct1);
-        fact2 = (TextView) findViewById(R.id.ct2);
-
-        fact1.setVisibility(View.GONE);
-        fact2.setVisibility(View.GONE);
+        //initially net is assumed to be connected
+        internetStatus = getString(R.string.net);
 
         l1 = (LinearLayout) findViewById(R.id.city1);
         l2 = (LinearLayout) findViewById(R.id.city2);
@@ -123,8 +118,13 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
             @Override
             public boolean onLongClick(View v) {
                 //     search.setHint("");
-                Intent i = new Intent(Cities.this, MainSearch.class);
-                startActivity(i);
+                if(internetStatus.equals(getString(R.string.net))) {
+                    Intent i = new Intent(Cities.this, MainSearch.class);
+                    startActivity(i);
+                }
+                else
+                    Toast.makeText(Cities.this, "Check network connection.", Toast.LENGTH_SHORT).show();
+
                 return false;
             }
         });
@@ -149,42 +149,46 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v == search) {
-            search.setHint("");
-            Intent i = new Intent(Cities.this, MainSearch.class);
-            startActivity(i);
-        } else if (v == rl) {
-            Intent i = new Intent(Cities.this, bars_n_pubs.class);
-            city = search.getText().toString();
-            if (!TextUtils.isEmpty(city)) {
-                i.putExtra("city", city);
+
+        if(internetStatus.equals(getString(R.string.net))) {
+            if (v == search) {
+                search.setHint("");
+                Intent i = new Intent(Cities.this, MainSearch.class);
+                startActivity(i);
+            } else if (v == rl) {
+                Intent i = new Intent(Cities.this, bars_n_pubs.class);
+                city = search.getText().toString();
+                if (!TextUtils.isEmpty(city)) {
+                    i.putExtra("city", city);
+                    startActivity(i);
+                }
+            } else if (v == l1) {
+                Intent i = new Intent(Cities.this, bars_n_pubs.class);
+                i.putExtra("city", "Delhi");
+                startActivity(i);
+            } else if (v == l2) {
+                Intent i = new Intent(Cities.this, bars_n_pubs.class);
+                i.putExtra("city", "Lucknow");
+                startActivity(i);
+            } else if (v == l3) {
+                Intent i = new Intent(Cities.this, bars_n_pubs.class);
+                i.putExtra("city", "Kanpur");
+                startActivity(i);
+            } else if (v == l4) {
+                Intent i = new Intent(Cities.this, bars_n_pubs.class);
+                i.putExtra("city", "Mumbai");
+                startActivity(i);
+            } else if (v == l5) {
+                Intent i = new Intent(Cities.this, bars_n_pubs.class);
+                i.putExtra("city", "Pune");
+                startActivity(i);
+            } else if (v == view_more) {
+                Intent i = new Intent(Cities.this, MainSearch.class);
                 startActivity(i);
             }
-        } else if (v == l1) {
-            Intent i = new Intent(Cities.this, bars_n_pubs.class);
-            i.putExtra("city", "Delhi");
-            startActivity(i);
-        } else if (v == l2) {
-            Intent i = new Intent(Cities.this, bars_n_pubs.class);
-            i.putExtra("city", "Lucknow");
-            startActivity(i);
-        } else if (v == l3) {
-            Intent i = new Intent(Cities.this, bars_n_pubs.class);
-            i.putExtra("city", "Kanpur");
-            startActivity(i);
-        } else if (v == l4) {
-            Intent i = new Intent(Cities.this, bars_n_pubs.class);
-            i.putExtra("city", "Mumbai");
-            startActivity(i);
-        } else if (v == l5) {
-            Intent i = new Intent(Cities.this, bars_n_pubs.class);
-            i.putExtra("city", "Pune");
-            startActivity(i);
-        } else if (v == view_more) {
-            Intent i = new Intent(Cities.this, MainSearch.class);
-            startActivity(i);
         }
-
+        else
+            Toast.makeText(Cities.this, "Check network connection.", Toast.LENGTH_SHORT).show();
     }
 
     private class city_search extends AsyncTask<Void, Void, Void> {
@@ -221,7 +225,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                                       .centerCrop()
                                                       .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                                                       .apply(RequestOptions.circleCropTransform())
-                                                      .override(150,150)
+                                                      .override(250,250)
                                                       .priority(Priority.HIGH);
 
                                               switch (i) {
@@ -234,7 +238,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                                       break;
                                                   case 1:
                                                       Glide.with(Cities.this)
-                                                              .load(temp)
+                                                              .load(R.raw.lucknow)
                                                               .apply(options)
                                                               .into(im2);
                                                       break;
@@ -298,23 +302,30 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                                       Glide.with(Cities.this)
                                                               .load(temp)
                                                               .apply(options2)
-                                                              .into(factimg1);
+                                                              .into(new SimpleTarget<Drawable>() {
+                                                                  @Override
+                                                                  public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                                                      Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                                                                      Uri.fromFile(new File(bitmap.toString()));
+                                                                  }
+                                                              });
 
-                                                      fact1.setText(f);
+                                      //                fact1.setText(f);
                                                       break;
                                                   case 1:
-                                                      Glide.with(Cities.this)
+
+                                              /*        Glide.with(Cities.this)
                                                               .load(temp)
                                                               .apply(options2)
                                                               .into(banner);
-                                                      break;
+                                                      break;*/
                                                   case 2:
                                                       Glide.with(Cities.this)
                                                               .load(temp)
                                                               .apply(options2)
                                                               .into(factimg2);
 
-                                                      fact2.setText(f);
+                                        //              fact2.setText(f);
 
                                                       pDialog.dismiss();
                                                       break;
@@ -415,15 +426,17 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
     private void setSnackbarMessage(String status, boolean showBar) {
 
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
-            // if connection is made after page is build. It needs to be reloaded
-            if(internetStatus.equals("Lost Internet Connection")){
-                internetStatus = "Internet Connected";
+        /*    // if connection is made after page is build. It needs to be reloaded
+            if(internetStatus.equals(getString(R.string.no_net))){
+                internetStatus = getString(R.string.net);
                 startActivity(new Intent(this,Cities.class));
                 finish();
-            }
-            internetStatus = "Internet Connected";
+            }*/
+            search.setText(city);
+            search.setSelection(city.length());
+            internetStatus = getString(R.string.net);
         } else {
-            internetStatus = "Lost Internet Connection";
+            internetStatus = getString(R.string.no_net);
         }
         snackbar = Snackbar
                 .make(layout, internetStatus, Snackbar.LENGTH_LONG)
@@ -439,7 +452,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
-        if (internetStatus.equalsIgnoreCase("Lost Internet Connection")) {
+        if (internetStatus.equalsIgnoreCase(getString(R.string.no_net))) {
             if (internetConnected) {
                 snackbar.show();
                 internetConnected = false;

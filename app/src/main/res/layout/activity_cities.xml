@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
-                android:alpha="0.65"
+                android:alpha="0.85"
                 android:background="@drawable/bar" />
 
             <ImageView
@@ -44,10 +44,10 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:background="@mipmap/boozingo_icon_grey"
                 app:layout_heightPercent="20%"
                 app:layout_widthPercent="15%" />
 
+<!--            android:background="@mipmap/boozingo_icon_grey"-->
 
         </android.support.percent.PercentRelativeLayout>
 
@@ -145,7 +145,7 @@
                         android:id="@+id/im1"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.8"/>
+                        android:layout_weight="0.8" />
 
                     <TextView
                         android:id="@+id/t1"
@@ -173,7 +173,7 @@
                         android:id="@+id/im2"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="0.8"/>
+                        android:layout_weight="0.8" />
 
                     <TextView
                         android:id="@+id/t2"
@@ -357,11 +357,10 @@
                     android:layout_width="match_parent"
                     android:layout_alignParentTop="true"
                     android:layout_margin="5dp"
-                    android:background="@drawable/booze_fact"
                     android:scaleType="fitXY"
                     app:layout_heightPercent="95%" />
 
-                <TextView
+<!--                <TextView
                     android:id="@+id/ct1"
                     android:layout_width="match_parent"
                     android:layout_alignParentBottom="true"
@@ -371,7 +370,7 @@
                     android:text="@string/quote"
                     android:textColor="#212121"
                     android:textStyle="bold"
-                    app:layout_heightPercent="25%" />
+                    app:layout_heightPercent="25%" />-->
 
             </android.support.percent.PercentRelativeLayout>
 
@@ -400,9 +399,9 @@
                     android:layout_width="match_parent"
                     android:layout_alignParentTop="true"
                     android:layout_margin="5dp"
-                    android:background="@drawable/booze_fact"
                     android:scaleType="fitXY"
                     app:layout_heightPercent="95%" />
+<!--
 
                 <TextView
                     android:id="@+id/ct2"
@@ -415,6 +414,7 @@
                     android:textColor="#212121"
                     android:textStyle="bold"
                     app:layout_heightPercent="25%" />
+-->
 
             </android.support.percent.PercentRelativeLayout>
 

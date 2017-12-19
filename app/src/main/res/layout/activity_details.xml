@@ -88,7 +88,8 @@
             android:id="@+id/prl2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/dots">
+            android:layout_below="@+id/dots"
+            android:layout_marginBottom="2dp">
 
             <LinearLayout
                 android:id="@+id/ll1"
@@ -164,9 +165,9 @@
             android:id="@+id/booze"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/prl2"
-            android:background="@drawable/booz_served"
-            app:layout_heightPercent="3.5%"
-            app:layout_widthPercent="28%" />
+            android:background="@drawable/booze_served"
+            app:layout_heightPercent="5%"
+            app:layout_widthPercent="30%" />
 
         <RelativeLayout
             android:id="@+id/rl3"
@@ -184,7 +185,7 @@
                 android:fontFamily="cursive"
                 android:text="Speciality"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -196,10 +197,10 @@
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/textview1"
                 android:gravity="left"
-                android:text="@string/quote"
-                android:textColor="#757575"
-                android:textSize="13sp"
-                android:textStyle="italic" />
+                android:text=""
+                android:textColor="#424242"
+                android:textSize="15sp"
+                android:typeface="serif"/>
 
             <TextView
                 android:id="@+id/show"

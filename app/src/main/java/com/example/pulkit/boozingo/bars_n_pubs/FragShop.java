@@ -9,7 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.bars_n_pubs.Adapter_shop;
 import com.example.pulkit.boozingo.details.detailsActivityShop;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.pulkit.boozingo.Boozingo.url;
+import static com.example.pulkit.boozingo.bars_n_pubs.bars_n_pubs.internetStatus;
 import static com.example.pulkit.boozingo.bars_n_pubs.bars_n_pubs.shops;
 
 public class FragShop extends Fragment implements Adapter_shop.ItemClickCallback {
@@ -31,6 +34,8 @@ public class FragShop extends Fragment implements Adapter_shop.ItemClickCallback
     RecyclerView recview;
     Adapter_shop adapter;
     smallShopDetails smallDetail;
+
+    private MarshmallowPermissions marshmallowPermissions;
 
     public FragShop() {
         // Required empty public constructor
@@ -48,6 +53,8 @@ public class FragShop extends Fragment implements Adapter_shop.ItemClickCallback
         // Inflate the layout for this fragment
 
         mDataset.clear();
+
+        marshmallowPermissions = new MarshmallowPermissions(getActivity());
 
         View rootView = inflater.inflate(R.layout.fragment_bar, container, false);
         recview = (RecyclerView) rootView.findViewById(R.id.recycler);
@@ -69,10 +76,26 @@ public class FragShop extends Fragment implements Adapter_shop.ItemClickCallback
 
     @Override
     public void onItemClick(int p) {
-        Intent i = new Intent(getActivity(), detailsActivityShop.class);
-        i.putExtra("type","shop");
-        i.putExtra("id",mDataset.get(p).getId());
-        startActivity(i);
+        if(internetStatus.equals(getString(R.string.net))) {
+            Intent i = new Intent(getActivity(), detailsActivityShop.class);
+            i.putExtra("type","shop");
+            i.putExtra("id",mDataset.get(p).getId());
+
+
+
+            if (!marshmallowPermissions.checkPermissionForFineLocation())
+                marshmallowPermissions.requestPermissionForFineLocation();
+
+            if (marshmallowPermissions.checkPermissionForFineLocation())
+                startActivity(i);
+            else {
+                Toast.makeText(getActivity(), "Give Permission", Toast.LENGTH_SHORT).show();
+                marshmallowPermissions.requestPermissionForFineLocation();
+            }
+        }
+        else
+            Toast.makeText(getActivity(), "Check network connection.", Toast.LENGTH_SHORT).show();
+
     }
 
     private void initDataset() throws JSONException {

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.example.pulkit.boozingo.disclaimer.disclaimer;
+import com.example.pulkit.boozingo.splash_screen.SplashScreen;
 
 public class splash extends AppCompatActivity {
 
@@ -14,7 +15,7 @@ public class splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
    //     getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        startActivity(new Intent(splash.this, disclaimer.class));
+        startActivity(new Intent(splash.this, SplashScreen.class));
         finish();
     }
 }

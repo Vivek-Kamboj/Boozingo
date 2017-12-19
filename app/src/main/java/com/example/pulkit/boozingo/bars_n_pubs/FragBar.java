@@ -25,6 +25,7 @@ import java.util.List;
 
 import static com.example.pulkit.boozingo.Boozingo.url;
 import static com.example.pulkit.boozingo.bars_n_pubs.bars_n_pubs.bars;
+import static com.example.pulkit.boozingo.bars_n_pubs.bars_n_pubs.internetStatus;
 
 public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
 
@@ -32,7 +33,6 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
     RecyclerView recview;
     Adapter_bar adapter;
     smallBarDetails smallDetail;
-
 
     private MarshmallowPermissions marshmallowPermissions;
 
@@ -56,7 +56,6 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
 
         marshmallowPermissions = new MarshmallowPermissions(getActivity());
 
-
         View rootView = inflater.inflate(R.layout.fragment_bar, container, false);
         recview = (RecyclerView) rootView.findViewById(R.id.recycler);
         recview.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -77,20 +76,25 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
 
     @Override
     public void onItemClick(int p) {
-        Intent i = new Intent(getActivity(), detailsActivityBar.class);
-        i.putExtra("type","bar");
-        i.putExtra("id",mDataset.get(p).getId());
+
+        if(internetStatus.equals(getString(R.string.net))) {
+            Intent i = new Intent(getActivity(), detailsActivityBar.class);
+            i.putExtra("type", "bar");
+            i.putExtra("id", mDataset.get(p).getId());
 
 
-        if (!marshmallowPermissions.checkPermissionForFineLocation())
-            marshmallowPermissions.requestPermissionForFineLocation();
+            if (!marshmallowPermissions.checkPermissionForFineLocation())
+                marshmallowPermissions.requestPermissionForFineLocation();
 
-        if(marshmallowPermissions.checkPermissionForFineLocation())
-            startActivity(i);
-        else{
-            Toast.makeText(getActivity(), "Give Permission", Toast.LENGTH_SHORT).show();
-            marshmallowPermissions.requestPermissionForFineLocation();
+            if (marshmallowPermissions.checkPermissionForFineLocation())
+                startActivity(i);
+            else {
+                Toast.makeText(getActivity(), "Give Permission", Toast.LENGTH_SHORT).show();
+                marshmallowPermissions.requestPermissionForFineLocation();
+            }
         }
+        else
+            Toast.makeText(getActivity(), "Check network connection.", Toast.LENGTH_SHORT).show();
 
     }
 
