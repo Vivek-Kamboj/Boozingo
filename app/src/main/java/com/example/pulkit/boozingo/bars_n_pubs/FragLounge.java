@@ -102,21 +102,13 @@ public class FragLounge extends Fragment implements Adapter_lounge.ItemClickCall
             JSONObject object = lounges.getJSONObject(i);
             String pic;
 
-
             Gson gson = new Gson();
             smallDetail = gson.fromJson(object.toString(), smallLoungeDetails.class);
-            pic = object.getString("lounge_images");
-
-            int comma = pic.indexOf(',');
-            if(comma == -1)
-                comma = pic.length()-1;
-
-            pic = pic.substring(2,comma-1);
-            pic = pic.replaceAll("\\\\", "");
+            pic = object.getString("lounge_icon");
 
             pic = url +"/storage/" +pic;
 
-            smallDetail.setLounge_pic(pic);
+            smallDetail.setLounge_icon(pic);
             mDataset.add(smallDetail);
             adapter.notifyDataSetChanged();
         }

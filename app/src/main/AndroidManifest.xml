@@ -4,54 +4,69 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+
     <application
         android:name=".Boozingo"
         android:allowBackup="true"
         android:hardwareAccelerated="false"
-        android:icon="@mipmap/launcher_icon"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".splash_screen.SplashScreen2"></activity>
-        <activity android:name=".disclaimer.disclaimer" />
-        <activity android:name=".disclaimer.terms_n_conditions" />
-        <activity
-            android:name=".cities.Cities"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".cities.MainSearch"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".bars_n_pubs.bars_n_pubs"
-            android:theme="@style/BarsPubs"
-            android:windowSoftInputMode="stateHidden" />
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
-
-        <activity android:name=".details.detailsActivityBar"></activity>
-        <activity android:name=".details.detailsActivityPub" />
-        <activity android:name=".details.detailsActivityShop" />
-        <activity android:name=".details.detailsActivityLounge" />
-        <activity android:name=".details.detailsActivityClub" />
         <activity
             android:name=".splash"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".splash_screen.SplashScreen"></activity>
+
+        <activity android:name=".splash_screen.SplashScreen">
+
+        </activity>
+
+        <activity android:name=".disclaimer.disclaimer" />
+        <activity android:name=".disclaimer.terms_n_conditions" />
+
+        <activity
+            android:name=".cities.Cities"
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
+
+        <activity
+            android:name=".cities.MainSearch"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name=".bars_n_pubs.bars_n_pubs"
+            android:theme="@style/BarsPubs"
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
+
+        <activity android:name=".details.detailsActivityBar" />
+        <activity android:name=".details.detailsActivityPub" />
+        <activity android:name=".details.detailsActivityBeer_shop" />
+        <activity android:name=".details.detailsActivityLounge" />
+        <activity android:name=".details.detailsActivityNight_club" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
     </application>
 
 </manifest>

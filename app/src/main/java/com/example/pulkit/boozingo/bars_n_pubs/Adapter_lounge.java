@@ -68,7 +68,7 @@ public class Adapter_lounge extends RecyclerView.Adapter<Adapter_lounge.RecHolde
         });
 
         Picasso.with(c)
-                .load(list.get(position).getLounge_pic())
+                .load(list.get(position).getLounge_icon())
                 .fit()
                 .into(holder.image);
     }

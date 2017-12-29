@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
+import android.widget.Toast;
 
 public class DBHelper {
 
@@ -22,7 +24,7 @@ public class DBHelper {
 
     private static final String CREATE_IMAGES_TABLE =
             "CREATE TABLE " + IMAGES_TABLE + " (" +
-                    IMAGE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    IMAGE_ID + " STRING PRIMARY KEY, "
                     + IMAGE + " BLOB NOT NULL );";
 
 
@@ -33,6 +35,7 @@ public class DBHelper {
 
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_IMAGES_TABLE);
+
         }
 
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -60,18 +63,27 @@ public class DBHelper {
     }
 
     // Insert the image to the Sqlite DB
-    public void insertImage(byte[] imageBytes) {
-        ContentValues cv = new ContentValues();
-        cv.put(IMAGE, imageBytes);
-        mDb.insert(IMAGES_TABLE, null, cv);
+    public void insertImage(byte[] imageBytes, String id) {
+        if(!TextUtils.isEmpty(id)) {
+            ContentValues cv = new ContentValues();
+            cv.put(IMAGE_ID, id);
+            cv.put(IMAGE, imageBytes);
+            long x = mDb.insert(IMAGES_TABLE, null, cv);
+
+        }
+        else
+            Toast.makeText(mContext, "Can't save empty entry.", Toast.LENGTH_SHORT).show();
     }
 
     // Get the image from SQLite DB
     // We will just get the last image we just saved for convenience...
-    public byte[] retreiveImageFromDB() {
-        Cursor cur = mDb.query(true, IMAGES_TABLE, new String[]{IMAGE,},
+
+    public byte[] retreiveImageFromDB(String id) {
+      /*  Cursor cur = mDb.query(true, IMAGES_TABLE, new String[]{IMAGE,},
                 null, null, null, null,
-                IMAGE_ID + " DESC", "1");
+                IMAGE_ID + " DESC", "1");*/
+        Cursor cur = mDb.rawQuery("SELECT image FROM ImagesTable where id=?", new String[] {id});
+
         if (cur.moveToFirst()) {
             byte[] blob = cur.getBlob(cur.getColumnIndex(IMAGE));
             cur.close();

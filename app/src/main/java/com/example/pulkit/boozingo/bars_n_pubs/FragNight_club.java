@@ -13,9 +13,8 @@ import android.widget.Toast;
 
 import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
-import com.example.pulkit.boozingo.bars_n_pubs.Adapter_shop;
-import com.example.pulkit.boozingo.details.detailsActivityShop;
-import com.example.pulkit.boozingo.model.smallShopDetails;
+import com.example.pulkit.boozingo.details.detailsActivityNight_club;
+import com.example.pulkit.boozingo.model.smallNight_clubDetails;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -25,19 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.pulkit.boozingo.Boozingo.url;
+import static com.example.pulkit.boozingo.bars_n_pubs.bars_n_pubs.clubs;
 import static com.example.pulkit.boozingo.bars_n_pubs.bars_n_pubs.internetStatus;
-import static com.example.pulkit.boozingo.bars_n_pubs.bars_n_pubs.shops;
 
-public class FragShop extends Fragment implements Adapter_shop.ItemClickCallback {
+public class FragNight_club extends Fragment implements Adapter_club.ItemClickCallback {
 
-    public static List<smallShopDetails> mDataset = new ArrayList<>();
+    public static List<smallNight_clubDetails> mDataset = new ArrayList<>();
     RecyclerView recview;
-    Adapter_shop adapter;
-    smallShopDetails smallDetail;
-
+    Adapter_club adapter;
+    smallNight_clubDetails smallDetail;
     private MarshmallowPermissions marshmallowPermissions;
 
-    public FragShop() {
+    public FragNight_club() {
         // Required empty public constructor
     }
 
@@ -60,7 +58,7 @@ public class FragShop extends Fragment implements Adapter_shop.ItemClickCallback
         recview = (RecyclerView) rootView.findViewById(R.id.recycler);
         recview.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        adapter = new Adapter_shop(mDataset, getContext());
+        adapter = new Adapter_club(mDataset, getContext());
         recview.setAdapter(adapter);
         adapter.setItemClickCallback(this);
 
@@ -77,10 +75,10 @@ public class FragShop extends Fragment implements Adapter_shop.ItemClickCallback
     @Override
     public void onItemClick(int p) {
         if(internetStatus.equals(getString(R.string.net))) {
-            Intent i = new Intent(getActivity(), detailsActivityShop.class);
-            i.putExtra("type","shop");
-            i.putExtra("id",mDataset.get(p).getId());
 
+            Intent i = new Intent(getActivity(), detailsActivityNight_club.class);
+            i.putExtra("type","club");
+            i.putExtra("id",mDataset.get(p).getId());
 
 
             if (!marshmallowPermissions.checkPermissionForFineLocation())
@@ -100,25 +98,19 @@ public class FragShop extends Fragment implements Adapter_shop.ItemClickCallback
 
     private void initDataset() throws JSONException {
 
-        for (int i=0; i < shops.length(); i++) {
-            JSONObject object = shops.getJSONObject(i);
+        for (int i=0; i < clubs.length(); i++) {
+            JSONObject object = clubs.getJSONObject(i);
             String pic;
 
 
             Gson gson = new Gson();
-            smallDetail = gson.fromJson(object.toString(), smallShopDetails.class);
-            pic = object.getString("beer_shop_images");
+            smallDetail = gson.fromJson(object.toString(), smallNight_clubDetails.class);
+            pic = object.getString("night_club_icon");
 
-            int comma = pic.indexOf(',');
-            if(comma == -1)
-                comma = pic.length()-1;
-
-            pic = pic.substring(2,comma-1);
-            pic = pic.replaceAll("\\\\", "");
 
             pic = url +"/storage/" +pic;
 
-            smallDetail.setBeer_shop_pic(pic);
+            smallDetail.setNight_club_icon(pic);
             mDataset.add(smallDetail);
             adapter.notifyDataSetChanged();
         }

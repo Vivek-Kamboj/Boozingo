@@ -2,6 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:map="http://schemas.android.com/tools"
     android:scrollbars="none"
     android:id="@+id/scroll">
 
@@ -15,7 +16,6 @@
             android:id="@+id/layout"
             android:layout_width="match_parent"
             android:clipToPadding="false"
-            android:foreground="@drawable/ripple"
             app:layout_heightPercent="40%">
 
             <ImageButton
@@ -182,8 +182,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="10dp"
-                android:fontFamily="cursive"
-                android:text="Speciality"
+                android:text="Speciality : "
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -199,8 +198,7 @@
                 android:gravity="left"
                 android:text=""
                 android:textColor="#424242"
-                android:textSize="15sp"
-                android:typeface="serif"/>
+                android:textSize="15sp"/>
 
             <TextView
                 android:id="@+id/show"
@@ -262,7 +260,8 @@
                 android:layout_width="match_parent"
                 android:layout_below="@+id/line0"
                 android:orientation="horizontal"
-                app:layout_heightPercent="85%" />
+                app:layout_heightPercent="85%"
+                map:zOrderOnTop="true"/>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -313,7 +312,7 @@
             android:text="@string/supreme"
             android:textColor="#FF4081"
             android:textSize="10sp"
-            app:layout_heightPercent="4%" />
+            android:layout_height="14dp" />
 
     </android.support.percent.PercentRelativeLayout>
 </ScrollView>

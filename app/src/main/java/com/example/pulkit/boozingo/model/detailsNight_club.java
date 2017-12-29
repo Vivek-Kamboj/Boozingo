@@ -1,14 +1,14 @@
 package com.example.pulkit.boozingo.model;
 
-public class detailsClub {
+public class detailsNight_club {
 
     String night_club_name,night_club_address,night_club_details,night_club_cost,night_club_geolocation,night_club_time,night_club_not_working_day,
             night_club_contact,night_club_booze_served,night_club_food,night_club_sitting_facility,night_club_music,night_club_payment,night_club_ac,night_club_images;
 
-    public detailsClub() {
+    public detailsNight_club() {
     }
 
-    public detailsClub(String night_club_address, String night_club_booze_served, String night_club_contact, String night_club_cost, String night_club_details, String night_club_food, String night_club_geolocation, String night_club_images, String night_club_music, String night_club_name, String night_club_not_working_day, String night_club_payment, String night_club_sitting_facility, String night_club_time,String night_club_ac) {
+    public detailsNight_club(String night_club_address, String night_club_booze_served, String night_club_contact, String night_club_cost, String night_club_details, String night_club_food, String night_club_geolocation, String night_club_images, String night_club_music, String night_club_name, String night_club_not_working_day, String night_club_payment, String night_club_sitting_facility, String night_club_time,String night_club_ac) {
         this.night_club_address = night_club_address;
         this.night_club_booze_served = night_club_booze_served;
         this.night_club_contact = night_club_contact;

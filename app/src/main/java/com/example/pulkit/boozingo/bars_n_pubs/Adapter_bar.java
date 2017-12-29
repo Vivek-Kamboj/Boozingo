@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,19 +74,22 @@ public class Adapter_bar extends RecyclerView.Adapter<Adapter_bar.RecHolder> {
                 if (marshmallowPermissions.checkPermissionForCall()) {
 
                     Uri call = Uri.parse("tel:" + list.get(position).getBar_contact());
-                    Intent surf = new Intent(Intent.ACTION_CALL, call);
-                    c.startActivity(surf);
+                    if(!TextUtils.isEmpty(list.get(position).getBar_contact())){
+                        Intent surf = new Intent(Intent.ACTION_CALL, call);
+                        c.startActivity(surf);
+                    }
+                    else
+                        Toast.makeText(c, "Contact not available.", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(c, "Give Location Permission", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(c, "Give Call Permission", Toast.LENGTH_SHORT).show();
                     marshmallowPermissions.requestPermissionForCall();
                 }
             }
         });
 
         Picasso.with(c)
-  //              .load(list.get(position).getBar_pic())
-                .load(R.raw.bars)
+                .load(list.get(position).getBar_icon())
                 .fit()
                 .into(holder.image);
     }

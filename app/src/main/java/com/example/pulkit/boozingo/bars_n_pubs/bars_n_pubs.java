@@ -5,7 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -32,8 +35,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.pulkit.boozingo.R;
+import com.example.pulkit.boozingo.Session;
+import com.example.pulkit.boozingo.helper.DBHelper;
 import com.example.pulkit.boozingo.helper.HttpHandler;
+import com.example.pulkit.boozingo.helper.ImageUtils;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -67,6 +78,9 @@ public class bars_n_pubs extends AppCompatActivity {
     private boolean internetConnected = true;
     public static String internetStatus;
 
+    DBHelper dbHelper;
+    byte[] bytes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +94,11 @@ public class bars_n_pubs extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         city = getIntent().getStringExtra("city");
+  //      city = "lucknow";
         internetStatus = getString(R.string.net);
+
+        //initialise database
+        dbHelper = new DBHelper(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         toolbar.setTitleTextColor(getResources().getColor(R.color.transparent));
@@ -95,12 +113,12 @@ public class bars_n_pubs extends AppCompatActivity {
 
         pDialog = new ProgressDialog(bars_n_pubs.this);
         pDialog.setMessage("Please wait...");
-        pDialog.setCancelable(false);
+        pDialog.setCancelable(true);
         pDialog.show();
 
 
         setupViewPager(viewPager);
- //       tabLayout.setupWithViewPager(viewPager);
+        //       tabLayout.setupWithViewPager(viewPager);
 
         new net().execute();
 
@@ -111,8 +129,8 @@ public class bars_n_pubs extends AppCompatActivity {
         adapter.addFragment(new FragBar(), "Bars");
         adapter.addFragment(new FragPub(), "Pubs");
         adapter.addFragment(new FragLounge(), "Lounges");
-        adapter.addFragment(new FragShop(), "Shops");
-        adapter.addFragment(new FragClub(), "Night Club");
+        adapter.addFragment(new FragBeer_shop(), "Beer_shops");
+        adapter.addFragment(new FragNight_club(), "Night Night_club");
         viewPager.setAdapter(adapter);
     }
 
@@ -160,7 +178,7 @@ public class bars_n_pubs extends AppCompatActivity {
                 try {
                     JSONObject object = new JSONObject(jsonStr);
                     JSONObject data = object.getJSONObject("city_detail");
-                    final String pic_url = url + "/storage/"+ data.getString("city_image");
+                    final String pic_url = url + "/storage/" + data.getString("city_image");
                     bars = object.getJSONArray("bars");
 
                     //change pubs ro rest
@@ -179,20 +197,34 @@ public class bars_n_pubs extends AppCompatActivity {
                             setupViewPager(viewPager);
                             tabLayout.setupWithViewPager(viewPager);
 
-                            Picasso.with(bars_n_pubs.this)
-           //                         .load(pic_url)
-                                    .load(R.raw.lucknow)
-                                    .fit()
-                                    .into(city_image);
+                            bytes = loadImageFromDB(city + "_full");
+                            if (bytes != null) {
+                                city_image.setImageBitmap(ImageUtils.getImage(bytes));
+                                pDialog.dismiss();
+                            } else {
 
-          //                  city_image.setImageDrawable(getDrawable(R.raw.lucknow));
+                                RequestOptions options = new RequestOptions()
+                                        .centerInside()
+                                        .priority(Priority.HIGH);
 
-                            pDialog.dismiss();
+                                Glide.with(bars_n_pubs.this)
+                                        .load(pic_url)
+                                        .apply(options)
+                                        .into(new SimpleTarget<Drawable>() {
+                                            @Override
+                                            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                                Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                                                city_image.setImageBitmap(bitmap);
+                                                saveImageInDB(bitmap, city + "_full");
+                                                pDialog.dismiss();
+                                            }
+                                        });
+                            }
+
                         }
                     });
 
-                }  catch (final JSONException e)
-                {
+                } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
                     runOnUiThread(new Runnable() {
                         @Override
@@ -219,11 +251,35 @@ public class bars_n_pubs extends AppCompatActivity {
                 });
             }
 
-                return null;
+            return null;
         }
     }
 
 
+    // for database images
+    void saveImageInDB(Bitmap bitmap, String id) {
+
+        dbHelper.open();
+        byte[] inputData = ImageUtils.getImageBytes(bitmap);
+        dbHelper.insertImage(inputData, id);
+        dbHelper.close();
+
+    }
+
+    byte[] loadImageFromDB(String id) {
+
+        byte[] bytes = null;
+        try {
+            dbHelper.open();
+            bytes = dbHelper.retreiveImageFromDB(id);
+            dbHelper.close();
+        } catch (Exception e) {
+            Log.e(TAG, "<loadImageFromDB> Error : " + e.getLocalizedMessage());
+            dbHelper.close();
+        }
+
+        return bytes;
+    }
 
 
     // functions for snack bar

@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.pulkit.boozingo.R;
-import com.example.pulkit.boozingo.model.smallShopDetails;
+import com.example.pulkit.boozingo.model.smallBeer_shopDetails;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -33,10 +33,10 @@ public class Adapter_shop extends RecyclerView.Adapter<Adapter_shop.RecHolder> {
 
 
     //adapter
-    public List<smallShopDetails> list;
+    public List<smallBeer_shopDetails> list;
     public LayoutInflater layoutInflater;
 
-    Adapter_shop(List<smallShopDetails> list, Context c) {
+    Adapter_shop(List<smallBeer_shopDetails> list, Context c) {
         this.list = list;
         this.c = c;
         this.layoutInflater = LayoutInflater.from(c);
@@ -68,7 +68,7 @@ public class Adapter_shop extends RecyclerView.Adapter<Adapter_shop.RecHolder> {
         });
 
         Picasso.with(c)
-                .load(list.get(position).getBeer_shop_pic())
+                .load(list.get(position).getBeer_shop_icon())
                 .fit()
                 .into(holder.image);
     }
@@ -79,7 +79,7 @@ public class Adapter_shop extends RecyclerView.Adapter<Adapter_shop.RecHolder> {
     }
 
 
-    public void setItem(smallShopDetails item, int p) {
+    public void setItem(smallBeer_shopDetails item, int p) {
         this.list.set(p, item);
     }
 

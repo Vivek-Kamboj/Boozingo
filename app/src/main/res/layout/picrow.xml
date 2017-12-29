@@ -3,15 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/container"
-    android:src="@drawable/ripple">
+    android:id="@+id/container">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
         android:background="#cfd8dc"
-        android:src="@drawable/ripple"
         android:id="@+id/pic"/>
 
 
@@ -19,7 +17,6 @@
         android:id="@+id/trans"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/ripple"
         android:elevation="2dp"
         android:clickable="true"
         android:focusable="true"

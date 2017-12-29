@@ -1,15 +1,15 @@
 package com.example.pulkit.boozingo.model;
 
-public class smallShopDetails {
+public class smallBeer_shopDetails {
 
     String id="", beer_shop_name="", beer_shop_address="", beer_shop_cost="",
-            beer_shop_time="", beer_shop_not_working_day="", beer_shop_contact="",beer_shop_pic="";
+            beer_shop_time="", beer_shop_not_working_day="", beer_shop_contact="",beer_shop_icon="";
 
-    smallShopDetails() {
+    smallBeer_shopDetails() {
 
     }
 
-    public smallShopDetails(String beer_shop_address, String beer_shop_contact, String beer_shop_cost, String beer_shop_name, String beer_shop_not_working_day, String beer_shop_time, String id, String pic) {
+    public smallBeer_shopDetails(String beer_shop_address, String beer_shop_contact, String beer_shop_cost, String beer_shop_name, String beer_shop_not_working_day, String beer_shop_time, String id, String icon) {
         this.beer_shop_address = beer_shop_address;
         this.beer_shop_contact = beer_shop_contact;
         this.beer_shop_cost = beer_shop_cost;
@@ -17,7 +17,7 @@ public class smallShopDetails {
         this.beer_shop_not_working_day = beer_shop_not_working_day;
         this.beer_shop_time = beer_shop_time;
         this.id = id;
-        this.beer_shop_pic = pic;
+        this.beer_shop_icon = icon;
     }
 
     public String getBeer_shop_address() {
@@ -40,8 +40,8 @@ public class smallShopDetails {
         return beer_shop_not_working_day.trim();
     }
 
-    public String getBeer_shop_pic() {
-        return beer_shop_pic.trim();
+    public String getBeer_shop_icon() {
+        return beer_shop_icon.trim();
     }
 
     public String getBeer_shop_time() {
@@ -52,7 +52,7 @@ public class smallShopDetails {
         return id.trim();
     }
 
-    public void setBeer_shop_pic(String beer_shop_pic) {
-        this.beer_shop_pic = beer_shop_pic;
+    public void setBeer_shop_icon(String beer_shop_icon) {
+        this.beer_shop_icon = beer_shop_icon;
     }
 }

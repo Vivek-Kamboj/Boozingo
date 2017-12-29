@@ -109,19 +109,12 @@ public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
 
             Gson gson = new Gson();
             smallDetail = gson.fromJson(object.toString(), smallPubDetails.class);
-            pic = object.getString("pub_images");
-
-            int comma = pic.indexOf(',');
-            if(comma == -1)
-                comma = pic.length()-1;
-
-            pic = pic.substring(2,comma-1);
-            pic = pic.replaceAll("\\\\", "");
+            pic = object.getString("pub_icon");
 
             pic = url +"/storage/" +pic;
 
 
-            smallDetail.setPub_pic(pic);
+            smallDetail.setPub_icon(pic);
             mDataset.add(smallDetail);
             adapter.notifyDataSetChanged();
         }

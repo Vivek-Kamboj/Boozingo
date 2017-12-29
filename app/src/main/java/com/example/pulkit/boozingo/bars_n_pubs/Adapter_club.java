@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
-import com.example.pulkit.boozingo.model.smallClubDetails;
+import com.example.pulkit.boozingo.model.smallNight_clubDetails;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -40,10 +40,10 @@ public class Adapter_club extends RecyclerView.Adapter<Adapter_club.RecHolder> {
 
 
     //adapter
-    public List<smallClubDetails> list;
+    public List<smallNight_clubDetails> list;
     public LayoutInflater layoutInflater;
 
-    Adapter_club(List<smallClubDetails> list, Context c) {
+    Adapter_club(List<smallNight_clubDetails> list, Context c) {
         this.list = list;
         this.c = c;
         this.layoutInflater = LayoutInflater.from(c);
@@ -87,7 +87,7 @@ public class Adapter_club extends RecyclerView.Adapter<Adapter_club.RecHolder> {
         });
 
         Picasso.with(c)
-                .load(list.get(position).getNight_club_pic())
+                .load(list.get(position).getNight_club_icon())
                 .fit()
                 .into(holder.image);
     }
@@ -98,7 +98,7 @@ public class Adapter_club extends RecyclerView.Adapter<Adapter_club.RecHolder> {
     }
 
 
-    public void setItem(smallClubDetails item, int p) {
+    public void setItem(smallNight_clubDetails item, int p) {
         this.list.set(p, item);
     }
 

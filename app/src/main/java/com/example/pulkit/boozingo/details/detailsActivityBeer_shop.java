@@ -1,5 +1,6 @@
 package com.example.pulkit.boozingo.details;
 
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,9 +28,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,15 +41,18 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.pulkit.boozingo.LocationUtil.LocationFinder;
 import com.example.pulkit.boozingo.LocationUtil.LocationHelper;
+import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.helper.HttpHandler;
-import com.example.pulkit.boozingo.model.detailsClub;
+import com.example.pulkit.boozingo.model.detailsBar;
+import com.example.pulkit.boozingo.model.detailsBeer_shop;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
@@ -55,45 +63,55 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
+import java.util.List;
 
 import static com.example.pulkit.boozingo.Boozingo.url;
 
-public class detailsActivityClub extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
+public class detailsActivityBeer_shop extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     ViewPager viewPager;
     ImageButton back;
-    String TAG = "TAG", id = "2", text, geo_location, latitudeClub, longitudeClub, image;
-    String images[]= new String[6];
+    String TAG = "TAG", id = "2", text, geo_location, latitudeBeer_shop, longitudeBeer_shop, image, specs;
+    List<String> images = new ArrayList<>();
     picPagerAdapter adapter;
     LinearLayout icons;
     TextView show, speciality, name, type, address, timing;
-    Button locator;
-    List<String> list = new ArrayList<>();
     ImageView transparent, dot1, dot2, dot3, dot4, dot5, dot6;
     ScrollView scroll;
-    detailsClub details;
+    detailsBeer_shop details;
     ProgressDialog pDialog;
     SupportMapFragment mapFragment;
 
-    PercentRelativeLayout container;
+    RelativeLayout container;
     public static int TYPE_WIFI = 1;
     public static int TYPE_MOBILE = 2;
     public static int TYPE_NOT_CONNECTED = 0;
     private Snackbar snackbar;
     private boolean internetConnected = true;
-    
+
     private Location mLastLocation;
     double latitude;
     double longitude;
     LocationHelper locationHelper;
+    private MarshmallowPermissions marshmallowPermissions;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    FrameLayout f1;
+    LinearLayout l1;
+    ImageView im1;
+    HorizontalScrollView hsv;
+    RelativeLayout r1;
+    View frag;
+    Button locator;
+    int height, width;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_details);
+        setContentView(R.layout.temp5);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // location initialise
@@ -101,6 +119,10 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
         locationHelper.checkpermission();
 
         id = getIntent().getStringExtra("id");
+        //       id = "2";
+        marshmallowPermissions = new MarshmallowPermissions(this);
+        height = getWindowManager().getDefaultDisplay().getHeight();
+        width = getWindowManager().getDefaultDisplay().getWidth();
 
         viewPager = (ViewPager) findViewById(R.id.pager);
 
@@ -112,7 +134,6 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
         dot5 = (ImageView) findViewById(R.id.dot5);
         dot6 = (ImageView) findViewById(R.id.dot6);
 
-        locator = (Button) findViewById(R.id.locator);
         show = (TextView) findViewById(R.id.show);
         speciality = (TextView) findViewById(R.id.speciality);
         name = (TextView) findViewById(R.id.name);
@@ -120,29 +141,19 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
         timing = (TextView) findViewById(R.id.timings);
         address = (TextView) findViewById(R.id.address);
         icons = (LinearLayout) findViewById(R.id.icons);
-        transparent = (ImageView) findViewById(R.id.imagetrans);
-        container = (PercentRelativeLayout) findViewById(R.id.container);
+        container = (RelativeLayout) findViewById(R.id.container);
         scroll = (ScrollView) findViewById(R.id.scroll);
-
+        transparent = (ImageView)findViewById(R.id.imagetrans);
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
-        pDialog = new ProgressDialog(detailsActivityClub.this);
+        pDialog = new ProgressDialog(detailsActivityBeer_shop.this);
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(true);
         pDialog.show();
 
-        list.add("a");
-        list.add("a");
-        list.add("a");
-        list.add("a");
-        list.add("a");
-        list.add("a");
-
-
         if (locationHelper.checkPlayServices()) {
             locationHelper.buildGoogleApiClient();
-
         }
 
         new Handler().postDelayed(new Runnable() {
@@ -158,7 +169,29 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
         }, 1000);
 
 
-        dot1.setImageDrawable(getDrawable(R.drawable.ring));
+        f1 = (FrameLayout) findViewById(R.id.layout);
+        l1 = (LinearLayout) findViewById(R.id.dots);
+        im1 = (ImageView) findViewById(R.id.booze);
+        hsv = (HorizontalScrollView) findViewById(R.id.icon_holder);
+        r1 = (RelativeLayout) findViewById(R.id.ll4);
+        frag = findViewById(R.id.map);
+        locator = (Button) findViewById(R.id.locator);
+
+
+        f1.getLayoutParams().height = (int) (height * 0.40);
+        l1.getLayoutParams().height = (int) (height * 0.02);
+        im1.getLayoutParams().height = (int) (height * 0.05);
+        hsv.getLayoutParams().height = (int) (height * 0.12);
+        r1.getLayoutParams().height = (int) (height * 0.35);
+        frag.getLayoutParams().height = (int) (height * 0.35 * 0.85);
+        locator.getLayoutParams().height = (int) (height * 0.35 * 0.25);
+
+        l1.getLayoutParams().width = (int) (width * 0.25);
+        im1.getLayoutParams().width = (int) (width * 0.30);
+        locator.getLayoutParams().width = (int) (width * 0.15);
+
+
+        dot1.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ring));
 
         text = "It's not what enters men's mouth that is evil, it's what comes out of their mouths that is - Be Responsible it's not what enters men's mouth that is evil, it's what comes out of their mouths that is - Be Responsible it's not what enters men's mouth that is evil, it's what comes out of their mouths that is - Be Responsible";
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -171,34 +204,34 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        dot1.setImageDrawable(getDrawable(R.drawable.ring));
-                        dot2.setImageDrawable(getDrawable(R.drawable.dot));
+                        dot1.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.ring));
+                        dot2.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.dot));
                         break;
 
                     case 1:
-                        dot1.setImageDrawable(getDrawable(R.drawable.dot));
-                        dot2.setImageDrawable(getDrawable(R.drawable.ring));
-                        dot3.setImageDrawable(getDrawable(R.drawable.dot));
+                        dot1.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.dot));
+                        dot2.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.ring));
+                        dot3.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.dot));
                         break;
                     case 2:
-                        dot2.setImageDrawable(getDrawable(R.drawable.dot));
-                        dot3.setImageDrawable(getDrawable(R.drawable.ring));
-                        dot4.setImageDrawable(getDrawable(R.drawable.dot));
+                        dot2.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.dot));
+                        dot3.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.ring));
+                        //            dot4.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.dot));
                         break;
-                    case 3:
-                        dot3.setImageDrawable(getDrawable(R.drawable.dot));
-                        dot4.setImageDrawable(getDrawable(R.drawable.ring));
-                        dot5.setImageDrawable(getDrawable(R.drawable.dot));
+                   /* case 3:
+                        dot3.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.dot));
+                        dot4.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.ring));
+                        dot5.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.dot));
                         break;
                     case 4:
-                        dot4.setImageDrawable(getDrawable(R.drawable.dot));
-                        dot5.setImageDrawable(getDrawable(R.drawable.ring));
-                        dot6.setImageDrawable(getDrawable(R.drawable.dot));
+                        dot4.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.dot));
+                        dot5.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.ring));
+                        dot6.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.dot));
                         break;
                     case 5:
-                        dot5.setImageDrawable(getDrawable(R.drawable.dot));
-                        dot6.setImageDrawable(getDrawable(R.drawable.ring));
-                        break;
+                        dot5.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.dot));
+                        dot6.setImageDrawable(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.ring));
+                        break;*/
                 }
             }
 
@@ -208,10 +241,7 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
             }
         });
 
-
-        speciality.setText(text.substring(0, 100) + "...");
-
-        show.setOnClickListener(new View.OnClickListener() {
+        /*show.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         speciality.setText(text);
@@ -219,14 +249,31 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
                                     }
                                 }
         );
+*/
 
+        show.setVisibility(View.GONE);
 
         locator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String uri = "http://maps.google.com/maps?f=d&hl=en&saddr=" + latitude + "," + longitude + "&daddr=" + latitudeClub + "," + longitudeClub;
-                Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
-                startActivity(Intent.createChooser(intent, "Select an application"));
+
+                if(marshmallowPermissions.checkPermissionForCoarseLocation() && marshmallowPermissions.checkPermissionForFineLocation()) {
+                    String uri = "http://maps.google.com/maps?f=d&hl=en&saddr=" + latitude + "," + longitude + "&daddr=" + latitudeBeer_shop + "," + longitudeBeer_shop;
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
+                    startActivity(Intent.createChooser(intent, "Select an application"));
+                }
+                else{
+
+                    Toast.makeText(detailsActivityBeer_shop.this, "Please allow us to use locations.", Toast.LENGTH_SHORT).show();
+/*
+
+                    if (!marshmallowPermissions.checkPermissionForCoarseLocation())
+                        marshmallowPermissions.requestPermissionForCoarseLocation();
+*/
+
+                    if (!marshmallowPermissions.checkPermissionForFineLocation())
+                        marshmallowPermissions.requestPermissionForFineLocation();
+                }
             }
         });
 
@@ -257,6 +304,7 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
             }
         });
 
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -271,11 +319,24 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap map) {
         map.addMarker(new MarkerOptions()
-                .position(new LatLng(Float.parseFloat(latitudeClub), Float.parseFloat(longitudeClub)))
-                .title("Marker"));
+                .position(new LatLng(Float.parseFloat(latitudeBeer_shop), Float.parseFloat(longitudeBeer_shop)))
+                .title(getIntent().getStringExtra("type").toUpperCase()));
 
-        map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(Float.parseFloat(latitudeClub), Float.parseFloat(longitudeClub))));
-        map.animateCamera(CameraUpdateFactory.zoomTo(14));
+  /*      map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(Float.parseFloat(latitudeBeer_shop), Float.parseFloat(longitudeBeer_shop))));
+  //      map.animateCamera(CameraUpdateFactory.zoomTo(14));
+
+        map.animateCamera(CameraUpdateFactory.zoomIn());
+        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+        map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+        map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(Float.parseFloat(latitudeBeer_shop), Float.parseFloat(longitudeBeer_shop))));
+*/
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(Float.parseFloat(latitudeBeer_shop), Float.parseFloat(longitudeBeer_shop)))
+                .zoom(15)
+                .build();
+        //Zoom in and animate the camera.
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
     }
 
 
@@ -285,7 +346,7 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
             HttpHandler sh = new HttpHandler();
 
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall(url + "/night_club/" + id);
+            String jsonStr = sh.makeServiceCall(url + "/beer_shop/" + id);
 
 
             Log.e(TAG, "Response from url: " + jsonStr);
@@ -293,57 +354,83 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
             if (jsonStr != null) {
                 try {
                     final JSONObject object = new JSONObject(jsonStr);
-                    JSONArray array = object.getJSONArray("night_club");
+                    JSONArray array = object.getJSONArray("beer_shop");
 
                     JSONObject temp = array.getJSONObject(0);
                     String userJson = temp.toString();
 
                     Gson gson = new Gson();
 
-                    details = new detailsClub();
-                    details = gson.fromJson(userJson, detailsClub.class);
+                    details = new detailsBeer_shop();
+                    details = gson.fromJson(userJson, detailsBeer_shop.class);
 
                     runOnUiThread(new Runnable() {
                         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                         @Override
                         public void run() {
 
-                            name.setText(details.getNight_club_name());
-                            address.setText(details.getNight_club_address());
+                            name.setText(details.getBeer_shop_name());
+                            address.setText(details.getBeer_shop_address());
                             type.setText("(" + getIntent().getStringExtra("type") + ")");
-                            timing.setText(details.getNight_club_time());
-                            geo_location = details.getNight_club_geolocation();
+                            timing.setText(details.getBeer_shop_time());
+                            geo_location = details.getBeer_shop_geolocation();
+                            specs = details.getBeer_shop_details();
 
 
                             int comma = geo_location.indexOf('-');
-                            latitudeClub = geo_location.substring(0, comma);
-                            longitudeClub = geo_location.substring(comma + 1);
+                            latitudeBeer_shop = geo_location.substring(0, comma);
+                            longitudeBeer_shop = geo_location.substring(comma + 1);
 
-                            mapFragment.getMapAsync(detailsActivityClub.this);
+                            mapFragment.getMapAsync(detailsActivityBeer_shop.this);
 
 
                             try {
-                                image = object.getJSONArray("night_club_images").getJSONObject(0).getString("night_club_images");
+                                image = object.getJSONArray("beer_shop_images").getJSONObject(0).getString("beer_shop_images");
                                 image = image.substring(2, image.length() - 2);
                                 image = image.replaceAll("\\\\", "");
 
-                                for(int i=0,x=0;i<image.length() && x<6;x++){
-                                    int j = image.indexOf(',',i);
-                                    if(j==-1) {
-                                        images[x] = url + "/storage/" +  image.substring(i, image.length());
+                                for (int i = 0 ; i < image.length(); ) {
+                                    int j = image.indexOf(',', i);
+                                    if (j == -1) {
+                                        images.add(url + "/storage/" + image.substring(i, image.length()));
                                         break;
-                                    }
-                                    else
-                                        images[x] = url + "/storage/" +  image.substring(i,j-1);
-                                    i=j+2;
+                                    } else
+                                        images.add(url + "/storage/" + image.substring(i, j - 1));
+                                    i = j + 2;
+
                                 }
+
+                                //to randomise pics
+                                Collections.shuffle(images);
+
+                                //to select only 3 pics
+                                images =  images.subList(0,3);
+
+
+                                adapter = new picPagerAdapter(detailsActivityBeer_shop.this, images);
+                                viewPager.setAdapter(adapter);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
-                            adapter = new picPagerAdapter(detailsActivityClub.this, images);
-                            viewPager.setAdapter(adapter);
+
+
+                            // for speciality
+                            String y;
+                            for(int i=0;i<specs.length();){
+                                int x = specs.indexOf('/',i);
+                                if(x<specs.length() && x!=-1) {
+                                    y = speciality.getText() + "\u25CF " + specs.substring(i, x) + "\n";
+                                    speciality.setText(y);
+                                    i = x+1;
+                                }
+                                else{
+                                    y = speciality.getText() + "\u25CF " + specs.substring(i, specs.length());
+                                    speciality.setText(y);
+                                    break;
+                                }
+                            }
 
                             facilities();
 
@@ -351,8 +438,7 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
                         }
                     });
 
-                } catch (final JSONException e)
-                {
+                } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
                     runOnUiThread(new Runnable() {
                         @Override
@@ -381,71 +467,70 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
 
                     }
                 });
-
             }
 
             return null;
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @SuppressWarnings("ResourceType")
     private void facilities() {
         for (int i = 0; i < 8; i++) {
             View child = View.inflate(getBaseContext(), R.layout.smallpicrow, null);
-            View x = child.findViewById(R.id.pic);
+            ImageView x = (ImageView) child.findViewById(R.id.pic);
             TextView text = (TextView) child.findViewById(R.id.text);
 
             switch (i) {
                 case 0:
-                    x.setBackground(getDrawable(R.drawable.boozingo));
+                    x.setBackground(ContextCompat.getDrawable(this, R.raw.boozingo));
                     text.setText("Boozingo");
                     icons.addView(child);
                     break;
-                case 1:
-                    if(details.getNight_club_food().equals("both") || details.getNight_club_food().equals("veg")) {
-                        x.setBackground(getDrawable(R.drawable.veg));
+                /*case 1:
+                    if (details.getBeer_shop_food().equals("both") || details.getBeer_shop_food().equals("veg")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.veg));
                         text.setText("Veg");
                         icons.addView(child);
                     }
                     break;
                 case 2:
-                    if(details.getNight_club_food().equals("both") || details.getNight_club_food().equals("nonveg")) {
-                        x.setBackground(getDrawable(R.drawable.non_veg));
+                    if (details.getBeer_shop_food().equals("both") || details.getBeer_shop_food().equals("nonveg")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.drawable.non_veg));
                         text.setText("Non Veg");
                         icons.addView(child);
                     }
                     break;
                 case 3:
-                    if(details.getNight_club_sitting_facility().equals("yes")) {
-                        x.setBackground(getDrawable(R.drawable.sitting));
+                    if (details.getBeer_shop_sitting_facility().equals("yes")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.raw.table));
                         text.setText("Sitting");
                         icons.addView(child);
                     }
                     break;
                 case 4:
-                    if(details.getNight_club_music().equals("available")) {
-                        x.setBackground(getDrawable(R.drawable.music));
+                    if (details.getBeer_shop_music().equals("available")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.raw.music_player));
                         text.setText("Music");
                         icons.addView(child);
                     }
                     break;
                 case 5:
-                    if(details.getNight_club_ac().equals("ac")) {
-                        x.setBackground(getDrawable(R.drawable.ac));
+                    if (details.getBeer_shop_ac().equals("ac")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.raw.minisplit1));
                         text.setText("Ac");
                         icons.addView(child);
                     }
-                    break;
+                    break;*/
                 case 6:
-                    if(details.getNight_club_payment().equals("cash") || details.getNight_club_payment().equals("all") ) {
-                        x.setBackground(getDrawable(R.drawable.cash));
+                    if (details.getBeer_shop_payment().equals("cash") || details.getBeer_shop_payment().equals("all")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.raw.notes));
                         text.setText("Cash");
                         icons.addView(child);
                     }
                     break;
                 case 7:
-                    if(details.getNight_club_payment().equals("credit/debit card") || details.getNight_club_payment().equals("all") ) {
-                        x.setBackground(getDrawable(R.drawable.card));
+                    if (details.getBeer_shop_payment().equals("credit/debit card") || details.getBeer_shop_payment().equals("all")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityBeer_shop.this, R.raw.credit_card));
                         text.setText("Card");
                         icons.addView(child);
                     }
@@ -486,15 +571,11 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
                                            @NonNull int[] grantResults) {
         // redirects to utils
         locationHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
     }
 
     public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
-
-
 
 
     private void registerInternetCheckReceiver() {
@@ -547,7 +628,7 @@ public class detailsActivityClub extends AppCompatActivity implements OnMapReady
             internetStatus = "Lost Internet Connection";
         }
         snackbar = Snackbar
-                .make(container, internetStatus, Snackbar.LENGTH_LONG)
+                .make(scroll, internetStatus, Snackbar.LENGTH_LONG)
                 .setAction("X", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

@@ -11,6 +11,8 @@ public class Session {
     int mode=0;
     String prefname="SESSION";
     private String is_loggedin = "is_loggedin";
+    private String is_first = "is_first";
+    private String is_app_installed = "is_app_installed";
 
     public Session(Context context)
     {
@@ -31,7 +33,27 @@ public class Session {
         return pref.getBoolean(is_loggedin,false);
     }
 
+    public void create_isfirst()
+    {
+        editor.putBoolean(is_first,false);
+        editor.commit();
+    }
 
+
+    public Boolean isfirst()
+    {
+        return pref.getBoolean(is_first,true);
+    }
+
+    public void create_isappInstalled(){
+        editor.putBoolean(is_app_installed,true);
+        editor.commit();
+    }
+
+    public Boolean isappInstalled()
+    {
+        return pref.getBoolean(is_app_installed,false);
+    }
 }
 
 

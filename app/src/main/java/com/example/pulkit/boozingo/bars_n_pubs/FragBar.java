@@ -77,7 +77,7 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
     @Override
     public void onItemClick(int p) {
 
-        if(internetStatus.equals(getString(R.string.net))) {
+        if (internetStatus.equals(getString(R.string.net))) {
             Intent i = new Intent(getActivity(), detailsActivityBar.class);
             i.putExtra("type", "bar");
             i.putExtra("id", mDataset.get(p).getId());
@@ -92,33 +92,24 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
                 Toast.makeText(getActivity(), "Give Permission", Toast.LENGTH_SHORT).show();
                 marshmallowPermissions.requestPermissionForFineLocation();
             }
-        }
-        else
+        } else
             Toast.makeText(getActivity(), "Check network connection.", Toast.LENGTH_SHORT).show();
 
     }
 
     private void initDataset() throws JSONException {
 
-        for (int i=0; i < bars.length(); i++) {
+        for (int i = 0; i < bars.length(); i++) {
             JSONObject object = bars.getJSONObject(i);
             String pic;
 
-
             Gson gson = new Gson();
             smallDetail = gson.fromJson(object.toString(), smallBarDetails.class);
-            pic = object.getString("bar_images");
 
-            int comma = pic.indexOf(',');
-            if(comma == -1)
-                comma = pic.length()-1;
+            pic = object.getString("bar_icon");
+            pic = url + "/storage/" + pic;
 
-            pic = pic.substring(2,comma-1);
-            pic = pic.replaceAll("\\\\", "");
-
-            pic = url +"/storage/" +pic;
-
-            smallDetail.setBar_pic(pic);
+            smallDetail.setBar_icon(pic);
             mDataset.add(smallDetail);
             adapter.notifyDataSetChanged();
         }

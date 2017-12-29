@@ -2,13 +2,13 @@ package com.example.pulkit.boozingo.model;
 
 public class smallPubDetails {
 
-    String id="", pub_name="", pub_address="", pub_cost="", pub_time="", pub_not_working_day="", pub_contact,pub_pic="";
+    String id="", pub_name="", pub_address="", pub_cost="", pub_time="", pub_not_working_day="", pub_contact,pub_icon="";
 
     smallPubDetails() {
 
     }
 
-    public smallPubDetails(String pub_address, String pub_contact, String pub_cost, String pub_name, String pub_not_working_day, String pub_time, String id, String pic) {
+    public smallPubDetails(String pub_address, String pub_contact, String pub_cost, String pub_name, String pub_not_working_day, String pub_time, String id, String icon) {
         this.pub_address = pub_address;
         this.pub_contact = pub_contact;
         this.pub_cost = pub_cost;
@@ -16,7 +16,7 @@ public class smallPubDetails {
         this.pub_not_working_day = pub_not_working_day;
         this.pub_time = pub_time;
         this.id = id;
-        this.pub_pic = pic;
+        this.pub_icon = icon;
     }
 
     public String getId() {
@@ -43,15 +43,15 @@ public class smallPubDetails {
         return pub_not_working_day.trim();
     }
 
-    public String getPub_pic() {
-        return pub_pic.trim();
+    public String getPub_icon() {
+        return pub_icon.trim();
     }
 
     public String getPub_time() {
         return pub_time.trim();
     }
 
-    public void setPub_pic(String pub_pic) {
-        this.pub_pic = pub_pic.trim();
+    public void setPub_icon(String pub_icon) {
+        this.pub_icon = pub_icon.trim();
     }
 }

@@ -166,8 +166,10 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
             Cities.city = fullList.get(p);
             finish();
         } else if (num == 1) {
-            Cities.city = list.get(p);
-            finish();
+            if(!list.get(p).equals("No Match Found")) {
+                Cities.city = list.get(p);
+                finish();
+            }
         }
 
         /*if(internetStatus.equals(getString(R.string.net))) {

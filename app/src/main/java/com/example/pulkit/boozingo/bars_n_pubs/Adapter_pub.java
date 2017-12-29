@@ -67,7 +67,7 @@ public class Adapter_pub extends RecyclerView.Adapter<Adapter_pub.RecHolder> {
         });
 
         Picasso.with(c)
-                .load(list.get(position).getPub_pic())
+                .load(list.get(position).getPub_icon())
                 .fit()
                 .into(holder.image);
     }

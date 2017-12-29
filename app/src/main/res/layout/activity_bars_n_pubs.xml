@@ -1,8 +1,8 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/container">
+    android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -13,10 +13,10 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="280dp"
+            android:background="#000000"
             app:contentInsetStart="0dp"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            android:background="#000000">
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <android.support.percent.PercentRelativeLayout
                 android:id="@+id/layout"
@@ -27,11 +27,12 @@
 
 
                 <ImageView
+                    android:id="@+id/city_image"
                     android:layout_width="match_parent"
                     android:layout_height="280dp"
-                    android:id="@+id/city_image"
+                    android:alpha="0.9"
                     android:background="@color/white"
-                    android:alpha="0.7"/>
+                    android:scaleType="centerCrop" />
 
                 <TextView
                     android:id="@+id/text"
@@ -46,29 +47,27 @@
                     android:textStyle="bold" />
 
 
-       <!--         <ImageView
-                    android:id="@+id/text1"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
-                    android:background="@mipmap/boozingo_icon_grey"
-                    app:layout_heightPercent="20%"
-                    app:layout_widthPercent="15%" />-->
+                <!--         <ImageView
+                             android:id="@+id/text1"
+                             android:layout_alignParentTop="true"
+                             android:layout_centerHorizontal="true"
+                             android:layout_marginTop="10dp"
+                             android:background="@mipmap/boozingo_icon_grey"
+                             app:layout_heightPercent="20%"
+                             app:layout_widthPercent="15%" />-->
 
                 <TextView
                     android:id="@+id/city_name"
                     android:layout_width="match_parent"
-                    android:gravity="center_horizontal"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text="Lucknow"
+                    android:layout_marginTop="200dp"
                     android:fontFamily="cursive"
-                    android:textStyle="bold"
+                    android:gravity="center_horizontal"
+                    android:text="Lucknow"
                     android:textColor="#FFFFFF"
                     android:textSize="40sp"
-                    android:layout_marginTop="200dp"/>
-
-
+                    android:textStyle="bold" />
 
 
             </android.support.percent.PercentRelativeLayout>

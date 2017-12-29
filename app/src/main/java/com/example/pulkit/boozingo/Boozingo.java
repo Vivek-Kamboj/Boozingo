@@ -6,12 +6,10 @@ import android.app.Application;
 
 public class Boozingo extends Application {
 
-    public  static String url = "http://35.160.58.203";
+    public static String url = "http://35.160.58.203";
     @Override
     public void onCreate() {
         super.onCreate();
-
-
 
     }
 }
