@@ -43,7 +43,7 @@ public class SplashScreen extends AppCompatActivity {
         session = new Session(getApplicationContext());
 
         isAppInstalled = session.isappInstalled();
-        if(!isAppInstalled) {
+        if(!isAppInstalled && false) {
             //  create short code
 
             Intent shortcutIntent = new Intent(getApplicationContext(),SplashScreen.class);
@@ -57,7 +57,6 @@ public class SplashScreen extends AppCompatActivity {
             getApplicationContext().sendBroadcast(intent);
 
             //Make preference false
-
             session.create_isappInstalled();
         }
 

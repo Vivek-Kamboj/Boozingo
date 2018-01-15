@@ -34,7 +34,7 @@ public class picPagerAdapter extends PagerAdapter{
         options = new RequestOptions()
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .override(400, 300)
+      //          .override(400, 300)
                 .priority(Priority.HIGH);
     }
 

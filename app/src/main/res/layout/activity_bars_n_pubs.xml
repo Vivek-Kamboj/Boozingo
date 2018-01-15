@@ -15,10 +15,10 @@
             android:layout_height="280dp"
             android:background="#000000"
             app:contentInsetStart="0dp"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="scroll"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-            <android.support.percent.PercentRelativeLayout
+            <RelativeLayout
                 android:id="@+id/layout"
                 android:layout_width="match_parent"
                 android:layout_height="280dp"
@@ -70,7 +70,7 @@
                     android:textStyle="bold" />
 
 
-            </android.support.percent.PercentRelativeLayout>
+            </RelativeLayout>
         </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout

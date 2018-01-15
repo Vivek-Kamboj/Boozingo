@@ -21,21 +21,10 @@
             android:background="#000000">
 
 
-            <ImageButton
-                android:id="@+id/back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/back_white"
-                android:elevation="2dp"
-                android:src="@drawable/back_ripple" />
-
             <ImageView
                 android:id="@+id/banner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alpha="0.85"
                 android:background="@drawable/bar"
                 android:scaleType="fitXY" />
 
@@ -54,7 +43,7 @@
             android:layout_centerHorizontal="true"
             android:text="Search your city"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <Space
@@ -178,7 +167,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Lucknow"
+                        android:text="csdsdvcdsv"
                         android:textColor="#000000"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -205,7 +194,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Delhi"
                         android:textColor="#000000"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -231,7 +219,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Bengaluru"
                         android:textColor="#000000"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -258,7 +245,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Mumbai"
                         android:textColor="#000000"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -285,7 +271,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Pune"
                         android:textColor="#000000"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -327,7 +312,7 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/cities"
             android:layout_margin="10dp"
-            android:background="@drawable/boozingopedia">
+            android:background="@drawable/boozepedia2">
 
         </ImageView>
 

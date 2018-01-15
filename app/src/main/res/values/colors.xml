@@ -7,7 +7,12 @@
     <color name="black_overlay">#66000000</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
-
     <color name="playColor">#E8EAF6</color>
+
+    <color name="material_one">#dcffccbc</color>
+    <color name="material_two">#dcf0f4c3</color>
+    <color name="material_three">#dcBBDEFB</color>
+    <color name="material_four">#dce1bee7</color>
+    <color name="materiald_four">#dcedc8</color>
 
 </resources>

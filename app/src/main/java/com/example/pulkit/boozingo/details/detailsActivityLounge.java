@@ -618,7 +618,7 @@ public class detailsActivityLounge extends AppCompatActivity implements OnMapRea
         return status;
     }
 
-    private void setSnackbarMessage(String status, boolean showBar) {
+    private void setSnackbarMessage(String status, boolean showLounge) {
         String internetStatus = "";
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
             internetStatus = "Internet Connected";

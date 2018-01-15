@@ -48,8 +48,6 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
     RecAdapter_emp adapter;
     List<String> list = new ArrayList<>();
     private List<String> fullList = new ArrayList<>();
-    HashMap<String, String> contact = new HashMap<>();
-    String type;
     private ProgressDialog pDialog;
     private static String url = "http://35.160.58.203/";
     private String TAG = MainSearch.class.getSimpleName();
@@ -85,7 +83,6 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
         setSupportActionBar(toolbar);
 
         search = (EditText) findViewById(R.id.search);
-        back = findViewById(R.id.back);
         layout = (CoordinatorLayout) findViewById(R.id.layout);
 
         city = "";
@@ -140,14 +137,6 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
             @Override
             public void afterTextChanged(Editable s) {
 
-            }
-        });
-
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
             }
         });
 

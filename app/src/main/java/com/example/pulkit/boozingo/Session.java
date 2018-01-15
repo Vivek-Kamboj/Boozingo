@@ -4,6 +4,10 @@ package com.example.pulkit.boozingo;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Session {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
@@ -13,6 +17,7 @@ public class Session {
     private String is_loggedin = "is_loggedin";
     private String is_first = "is_first";
     private String is_app_installed = "is_app_installed";
+    private String city_list = "city_list";
 
     public Session(Context context)
     {
@@ -53,6 +58,20 @@ public class Session {
     public Boolean isappInstalled()
     {
         return pref.getBoolean(is_app_installed,false);
+    }
+
+    public void create_city_list(String [] list){
+        Set<String > mySet = new HashSet<String>(Arrays.asList(list));
+        editor.putStringSet(city_list, mySet);
+        editor.commit();
+    }
+
+    public String[] get_city_list(){
+        Set<String> set = pref.getStringSet(city_list, null);
+        if(set!=null)
+            return set.toArray(new String[0]);
+        else
+            return null;
     }
 }
 

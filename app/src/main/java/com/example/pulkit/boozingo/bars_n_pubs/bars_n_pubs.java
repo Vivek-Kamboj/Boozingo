@@ -13,6 +13,7 @@ import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -26,6 +27,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -91,7 +93,11 @@ public class bars_n_pubs extends AppCompatActivity {
 
         bars = new JSONArray();
 
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+  //      params.setScrollFlags(0);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 
         city = getIntent().getStringExtra("city");
   //      city = "lucknow";
@@ -129,8 +135,8 @@ public class bars_n_pubs extends AppCompatActivity {
         adapter.addFragment(new FragBar(), "Bars");
         adapter.addFragment(new FragPub(), "Pubs");
         adapter.addFragment(new FragLounge(), "Lounges");
-        adapter.addFragment(new FragBeer_shop(), "Beer_shops");
-        adapter.addFragment(new FragNight_club(), "Night Night_club");
+        adapter.addFragment(new FragBeer_shop(), "Shops");
+        adapter.addFragment(new FragNight_club(), "Night Clubs");
         viewPager.setAdapter(adapter);
     }
 

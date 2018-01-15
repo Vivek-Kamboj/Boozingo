@@ -71,12 +71,12 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
         GoogleApiClient.OnConnectionFailedListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     ViewPager viewPager;
-    ImageButton back;
-    String TAG = "TAG", id = "2", text, geo_location, latitudeBar, longitudeBar, image, specs;
+//    ImageButton back;
+    String TAG = "TAG", id = "2", text, geo_location, latitudeBar, longitudeBar, image, specs, cost;
     List<String> images = new ArrayList<>();
     picPagerAdapter adapter;
     LinearLayout icons;
-    TextView show, speciality, name, type, address, timing;
+    TextView speciality, name, type, address, timing;
     ImageView transparent, dot1, dot2, dot3, dot4, dot5, dot6;
     ScrollView scroll;
     detailsBar details;
@@ -105,7 +105,6 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
     Button locator;
     int height, width;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,17 +114,16 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
 
         // location initialise
         locationHelper = new LocationHelper(this);
-        locationHelper.checkpermission();
+//        locationHelper.checkpermission();
 
         id = getIntent().getStringExtra("id");
- //       id = "2";
+  //      id = "2";
         marshmallowPermissions = new MarshmallowPermissions(this);
         height = getWindowManager().getDefaultDisplay().getHeight();
         width = getWindowManager().getDefaultDisplay().getWidth();
 
         viewPager = (ViewPager) findViewById(R.id.pager);
 
-        back = (ImageButton) findViewById(R.id.back);
         dot1 = (ImageView) findViewById(R.id.dot1);
         dot2 = (ImageView) findViewById(R.id.dot2);
         dot3 = (ImageView) findViewById(R.id.dot3);
@@ -133,7 +131,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
         dot5 = (ImageView) findViewById(R.id.dot5);
         dot6 = (ImageView) findViewById(R.id.dot6);
 
-        show = (TextView) findViewById(R.id.show);
+  //      show = (TextView) findViewById(R.id.show);
         speciality = (TextView) findViewById(R.id.speciality);
         name = (TextView) findViewById(R.id.name);
         type = (TextView) findViewById(R.id.type);
@@ -143,6 +141,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
         container = (RelativeLayout) findViewById(R.id.container);
         scroll = (ScrollView) findViewById(R.id.scroll);
         transparent = (ImageView)findViewById(R.id.imagetrans);
+
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
@@ -155,7 +154,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
             locationHelper.buildGoogleApiClient();
         }
 
-        new Handler().postDelayed(new Runnable() {
+/*        new Handler().postDelayed(new Runnable() {
             public void run() {
                 mLastLocation = locationHelper.getLocation();
                 if (mLastLocation != null) {
@@ -165,8 +164,13 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
 
                 }
             }
-        }, 1000);
+        }, 1000);*/
 
+        mLastLocation = locationHelper.getLocation();
+        if (mLastLocation != null) {
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+        }
 
         f1 = (FrameLayout) findViewById(R.id.layout);
         l1 = (LinearLayout) findViewById(R.id.dots);
@@ -177,18 +181,17 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
         locator = (Button) findViewById(R.id.locator);
 
 
-        f1.getLayoutParams().height = (int) (height * 0.40);
+        f1.getLayoutParams().height = (int) (height * 0.30);
         l1.getLayoutParams().height = (int) (height * 0.02);
-        im1.getLayoutParams().height = (int) (height * 0.05);
-        hsv.getLayoutParams().height = (int) (height * 0.12);
-        r1.getLayoutParams().height = (int) (height * 0.35);
-        frag.getLayoutParams().height = (int) (height * 0.35 * 0.85);
-        locator.getLayoutParams().height = (int) (height * 0.35 * 0.25);
+        im1.getLayoutParams().height = (int) (height * 0.04);
+        hsv.getLayoutParams().height = (int) (height * 0.10);
+        r1.getLayoutParams().height = (int) (height * 0.30);
+        frag.getLayoutParams().height = (int) (height * 0.30 * 0.85);
+        locator.getLayoutParams().height = (int) (height * 0.30 * 0.25);
 
         l1.getLayoutParams().width = (int) (width * 0.25);
         im1.getLayoutParams().width = (int) (width * 0.30);
         locator.getLayoutParams().width = (int) (width * 0.15);
-
 
         dot1.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ring));
 
@@ -240,23 +243,17 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
             }
         });
 
-        /*show.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        speciality.setText(text);
-                                        show.setVisibility(View.GONE);
-                                    }
-                                }
-        );
-*/
-
-        show.setVisibility(View.GONE);
-
         locator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if(marshmallowPermissions.checkPermissionForCoarseLocation() && marshmallowPermissions.checkPermissionForFineLocation()) {
+                    mLastLocation = locationHelper.getLocation();
+                    if (mLastLocation != null) {
+                        latitude = mLastLocation.getLatitude();
+                        longitude = mLastLocation.getLongitude();
+                    }
+
                     String uri = "http://maps.google.com/maps?f=d&hl=en&saddr=" + latitude + "," + longitude + "&daddr=" + latitudeBar + "," + longitudeBar;
                     Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
                     startActivity(Intent.createChooser(intent, "Select an application"));
@@ -303,13 +300,6 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
             }
         });
 
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         new net().execute();
 
@@ -374,6 +364,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
                             timing.setText(details.getBar_time());
                             geo_location = details.getBar_geolocation();
                             specs = details.getBar_details();
+                            cost = details.getBar_cost();
 
 
                             int comma = geo_location.indexOf('-');
@@ -429,7 +420,13 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
                                     speciality.setText(y);
                                     break;
                                 }
+
                             }
+
+
+                            // for cost of 2 person
+                            y = speciality.getText() +"\n\u25CF Average cost for 2 Boozinga: \u20B9"+ cost;
+                            speciality.setText(y);
 
                             facilities();
 
@@ -472,6 +469,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    @SuppressWarnings("ResourceType")
     private void facilities() {
         for (int i = 0; i < 8; i++) {
             View child = View.inflate(getBaseContext(), R.layout.smallpicrow, null);
@@ -542,6 +540,11 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         locationHelper.onActivityResult(requestCode, resultCode, data);
+        mLastLocation = locationHelper.getLocation();
+        if (mLastLocation != null) {
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+        }
     }
 
     @Override
@@ -657,7 +660,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onResume() {
         super.onResume();
-        locationHelper.checkPlayServices();
+  //      locationHelper.checkPlayServices();
         registerInternetCheckReceiver();
     }
 

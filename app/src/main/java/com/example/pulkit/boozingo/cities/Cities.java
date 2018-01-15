@@ -60,9 +60,9 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
 
     public static String city = "";
     RelativeLayout rl;
-    TextView textView;
+    TextView textView,t1,t2,t3,t4,t5;
     EditText search;
-    ImageButton img, back;
+    ImageButton img;
     ImageView im1, im2, im3, im4, im5, banner, factimg1, factimg2, view_more;
     String TAG = "TAG";
     public static int TYPE_WIFI = 1;
@@ -80,7 +80,8 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
     Session session;
     byte[] bytes;
     Boolean bool = true;
-    String[] cache = {"booze1", "booze2", "lucknow", "delhi", "bengaluru", "mumbai", "pune", "banner"};
+
+    String[] cities_show = new String [5];
 
     RelativeLayout top;
     HorizontalScrollView hsv;
@@ -100,7 +101,6 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         height = getWindowManager().getDefaultDisplay().getHeight();
 
         img = (ImageButton) findViewById(R.id.search_button_city_2);
-        back = (ImageButton) findViewById(R.id.back);
         textView = (TextView) findViewById(R.id.text2);
         search = (EditText) findViewById(R.id.search_text);
         rl = (RelativeLayout) findViewById(R.id.search_button_city);
@@ -110,6 +110,12 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         im4 = (ImageView) findViewById(R.id.im4);
         im5 = (ImageView) findViewById(R.id.im5);
         view_more = (ImageView) findViewById(R.id.view_more);
+
+        t1 = (TextView) findViewById(R.id.t1);
+        t2 = (TextView) findViewById(R.id.t2);
+        t3 = (TextView) findViewById(R.id.t3);
+        t4 = (TextView) findViewById(R.id.t4);
+        t5 = (TextView) findViewById(R.id.t5);
 
         factimg1 = (ImageView) findViewById(R.id.cim1);
         factimg2 = (ImageView) findViewById(R.id.cim2);
@@ -129,13 +135,13 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         s2 = (Space) findViewById(R.id.s2);
         boozepedia = (ImageView) findViewById(R.id.boozepedia);
 
-        s1.getLayoutParams().height = (int) (height * 0.32);
-        s2.getLayoutParams().height = (int) (height * 0.38);
-        top.getLayoutParams().height = (int) (height * 0.50);
+        s1.getLayoutParams().height = (int) (height * 0.29);
+        s2.getLayoutParams().height = (int) (height * 0.35);
+        top.getLayoutParams().height = (int) (height * 0.45);
         hsv.getLayoutParams().height = (int) (height * 0.15);
-        boozepedia.getLayoutParams().height = (int) (height * 0.10);
-        c1.getLayoutParams().height = (int) (height * 0.30);
-        c2.getLayoutParams().height = (int) (height * 0.30);
+        boozepedia.getLayoutParams().height = (int) (height * 0.09);
+        c1.getLayoutParams().height = (int) (height * 0.25);
+        c2.getLayoutParams().height = (int) (height * 0.25);
 
 
         myCity = (LinearLayout) findViewById(R.id.city0);
@@ -180,38 +186,40 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         search.setOnClickListener(this);
 
 
-        back.setVisibility(View.GONE);
-
         Uri uri = Uri.parse("http://35.160.58.203/storage/bar-images/July2017/2kcOKeS88yWLcadKLMBz.jpeg");
 
 
-        for (int i = 0; (i < cache.length) && bool; i++) {
-            bytes = loadImageFromDB(cache[i]);
+        cities_show = session.get_city_list();
+
+        if(cities_show==null){
+            bool = false;
+            cities_show = new String [5];
+        }
+
+
+        for (int i = 0; bool &&(i < cities_show.length) ; i++) {
+            bytes = loadImageFromDB(cities_show[i]);
             if (bytes != null) {
                 switch (i) {
                     case 0:
-                        factimg1.setImageBitmap(ImageUtils.getImage(bytes));
-                        break;
-                    case 1:
-                        factimg2.setImageBitmap(ImageUtils.getImage(bytes));
-                        break;
-                    case 2:
+                        t1.setText(cities_show[0]);
                         im1.setImageBitmap(ImageUtils.getImage(bytes));
                         break;
-                    case 3:
+                    case 1:
+                        t2.setText(cities_show[1]);
                         im2.setImageBitmap(ImageUtils.getImage(bytes));
                         break;
-                    case 4:
+                    case 2:
+                        t3.setText(cities_show[2]);
                         im3.setImageBitmap(ImageUtils.getImage(bytes));
                         break;
-                    case 5:
+                    case 3:
+                        t4.setText(cities_show[3]);
                         im4.setImageBitmap(ImageUtils.getImage(bytes));
                         break;
-                    case 6:
+                    case 4:
+                        t5.setText(cities_show[4]);
                         im5.setImageBitmap(ImageUtils.getImage(bytes));
-                        break;
-                    case 7:
-                        banner.setImageBitmap(ImageUtils.getImage(bytes));
                         break;
                 }
             } else
@@ -219,11 +227,10 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         }
 
 
-        if (bool)
-            pDialog.dismiss();
-
         if (!bool)
             new city_search().execute();
+
+        new boozefacts().execute();
 
     }
 
@@ -254,23 +261,23 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                 }
             } else if (v == l1) {
                 Intent i = new Intent(Cities.this, bars_n_pubs.class);
-                i.putExtra("city", "Lucknow");
+                i.putExtra("city", cities_show[0]);
                 startActivity(i);
             } else if (v == l2) {
                 Intent i = new Intent(Cities.this, bars_n_pubs.class);
-                i.putExtra("city", "Delhi");
+                i.putExtra("city", cities_show[1]);
                 startActivity(i);
             } else if (v == l3) {
                 Intent i = new Intent(Cities.this, bars_n_pubs.class);
-                i.putExtra("city", "Bengaluru");
+                i.putExtra("city", cities_show[2]);
                 startActivity(i);
             } else if (v == l4) {
                 Intent i = new Intent(Cities.this, bars_n_pubs.class);
-                i.putExtra("city", "Mumbai");
+                i.putExtra("city", cities_show[3]);
                 startActivity(i);
             } else if (v == l5) {
                 Intent i = new Intent(Cities.this, bars_n_pubs.class);
-                i.putExtra("city", "Pune");
+                i.putExtra("city", cities_show[4]);
                 startActivity(i);
             } else if (v == view_more) {
                 Intent i = new Intent(Cities.this, MainSearch.class);
@@ -278,6 +285,180 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
             }
         } else
             Toast.makeText(Cities.this, "Check network connection.", Toast.LENGTH_SHORT).show();
+    }
+
+
+    private class boozefacts extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            HttpHandler sh = new HttpHandler();
+            final String jsonStr = sh.makeServiceCall(url);
+
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    if (jsonStr != null) {
+                        try {
+                            JSONObject object = new JSONObject(jsonStr);
+                            JSONArray images = object.getJSONArray("images");
+
+                            // for banner and booze facts
+                            int n = images.length();
+
+                            RequestOptions options2 = new RequestOptions()
+                                    .error(R.drawable.booze_fact_error_1)
+                                    .override(700, 400);
+
+                            int a = 1, b = 1;
+
+                            String[] temp = new String [n];
+
+                            for (int i = 0; i < n-1; i++) {
+                                JSONObject c = images.getJSONObject(i);
+                                final String image = c.getString("image_url");
+                                temp[i] = url + "/storage/" + image;
+                            }
+
+                            for (int i = 0; i < n-1; i++){
+                                switch (i) {
+                                    case 0:
+                                        bytes = loadImageFromDB("banner");
+                                        if (bytes != null) {
+                                            factimg1.setImageBitmap(ImageUtils.getImage(bytes));
+                                        }else {
+                                            Glide.with(Cities.this)
+                                                    .load(temp[0])
+                                                    .apply(options2)
+                                                    .into(new SimpleTarget<Drawable>() {
+                                                        @Override
+                                                        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                                            Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                                                            banner.setImageBitmap(bitmap);
+                                                            saveImageInDB(bitmap, "banner");
+                                                        }
+                                                    });
+                                        }
+
+                                        a = 1 + (int) (Math.random() * ((n - 2)));
+
+                                        do {
+                                            b = 1 + (int) (Math.random() * ((n - 2)));
+                                        } while (a == b);
+
+                                        break;
+                                    case 1:
+
+                                        final int finalA = a;
+
+                                        bytes = loadImageFromDB("booze" + finalA);
+                                        if (bytes != null) {
+                                            factimg1.setImageBitmap(ImageUtils.getImage(bytes));
+                                        } else {
+                                            Glide.with(Cities.this)
+                                                    .load(temp[finalA])
+                                                    .apply(options2)
+                                                    .into(new SimpleTarget<Drawable>() {
+                                                        @Override
+                                                        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                                            Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                                                            factimg1.setImageBitmap(bitmap);
+                                                            saveImageInDB(bitmap, "booze" + finalA);
+                                                        }
+                                                    });
+                                        }
+
+                                        break;
+                                    case 2:
+                                        final int finalB = b;
+
+                                        bytes = loadImageFromDB("booze" + finalB);
+                                        if (bytes != null) {
+                                            factimg2.setImageBitmap(ImageUtils.getImage(bytes));
+                                            if (pDialog.isShowing())
+                                                pDialog.dismiss();
+                                        } else {
+                                            Glide.with(Cities.this)
+                                                    .load(temp[finalB])
+                                                    .apply(options2)
+                                                    .into(new SimpleTarget<Drawable>() {
+                                                        @Override
+                                                        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                                            Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                                                            factimg2.setImageBitmap(bitmap);
+                                                            saveImageInDB(bitmap, "booze" + finalB);
+
+                                                            if (pDialog.isShowing())
+                                                                pDialog.dismiss();
+                                                        }
+                                                    });
+                                        }
+                                        break;
+                                }
+                            }
+
+                        } catch (final JSONException e) {
+                            Log.e(TAG, "Json parsing error: " + e.getMessage());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Problem retrieving data. Restart application.",
+                                            Toast.LENGTH_LONG)
+                                            .show();
+
+                                    Glide.with(Cities.this)
+                                            .load(R.drawable.booze_fact_error_1)
+                                            .into(factimg1);
+
+
+                                    Glide.with(Cities.this)
+                                            .load(R.drawable.booze_fact_error_2)
+                                            .into(factimg2);
+
+                                    pDialog.dismiss();
+
+                                }
+                            });
+
+                        }
+                    } else {
+
+
+
+                        Log.e(TAG, "Couldn't get json from server.");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(),
+                                        "Network problem. Check network connection.",
+                                        Toast.LENGTH_LONG)
+                                        .show();
+
+
+                                Glide.with(Cities.this)
+                                        .load(R.drawable.booze_fact_error_1)
+                                        .into(factimg1);
+
+
+                                Glide.with(Cities.this)
+                                        .load(R.drawable.booze_fact_error_2)
+                                        .into(factimg2);
+
+                                pDialog.dismiss();
+
+                            }
+                        });
+                    }
+
+
+                }
+            });
+            return null;
+        }
     }
 
     private class city_search extends AsyncTask<Void, Void, Void> {
@@ -300,15 +481,18 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                       try {
                                           JSONObject object = new JSONObject(jsonStr);
                                           JSONArray cities = object.getJSONArray("cities");
-                                          JSONArray images = object.getJSONArray("images");
 
-                                          int n = cities.length();
-                                          for (int i = 0; i < n - 1; i++) {
+                                          // 5 for 5 cities
+                                          for (int i = 0; i < 5; i++) {
                                               JSONObject c = cities.getJSONObject(i);
 
-                                              final String city_name = c.getString("city_image");
+                                              final String city_icon = c.getString("city_icon");
+                                              final String city_name = c.getString("city_name");
+                                              cities_show[i] = city_name;
 
-                                              String temp = url + "/storage/" + city_name;
+                                              session.create_city_list(cities_show);
+
+                                              String temp = url + "/storage/" + city_icon;
 
                                               RequestOptions options = new RequestOptions()
                                                       .centerCrop()
@@ -327,7 +511,8 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                                                   public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
                                                                       Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
                                                                       im1.setImageBitmap(bitmap);
-                                                                      saveImageInDB(bitmap, "lucknow");
+                                                                      t1.setText(city_name);
+                                                                      saveImageInDB(bitmap, city_name);
                                                                   }
                                                               });
 
@@ -341,7 +526,8 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                                                   public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
                                                                       Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
                                                                       im2.setImageBitmap(bitmap);
-                                                                      saveImageInDB(bitmap, "delhi");
+                                                                      t2.setText(city_name);
+                                                                      saveImageInDB(bitmap, city_name);
                                                                   }
                                                               });
                                                       break;
@@ -354,7 +540,8 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                                                   public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
                                                                       Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
                                                                       im3.setImageBitmap(bitmap);
-                                                                      saveImageInDB(bitmap, "bengaluru");
+                                                                      t3.setText(city_name);
+                                                                      saveImageInDB(bitmap, city_name);
                                                                   }
                                                               });
                                                       break;
@@ -367,7 +554,8 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                                                   public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
                                                                       Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
                                                                       im4.setImageBitmap(bitmap);
-                                                                      saveImageInDB(bitmap, "mumbai");
+                                                                      t4.setText(city_name);
+                                                                      saveImageInDB(bitmap, city_name);
                                                                   }
                                                               });
 
@@ -381,7 +569,8 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                                                                   public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
                                                                       Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
                                                                       im5.setImageBitmap(bitmap);
-                                                                      saveImageInDB(bitmap, "pune");
+                                                                      t5.setText(city_name);
+                                                                      saveImageInDB(bitmap, city_name);
                                                                   }
                                                               });
                                                       break;
@@ -389,66 +578,6 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
 
                                           }
 
-                                          n = images.length();
-
-                                          RequestOptions options2 = new RequestOptions()
-                                                  .override(700, 400);
-
-                                          for (int i = 0; i < n - 1; i++) {
-                                              JSONObject c = images.getJSONObject(i);
-
-                                              final String image = c.getString("image_url");
-                                              String temp = url + "/storage/" + image;
-
-                                              switch (i) {
-                                                  case 0:
-
-                                                      Glide.with(Cities.this)
-                                                              .load(temp)
-                                                              .apply(options2)
-                                                              .into(new SimpleTarget<Drawable>() {
-                                                                  @Override
-                                                                  public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                                                                      Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
-                                                                      banner.setImageBitmap(bitmap);
-                                                                      saveImageInDB(bitmap, "banner");
-                                                                  }
-                                                              });
-
-
-                                                      break;
-                                                  case 1:
-
-                                                      Glide.with(Cities.this)
-                                                              .load(temp)
-                                                              .apply(options2)
-                                                              .into(new SimpleTarget<Drawable>() {
-                                                                  @Override
-                                                                  public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                                                                      Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
-                                                                      factimg1.setImageBitmap(bitmap);
-                                                                      saveImageInDB(bitmap, "booze1");
-                                                                  }
-                                                              });
-
-                                                      break;
-                                                  case 2:
-                                                      Glide.with(Cities.this)
-                                                              .load(temp)
-                                                              .apply(options2)
-                                                              .into(new SimpleTarget<Drawable>() {
-                                                                  @Override
-                                                                  public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                                                                      Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
-                                                                      factimg2.setImageBitmap(bitmap);
-                                                                      saveImageInDB(bitmap, "booze2");
-                                                                      pDialog.dismiss();
-                                                                  }
-                                                              });
-
-                                                      break;
-                                              }
-                                          }
 
                                           //to make sure after first time net is checked at this page not at second splash
                                           session.create_isfirst();
@@ -598,6 +727,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
+
         if (internetStatus.equalsIgnoreCase(getString(R.string.no_net))) {
             if (internetConnected) {
                 snackbar.show();
@@ -609,6 +739,8 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                 snackbar.show();
             }
         }
+
+
     }
 
     @Override
