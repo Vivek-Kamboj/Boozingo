@@ -81,20 +81,13 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
     List<String> images = new ArrayList<>();
     picPagerAdapter adapter;
     LinearLayout icons;
-    TextView speciality, name, type, address, timing;
+    TextView speciality, name, type, address, timing, locator;
     ImageView dot1, dot2, dot3, dot4, dot5, dot6;
     ScrollView scroll;
     detailsBar details;
     ProgressDialog pDialog;
-  //  SupportMapFragment mapFragment;
 
     RelativeLayout container;
-
-    private Location mLastLocation;
-    double latitude;
-    double longitude;
-
-
     FrameLayout f1;
     LinearLayout l1;
     ImageView im1;
@@ -189,7 +182,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
             }
         });
 
-        /*locator.setOnClickListener(new View.OnClickListener() {
+        /*map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -237,6 +230,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
         hsv=(HorizontalScrollView)findViewById(R.id.icon_holder);
         r1=(RelativeLayout)findViewById(R.id.ll4);
         frag= (ImageView) findViewById(R.id.map);
+        locator = (TextView) findViewById(R.id.locator);
 
     }
 
@@ -250,7 +244,8 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
         im1.getLayoutParams().height=(int)(height*0.04);
         hsv.getLayoutParams().height=(int)(height*0.10);
         r1.getLayoutParams().height=(int)(height*0.30);
-        frag.getLayoutParams().height=(int)(height*0.30*0.85);
+        frag.getLayoutParams().height=(int)(height*0.30*0.87);
+        locator.getLayoutParams().height=(int)(height*0.30*0.12);
 
         l1.getLayoutParams().width=(int)(width*0.25);
         im1.getLayoutParams().width=(int)(width*0.30);
@@ -300,7 +295,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
                             longitudeBar = geo_location.substring(comma + 1);
 
 
-                            String path="http://maps.google.com/maps/api/staticmap?&zoom=18&size=600x240&markers=color:blue|"+latitudeBar+","+longitudeBar;
+                            String path="http://maps.google.com/maps/api/staticmap?&zoom=19&size=600x240&markers=color:blue|"+latitudeBar+","+longitudeBar;
 
                             Glide.with(TempBarActivity.this)
                                     .load(path)

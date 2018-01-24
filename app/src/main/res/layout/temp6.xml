@@ -236,6 +236,16 @@
                 android:orientation="horizontal"
                 android:scaleType="fitXY" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/locator"
+                android:gravity="center"
+                android:textColor="#424242"
+                android:layout_below="@+id/map"
+                android:textSize="12sp"
+                android:text="Click on the map to get directions."/>
+
             <ImageView
                 android:id="@+id/line4"
                 android:layout_width="match_parent"
@@ -250,8 +260,9 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/ll4"
-            android:layout_margin="5dp"
-            android:background="#cdcdcd" />
+            android:background="#cdcdcd"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -261,7 +272,8 @@
             android:inputType="textMultiLine"
             android:text="@string/supreme"
             android:textColor="#FF4081"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            android:paddingBottom="5dp"/>
 
     </RelativeLayout>
 </ScrollView>
