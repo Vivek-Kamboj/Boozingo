@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.model.smallBarDetails;
@@ -26,6 +27,7 @@ public class Adapter_bar extends RecyclerView.Adapter<Adapter_bar.RecHolder> {
 
     Context c;
     private MarshmallowPermissions marshmallowPermissions;
+    RequestOptions options;
 
     //interface
     public interface ItemClickCallback {
@@ -48,6 +50,9 @@ public class Adapter_bar extends RecyclerView.Adapter<Adapter_bar.RecHolder> {
         this.c = c;
         this.layoutInflater = LayoutInflater.from(c);
         marshmallowPermissions = new MarshmallowPermissions((Activity) c);
+        options = new RequestOptions()
+                .error(R.drawable.booze_fact_error_1)
+                .override(150, 150);
     }
 
     @Override
@@ -100,6 +105,7 @@ public class Adapter_bar extends RecyclerView.Adapter<Adapter_bar.RecHolder> {
 
         Glide.with(c)
                 .load(list.get(position).getBar_icon())
+                .apply(options)
                 .into(holder.image);
 
         switch (holder.getAdapterPosition()%4){

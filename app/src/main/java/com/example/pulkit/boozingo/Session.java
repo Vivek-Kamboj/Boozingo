@@ -16,7 +16,6 @@ public class Session {
     String prefname="SESSION";
     private String is_loggedin = "is_loggedin";
     private String is_first = "is_first";
-    private String is_app_installed = "is_app_installed";
     private String city_list = "city_list";
 
     public Session(Context context)
@@ -48,16 +47,6 @@ public class Session {
     public Boolean isfirst()
     {
         return pref.getBoolean(is_first,true);
-    }
-
-    public void create_isappInstalled(){
-        editor.putBoolean(is_app_installed,true);
-        editor.commit();
-    }
-
-    public Boolean isappInstalled()
-    {
-        return pref.getBoolean(is_app_installed,false);
     }
 
     public void create_city_list(String [] list){

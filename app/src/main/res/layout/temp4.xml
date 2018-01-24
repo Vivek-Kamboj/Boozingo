@@ -312,7 +312,7 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/cities"
             android:layout_margin="10dp"
-            android:background="@drawable/boozepedia2">
+            android:background="@drawable/boozepedia1">
 
         </ImageView>
 

@@ -79,9 +79,7 @@ public class DBHelper {
     // We will just get the last image we just saved for convenience...
 
     public byte[] retreiveImageFromDB(String id) {
-      /*  Cursor cur = mDb.query(true, IMAGES_TABLE, new String[]{IMAGE,},
-                null, null, null, null,
-                IMAGE_ID + " DESC", "1");*/
+
         Cursor cur = mDb.rawQuery("SELECT image FROM ImagesTable where id=?", new String[] {id});
 
         if (cur.moveToFirst()) {

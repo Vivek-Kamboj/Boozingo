@@ -1,20 +1,16 @@
 package com.example.pulkit.boozingo.cities;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
-import android.support.percent.PercentRelativeLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -35,28 +31,31 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.AssetUriLoader;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.pulkit.boozingo.helper.LocationHelper;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.Session;
 import com.example.pulkit.boozingo.bars_n_pubs.bars_n_pubs;
 import com.example.pulkit.boozingo.helper.DBHelper;
 import com.example.pulkit.boozingo.helper.HttpHandler;
 import com.example.pulkit.boozingo.helper.ImageUtils;
+import com.example.pulkit.boozingo.helper.Permission;
+import com.example.pulkit.boozingo.helper.SnackBarClass;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
-
 import static com.example.pulkit.boozingo.Boozingo.url;
+import static com.example.pulkit.boozingo.helper.LocationHelper.REQUEST_CHECK_SETTINGS;
+import static com.example.pulkit.boozingo.helper.LocationHelper.status;
 
-public class Cities extends AppCompatActivity implements View.OnClickListener {
+public class Cities extends AppCompatActivity implements View.OnClickListener,SnackBarClass.SnackbarMessage,
+        GoogleApiClient.ConnectionCallbacks{
 
     public static String city = "";
     RelativeLayout rl;
@@ -65,16 +64,18 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
     ImageButton img;
     ImageView im1, im2, im3, im4, im5, banner, factimg1, factimg2, view_more;
     String TAG = "TAG";
-    public static int TYPE_WIFI = 1;
-    public static int TYPE_MOBILE = 2;
-    public static int TYPE_NOT_CONNECTED = 0;
+
+
     private Snackbar snackbar;
     private boolean internetConnected = true;
+    SnackBarClass snackBarClass;
+    String internetStatus;
+
+
     ProgressDialog pDialog;
     RelativeLayout layout;
     Target target;
     LinearLayout l1, l2, l3, l4, l5, myCity;
-    String internetStatus;
 
     DBHelper dbHelper;
     Session session;
@@ -90,6 +91,12 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
     Space s1, s2;
     int height;
 
+    Permission permission;
+
+    private Location mLastLocation;
+    LocationHelper locationHelper;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,27 +105,13 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
 
         setContentView(R.layout.temp4);
 
-        height = getWindowManager().getDefaultDisplay().getHeight();
 
-        img = (ImageButton) findViewById(R.id.search_button_city_2);
-        textView = (TextView) findViewById(R.id.text2);
-        search = (EditText) findViewById(R.id.search_text);
-        rl = (RelativeLayout) findViewById(R.id.search_button_city);
-        im1 = (ImageView) findViewById(R.id.im1);
-        im2 = (ImageView) findViewById(R.id.im2);
-        im3 = (ImageView) findViewById(R.id.im3);
-        im4 = (ImageView) findViewById(R.id.im4);
-        im5 = (ImageView) findViewById(R.id.im5);
-        view_more = (ImageView) findViewById(R.id.view_more);
+        // link views to objects
+        init();
 
-        t1 = (TextView) findViewById(R.id.t1);
-        t2 = (TextView) findViewById(R.id.t2);
-        t3 = (TextView) findViewById(R.id.t3);
-        t4 = (TextView) findViewById(R.id.t4);
-        t5 = (TextView) findViewById(R.id.t5);
+        // set height and width programatically
+        setParams();
 
-        factimg1 = (ImageView) findViewById(R.id.cim1);
-        factimg2 = (ImageView) findViewById(R.id.cim2);
 
         //initially net is assumed to be connected
         internetStatus = getString(R.string.net);
@@ -126,32 +119,11 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         //initialise database
         dbHelper = new DBHelper(this);
         session = new Session(getApplicationContext());
+        locationHelper = new LocationHelper(this);
+        permission = new Permission(this);
+        snackBarClass = new SnackBarClass(this);
+        snackBarClass.readySnackbarMessage(this);
 
-        top = (RelativeLayout) findViewById(R.id.top);
-        hsv = (HorizontalScrollView) findViewById(R.id.cities);
-        c1 = (CardView) findViewById(R.id.card1);
-        c2 = (CardView) findViewById(R.id.card2);
-        s1 = (Space) findViewById(R.id.s1);
-        s2 = (Space) findViewById(R.id.s2);
-        boozepedia = (ImageView) findViewById(R.id.boozepedia);
-
-        s1.getLayoutParams().height = (int) (height * 0.29);
-        s2.getLayoutParams().height = (int) (height * 0.35);
-        top.getLayoutParams().height = (int) (height * 0.45);
-        hsv.getLayoutParams().height = (int) (height * 0.15);
-        boozepedia.getLayoutParams().height = (int) (height * 0.09);
-        c1.getLayoutParams().height = (int) (height * 0.25);
-        c2.getLayoutParams().height = (int) (height * 0.25);
-
-
-        myCity = (LinearLayout) findViewById(R.id.city0);
-        l1 = (LinearLayout) findViewById(R.id.city1);
-        l2 = (LinearLayout) findViewById(R.id.city2);
-        l3 = (LinearLayout) findViewById(R.id.city3);
-        l4 = (LinearLayout) findViewById(R.id.city4);
-        l5 = (LinearLayout) findViewById(R.id.city5);
-        banner = (ImageView) findViewById(R.id.banner);
-        layout = (RelativeLayout) findViewById(R.id.layout);
 
 
         pDialog = new ProgressDialog(Cities.this);
@@ -233,6 +205,63 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         new boozefacts().execute();
 
     }
+
+
+    private void init() {
+
+        img = (ImageButton) findViewById(R.id.search_button_city_2);
+        textView = (TextView) findViewById(R.id.text2);
+        search = (EditText) findViewById(R.id.search_text);
+        rl = (RelativeLayout) findViewById(R.id.search_button_city);
+        im1 = (ImageView) findViewById(R.id.im1);
+        im2 = (ImageView) findViewById(R.id.im2);
+        im3 = (ImageView) findViewById(R.id.im3);
+        im4 = (ImageView) findViewById(R.id.im4);
+        im5 = (ImageView) findViewById(R.id.im5);
+        view_more = (ImageView) findViewById(R.id.view_more);
+
+        t1 = (TextView) findViewById(R.id.t1);
+        t2 = (TextView) findViewById(R.id.t2);
+        t3 = (TextView) findViewById(R.id.t3);
+        t4 = (TextView) findViewById(R.id.t4);
+        t5 = (TextView) findViewById(R.id.t5);
+
+        factimg1 = (ImageView) findViewById(R.id.cim1);
+        factimg2 = (ImageView) findViewById(R.id.cim2);
+
+        top = (RelativeLayout) findViewById(R.id.top);
+        hsv = (HorizontalScrollView) findViewById(R.id.cities);
+        c1 = (CardView) findViewById(R.id.card1);
+        c2 = (CardView) findViewById(R.id.card2);
+        s1 = (Space) findViewById(R.id.s1);
+        s2 = (Space) findViewById(R.id.s2);
+        boozepedia = (ImageView) findViewById(R.id.boozepedia);
+
+        myCity = (LinearLayout) findViewById(R.id.city0);
+        l1 = (LinearLayout) findViewById(R.id.city1);
+        l2 = (LinearLayout) findViewById(R.id.city2);
+        l3 = (LinearLayout) findViewById(R.id.city3);
+        l4 = (LinearLayout) findViewById(R.id.city4);
+        l5 = (LinearLayout) findViewById(R.id.city5);
+        banner = (ImageView) findViewById(R.id.banner);
+        layout = (RelativeLayout) findViewById(R.id.layout);
+
+    }
+
+    private void setParams() {
+
+        height = getWindowManager().getDefaultDisplay().getHeight();
+
+        s1.getLayoutParams().height = (int) (height * 0.29);
+        s2.getLayoutParams().height = (int) (height * 0.35);
+        top.getLayoutParams().height = (int) (height * 0.45);
+        hsv.getLayoutParams().height = (int) (height * 0.15);
+        boozepedia.getLayoutParams().height = (int) (height * 0.09);
+        c1.getLayoutParams().height = (int) (height * 0.25);
+        c2.getLayoutParams().height = (int) (height * 0.25);
+
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -655,58 +684,34 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
         return bytes;
     }
 
-
-    private void registerInternetCheckReceiver() {
-        IntentFilter internetFilter = new IntentFilter();
-        internetFilter.addAction("android.net.wifi.STATE_CHANGE");
-        internetFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        registerReceiver(broadcastReceiver, internetFilter);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case RESULT_OK:
+                        Log.e("d", "d");
+                        // All required changes were successfully made
+                        mLastLocation = locationHelper.getLocation();
+                        break;
+                    case RESULT_CANCELED:
+                        // The user was asked to change settings, but chose not to
+                        try {
+                            status.startResolutionForResult(this, REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                }
+                break;
+        }
     }
 
-    public BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String status = getConnectivityStatusString(context);
-            setSnackbarMessage(status, false);
-        }
-    };
-
-    public static int getConnectivityStatus(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (null != activeNetwork) {
-            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
-                return TYPE_WIFI;
-
-            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
-                return TYPE_MOBILE;
-        }
-        return TYPE_NOT_CONNECTED;
-    }
-
-    public static String getConnectivityStatusString(Context context) {
-        int conn = getConnectivityStatus(context);
-        String status = null;
-        if (conn == TYPE_WIFI) {
-            status = "Wifi enabled";
-        } else if (conn == TYPE_MOBILE) {
-            status = "Mobile data enabled";
-        } else if (conn == TYPE_NOT_CONNECTED) {
-            status = "Not connected to Internet";
-        }
-        return status;
-    }
-
-    private void setSnackbarMessage(String status, boolean showBar) {
+    @Override
+    public void setSnackbarMessage(String status, boolean showBar) {
 
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
-        /*    // if connection is made after page is build. It needs to be reloaded
-            if(internetStatus.equals(getString(R.string.no_net))){
-                internetStatus = getString(R.string.net);
-                startActivity(new Intent(this,Cities.class));
-                finish();
-            }*/
+
             search.setText(city);
             search.setSelection(city.length());
             internetStatus = getString(R.string.net);
@@ -739,22 +744,36 @@ public class Cities extends AppCompatActivity implements View.OnClickListener {
                 snackbar.show();
             }
         }
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        registerInternetCheckReceiver();
+        snackBarClass.registerInternetCheckReceiver();
         search.setText(city);
         search.setSelection(city.length());
+
+        if (!permission.checkPermission())
+            permission.requestPermission();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(broadcastReceiver);
+        unregisterReceiver(snackBarClass.broadcastReceiver);
     }
+
+    @Override
+    public void onConnected(Bundle arg0) {
+
+        // Once connected with google api, get the location
+        mLastLocation = locationHelper.getLocation();
+    }
+
+    @Override
+    public void onConnectionSuspended(int arg0) {
+        locationHelper.connectApiClient();
+    }
+
 }
 

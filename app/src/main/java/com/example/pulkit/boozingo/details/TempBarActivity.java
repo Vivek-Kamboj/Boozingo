@@ -73,9 +73,7 @@ import static com.example.pulkit.boozingo.helper.LocationHelper.REQUEST_CHECK_SE
 import static com.example.pulkit.boozingo.helper.LocationHelper.status;
 import static com.example.pulkit.boozingo.helper.Permission.RequestPermissionCode;
 
-public class detailsActivityBar extends AppCompatActivity implements OnMapReadyCallback, SnackBarClass.SnackbarMessage,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+public class TempBarActivity extends AppCompatActivity implements SnackBarClass.SnackbarMessage {
 
     ViewPager viewPager;
     //    ImageButton back;
@@ -84,26 +82,25 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
     picPagerAdapter adapter;
     LinearLayout icons;
     TextView speciality, name, type, address, timing;
-    ImageView transparent, dot1, dot2, dot3, dot4, dot5, dot6;
+    ImageView dot1, dot2, dot3, dot4, dot5, dot6;
     ScrollView scroll;
     detailsBar details;
     ProgressDialog pDialog;
-    SupportMapFragment mapFragment;
+  //  SupportMapFragment mapFragment;
 
     RelativeLayout container;
 
     private Location mLastLocation;
     double latitude;
     double longitude;
-    LocationHelper locationHelper;
+
 
     FrameLayout f1;
     LinearLayout l1;
     ImageView im1;
     HorizontalScrollView hsv;
     RelativeLayout r1;
-    View frag;
-    Button locator;
+    ImageView frag;
     int height, width;
 
     Permission permission;
@@ -115,7 +112,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.temp5);
+        setContentView(R.layout.temp6);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         //      id = getIntent().getStringExtra("id");
@@ -133,12 +130,11 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
 
 
         permission = new Permission(this);
-        locationHelper = new LocationHelper(this);
         snackBarClass = new SnackBarClass(this);
         snackBarClass.readySnackbarMessage(this);
 
 
-        pDialog = new ProgressDialog(detailsActivityBar.this);
+        pDialog = new ProgressDialog(TempBarActivity.this);
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(true);
         pDialog.show();
@@ -156,33 +152,33 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        dot1.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.ring));
-                        dot2.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.dot));
+                        dot1.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.ring));
+                        dot2.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
                         break;
 
                     case 1:
-                        dot1.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.dot));
-                        dot2.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.ring));
-                        dot3.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.dot));
+                        dot1.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
+                        dot2.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.ring));
+                        dot3.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
                         break;
                     case 2:
-                        dot2.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.dot));
-                        dot3.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.ring));
-                        //            dot4.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.dot));
+                        dot2.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
+                        dot3.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.ring));
+                        //            dot4.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
                         break;
                    /* case 3:
-                        dot3.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.dot));
-                        dot4.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.ring));
-                        dot5.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.dot));
+                        dot3.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
+                        dot4.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.ring));
+                        dot5.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
                         break;
                     case 4:
-                        dot4.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.dot));
-                        dot5.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.ring));
-                        dot6.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.dot));
+                        dot4.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
+                        dot5.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.ring));
+                        dot6.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
                         break;
                     case 5:
-                        dot5.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.dot));
-                        dot6.setImageDrawable(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.ring));
+                        dot5.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
+                        dot6.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.ring));
                         break;*/
                 }
             }
@@ -193,7 +189,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
             }
         });
 
-        locator.setOnClickListener(new View.OnClickListener() {
+        /*locator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -209,48 +205,14 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
 
             }
         });
-
+*/
         //to get data from net
         new net().execute();
-
-        String path="http://maps.google.com/maps/api/staticmap?center=37.4223662,-122.0839445&zoom=15&size=200x200&sensor=false";
-
-        //     new setImageFromUrl().execute();
-        Glide.with(this)
-                .load(path)
-                .into(im1);
-
-        // for scrolling map fragment
-        transparent.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                switch (action) {
-                    case MotionEvent.ACTION_DOWN:
-                        // Disallow ScrollView to intercept touch events.
-                        scroll.requestDisallowInterceptTouchEvent(true);
-                        // Disable touch on transparent view
-                        return false;
-
-                    case MotionEvent.ACTION_UP:
-                        // Allow ScrollView to intercept touch events.
-                        scroll.requestDisallowInterceptTouchEvent(false);
-                        return true;
-
-                    case MotionEvent.ACTION_MOVE:
-                        scroll.requestDisallowInterceptTouchEvent(true);
-                        return false;
-
-                    default:
-                        return true;
-                }
-            }
-        });
 
     }
 
 
-private void init(){
+    private void init(){
         viewPager=(ViewPager)findViewById(R.id.pager);
 
         dot1=(ImageView)findViewById(R.id.dot1);
@@ -268,190 +230,176 @@ private void init(){
         icons=(LinearLayout)findViewById(R.id.icons);
         container=(RelativeLayout)findViewById(R.id.container);
         scroll=(ScrollView)findViewById(R.id.scroll);
-        transparent=(ImageView)findViewById(R.id.imagetrans);
 
         f1=(FrameLayout)findViewById(R.id.layout);
         l1=(LinearLayout)findViewById(R.id.dots);
         im1=(ImageView)findViewById(R.id.booze);
         hsv=(HorizontalScrollView)findViewById(R.id.icon_holder);
         r1=(RelativeLayout)findViewById(R.id.ll4);
-        frag=findViewById(R.id.map);
-        locator=(Button)findViewById(R.id.locator);
+        frag= (ImageView) findViewById(R.id.map);
 
-        mapFragment=(SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
-        }
+    }
 
-private void setParams(){
+    private void setParams(){
 
         height=getWindowManager().getDefaultDisplay().getHeight();
         width=getWindowManager().getDefaultDisplay().getWidth();
 
         f1.getLayoutParams().height=(int)(height*0.30);
         l1.getLayoutParams().height=(int)(height*0.02);
-        im1.getLayoutParams().height=(int)(height*0.54);
+        im1.getLayoutParams().height=(int)(height*0.04);
         hsv.getLayoutParams().height=(int)(height*0.10);
         r1.getLayoutParams().height=(int)(height*0.30);
         frag.getLayoutParams().height=(int)(height*0.30*0.85);
-        locator.getLayoutParams().height=(int)(height*0.30*0.25);
 
         l1.getLayoutParams().width=(int)(width*0.25);
         im1.getLayoutParams().width=(int)(width*0.30);
-        locator.getLayoutParams().width=(int)(width*0.15);
-        }
-
-@Override
-public void onMapReady(GoogleMap map){
-        map.addMarker(new MarkerOptions()
-        .position(new LatLng(Float.parseFloat(latitudeBar),Float.parseFloat(longitudeBar)))
-        .title(_type.toUpperCase()));
-
-        CameraPosition cameraPosition=new CameraPosition.Builder()
-        .target(new LatLng(Float.parseFloat(latitudeBar),Float.parseFloat(longitudeBar)))
-        .zoom(15)
-        .build();
-        //Zoom in and animate the camera.
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
+    }
 
 
-private class net extends AsyncTask<Void, Void, Void> {
-    @Override
-    protected Void doInBackground(Void... params) {
-        HttpHandler sh = new HttpHandler();
+    private class net extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            HttpHandler sh = new HttpHandler();
 
-        // Making a request to url and getting response
-        String jsonStr = sh.makeServiceCall(url + "/bar/" + id);
-
-
-        Log.e(TAG, "Response from url: " + jsonStr);
-
-        if (jsonStr != null) {
-            try {
-                final JSONObject object = new JSONObject(jsonStr);
-                JSONArray array = object.getJSONArray("bar");
-
-                JSONObject temp = array.getJSONObject(0);
-                String userJson = temp.toString();
-
-                Gson gson = new Gson();
-
-                details = new detailsBar();
-                details = gson.fromJson(userJson, detailsBar.class);
-
-                runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                    @Override
-                    public void run() {
-
-                        name.setText(details.getBar_name());
-                        address.setText(details.getBar_address());
-                        type.setText("(" + _type + ")");
-                        timing.setText(details.getBar_time());
-                        geo_location = details.getBar_geolocation();
-                        specs = details.getBar_details();
-                        cost = details.getBar_cost();
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall(url + "/bar/" + id);
 
 
-                        int comma = geo_location.indexOf('-');
-                        latitudeBar = geo_location.substring(0, comma);
-                        longitudeBar = geo_location.substring(comma + 1);
+            Log.e(TAG, "Response from url: " + jsonStr);
 
-                        mapFragment.getMapAsync(detailsActivityBar.this);
+            if (jsonStr != null) {
+                try {
+                    final JSONObject object = new JSONObject(jsonStr);
+                    JSONArray array = object.getJSONArray("bar");
+
+                    JSONObject temp = array.getJSONObject(0);
+                    String userJson = temp.toString();
+
+                    Gson gson = new Gson();
+
+                    details = new detailsBar();
+                    details = gson.fromJson(userJson, detailsBar.class);
+
+                    runOnUiThread(new Runnable() {
+                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                        @Override
+                        public void run() {
+
+                            name.setText(details.getBar_name());
+                            address.setText(details.getBar_address());
+                            type.setText("(" + _type + ")");
+                            timing.setText(details.getBar_time());
+                            geo_location = details.getBar_geolocation();
+                            specs = details.getBar_details();
+                            cost = details.getBar_cost();
 
 
-                        try {
-                            image = object.getJSONArray("bar_images").getJSONObject(0).getString("bar_images");
-                            image = image.substring(2, image.length() - 2);
-                            image = image.replaceAll("\\\\", "");
+                            int comma = geo_location.indexOf('-');
+                            latitudeBar = geo_location.substring(0, comma);
+                            longitudeBar = geo_location.substring(comma + 1);
 
-                            for (int i = 0; i < image.length(); ) {
-                                int j = image.indexOf(',', i);
-                                if (j == -1) {
-                                    images.add(url + "/storage/" + image.substring(i, image.length()));
+
+                            String path="http://maps.google.com/maps/api/staticmap?&zoom=18&size=600x240&markers=color:blue|"+latitudeBar+","+longitudeBar;
+
+                            Glide.with(TempBarActivity.this)
+                                    .load(path)
+                                    .into(frag);
+
+
+                            try {
+                                image = object.getJSONArray("bar_images").getJSONObject(0).getString("bar_images");
+                                image = image.substring(2, image.length() - 2);
+                                image = image.replaceAll("\\\\", "");
+
+                                for (int i = 0; i < image.length(); ) {
+                                    int j = image.indexOf(',', i);
+                                    if (j == -1) {
+                                        images.add(url + "/storage/" + image.substring(i, image.length()));
+                                        break;
+                                    } else
+                                        images.add(url + "/storage/" + image.substring(i, j - 1));
+                                    i = j + 2;
+
+                                }
+
+                                //to randomise pics
+                                Collections.shuffle(images);
+
+                                //to select only 3 pics
+                                images = images.subList(0, 3);
+
+
+                                adapter = new picPagerAdapter(TempBarActivity.this, images);
+                                viewPager.setAdapter(adapter);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            // for speciality
+                            String y;
+                            for (int i = 0; i < specs.length(); ) {
+                                int x = specs.indexOf('/', i);
+                                if (x < specs.length() && x != -1) {
+                                    y = speciality.getText() + "\u25CF " + specs.substring(i, x) + "\n";
+                                    speciality.setText(y);
+                                    i = x + 1;
+                                } else {
+                                    y = speciality.getText() + "\u25CF " + specs.substring(i, specs.length());
+                                    speciality.setText(y);
                                     break;
-                                } else
-                                    images.add(url + "/storage/" + image.substring(i, j - 1));
-                                i = j + 2;
+                                }
 
                             }
 
-                            //to randomise pics
-                            Collections.shuffle(images);
 
-                            //to select only 3 pics
-                            images = images.subList(0, 3);
+                            // for cost of 2 person
+                            y = speciality.getText() + "\n\u25CF Average cost for 2 Boozinga: \u20B9" + cost;
+                            speciality.setText(y);
 
+                            facilities();
 
-                            adapter = new picPagerAdapter(detailsActivityBar.this, images);
-                            viewPager.setAdapter(adapter);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            pDialog.dismiss();
                         }
+                    });
 
-
-                        // for speciality
-                        String y;
-                        for (int i = 0; i < specs.length(); ) {
-                            int x = specs.indexOf('/', i);
-                            if (x < specs.length() && x != -1) {
-                                y = speciality.getText() + "\u25CF " + specs.substring(i, x) + "\n";
-                                speciality.setText(y);
-                                i = x + 1;
-                            } else {
-                                y = speciality.getText() + "\u25CF " + specs.substring(i, specs.length());
-                                speciality.setText(y);
-                                break;
-                            }
+                } catch (final JSONException e) {
+                    Log.e(TAG, "Json parsing error: " + e.getMessage());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    "Problem retrieving data. Restart application.",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                            pDialog.dismiss();
 
                         }
+                    });
 
+                }
 
-                        // for cost of 2 person
-                        y = speciality.getText() + "\n\u25CF Average cost for 2 Boozinga: \u20B9" + cost;
-                        speciality.setText(y);
-
-                        facilities();
-
-                        pDialog.dismiss();
-                    }
-                });
-
-            } catch (final JSONException e) {
-                Log.e(TAG, "Json parsing error: " + e.getMessage());
+            } else {
+                Log.e(TAG, "Couldn't get json from server.");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(getApplicationContext(),
-                                "Problem retrieving data. Restart application.",
+                                "Network problem. Check network connection.",
                                 Toast.LENGTH_LONG)
                                 .show();
                         pDialog.dismiss();
 
                     }
                 });
-
             }
 
-        } else {
-            Log.e(TAG, "Couldn't get json from server.");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(),
-                            "Network problem. Check network connection.",
-                            Toast.LENGTH_LONG)
-                            .show();
-                    pDialog.dismiss();
-
-                }
-            });
+            return null;
         }
 
-        return null;
     }
-
-}
 
     @SuppressWarnings("ResourceType")
     private void facilities() {
@@ -468,49 +416,49 @@ private class net extends AsyncTask<Void, Void, Void> {
                     break;
                 case 1:
                     if (details.getBar_food().equals("both") || details.getBar_food().equals("veg")) {
-                        x.setBackground(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.veg));
+                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.veg));
                         text.setText("Veg");
                         icons.addView(child);
                     }
                     break;
                 case 2:
                     if (details.getBar_food().equals("both") || details.getBar_food().equals("nonveg")) {
-                        x.setBackground(ContextCompat.getDrawable(detailsActivityBar.this, R.drawable.non_veg));
+                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.non_veg));
                         text.setText("Non Veg");
                         icons.addView(child);
                     }
                     break;
                 case 3:
                     if (details.getBar_sitting_facility().equals("yes")) {
-                        x.setBackground(ContextCompat.getDrawable(detailsActivityBar.this, R.raw.table));
+                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.raw.table));
                         text.setText("Sitting");
                         icons.addView(child);
                     }
                     break;
                 case 4:
                     if (details.getBar_music().equals("available")) {
-                        x.setBackground(ContextCompat.getDrawable(detailsActivityBar.this, R.raw.music_player));
+                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.raw.music_player));
                         text.setText("Music");
                         icons.addView(child);
                     }
                     break;
                 case 5:
                     if (details.getBar_ac().equals("ac")) {
-                        x.setBackground(ContextCompat.getDrawable(detailsActivityBar.this, R.raw.minisplit1));
+                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.raw.minisplit1));
                         text.setText("Ac");
                         icons.addView(child);
                     }
                     break;
                 case 6:
                     if (details.getBar_payment().equals("cash") || details.getBar_payment().equals("all")) {
-                        x.setBackground(ContextCompat.getDrawable(detailsActivityBar.this, R.raw.notes));
+                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.raw.notes));
                         text.setText("Cash");
                         icons.addView(child);
                     }
                     break;
                 case 7:
                     if (details.getBar_payment().equals("credit/debit card") || details.getBar_payment().equals("all")) {
-                        x.setBackground(ContextCompat.getDrawable(detailsActivityBar.this, R.raw.credit_card));
+                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.raw.credit_card));
                         text.setText("Card");
                         icons.addView(child);
                     }
@@ -613,25 +561,6 @@ private class net extends AsyncTask<Void, Void, Void> {
 
 
     @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        Log.i("Connection failed:", " ConnectionResult.getErrorCode() = "
-                + result.getErrorCode());
-    }
-
-    @Override
-    public void onConnected(Bundle arg0) {
-
-        // Once connected with google api, get the location
-        mLastLocation = locationHelper.getLocation();
-    }
-
-    @Override
-    public void onConnectionSuspended(int arg0) {
-        locationHelper.connectApiClient();
-    }
-
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CHECK_SETTINGS:
@@ -639,7 +568,7 @@ private class net extends AsyncTask<Void, Void, Void> {
                     case RESULT_OK:
                         Log.e("d", "d");
                         // All required changes were successfully made
-                        mLastLocation = locationHelper.getLocation();
+        //                mLastLocation = locationHelper.getLocation();
                         break;
                     case RESULT_CANCELED:
                         // The user was asked to change settings, but chose not to

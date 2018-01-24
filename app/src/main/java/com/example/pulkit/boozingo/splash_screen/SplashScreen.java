@@ -1,34 +1,46 @@
 package com.example.pulkit.boozingo.splash_screen;
 
+import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Space;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.pulkit.boozingo.helper.LocationHelper;
+import com.example.pulkit.boozingo.helper.ConnectionDetector;
+import com.example.pulkit.boozingo.helper.Permission;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.Session;
 import com.example.pulkit.boozingo.disclaimer.disclaimer;
 
-import static com.example.pulkit.boozingo.cities.Cities.getConnectivityStatusString;
+import static com.example.pulkit.boozingo.helper.LocationHelper.REQUEST_CHECK_SETTINGS;
+import static com.example.pulkit.boozingo.helper.LocationHelper.status;
+import static com.example.pulkit.boozingo.helper.Permission.RequestPermissionCode;
 
 public class SplashScreen extends AppCompatActivity {
 
     private Snackbar snackbar;
     RelativeLayout layout;
     Session session;
-    boolean isAppInstalled = false;
+    String _status;
+    Permission permission;
+    final int DELAY_TIME = 1500;
+    ConnectionDetector connectionDetector;
+    LocationHelper locationHelper;
+    private Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,31 +52,20 @@ public class SplashScreen extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_splash_screen);
+
         session = new Session(getApplicationContext());
-
-        isAppInstalled = session.isappInstalled();
-        if(!isAppInstalled && false) {
-            //  create short code
-
-            Intent shortcutIntent = new Intent(getApplicationContext(),SplashScreen.class);
-            shortcutIntent.setAction(Intent.ACTION_MAIN);
-            Intent intent = new Intent();
-            intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-            intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Boozingo");
-            intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource
-                    .fromContext(getApplicationContext(), R.mipmap.logo));
-            intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-            getApplicationContext().sendBroadcast(intent);
-
-            //Make preference false
-            session.create_isappInstalled();
-        }
+        permission = new Permission(this);
+   //     locationHelper = new LocationHelper(this);
+        connectionDetector = new ConnectionDetector(this);
 
         layout = (RelativeLayout) findViewById(R.id.layout);
- //       startActivity(new Intent(SplashScreen.this, disclaimer.class));
-        String status = getConnectivityStatusString(this);
-        setSnackbarMessage(status, false);
+        _status = connectionDetector.getConnectivityStatusString(this);
 
+        if (permission.checkPermission()) {
+            setSnackbarMessage(_status, false);
+        } else {
+            permission.requestPermission();
+        }
 
 
     }
@@ -91,15 +92,82 @@ public class SplashScreen extends AppCompatActivity {
             textView.setTextColor(Color.WHITE);
 
             snackbar.show();
-        }
-        else {
+        } else {
             new Handler().postDelayed(new Runnable() {
                 public void run() {
                     startActivity(new Intent(SplashScreen.this, disclaimer.class));
                     finish();
                 }
-            }, 1500);
+            }, DELAY_TIME);
         }
 
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+
+            case RequestPermissionCode:
+
+                if (grantResults.length > 0) {
+
+                    boolean CoarseLocation = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean FineLocaion = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                    if (CoarseLocation && FineLocaion) {
+
+                        Toast.makeText(SplashScreen.this, "Permission Granted", Toast.LENGTH_LONG).show();
+                        setSnackbarMessage(_status, false);
+
+                    } else {
+
+                        // permission was not granted
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(SplashScreen.this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                            permission.requestPermission();
+                        } else {
+                            Toast.makeText(this, "Permissions are necessary. Allow them from app settings.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+/*
+    @Override
+    public void onConnected(Bundle arg0) {
+        // Once connected with google api, get the location
+        mLastLocation = locationHelper.getLocation();
+    }
+
+    @Override
+    public void onConnectionSuspended(int arg0) {
+        locationHelper.connectApiClient();
+    }*/
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case RESULT_OK:
+                        Log.e("d", "d");
+                        // All required changes were successfully made
+                        mLastLocation = locationHelper.getLocation();
+                        break;
+                    case RESULT_CANCELED:
+                        // The user was asked to change settings, but chose not to
+                        try {
+                            status.startResolutionForResult(this, REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                }
+                break;
+        }
+    }
+
+
 }

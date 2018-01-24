@@ -1,6 +1,5 @@
 package com.example.pulkit.boozingo.details;
 
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -17,7 +16,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
-import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -38,13 +36,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.example.pulkit.boozingo.LocationUtil.LocationFinder;
-import com.example.pulkit.boozingo.LocationUtil.LocationHelper;
+import com.example.pulkit.boozingo.helper.LocationHelper;
 import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.helper.HttpHandler;
-import com.example.pulkit.boozingo.model.detailsBar;
 import com.example.pulkit.boozingo.model.detailsNight_club;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -64,7 +59,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
-import java.util.List;
 
 import static com.example.pulkit.boozingo.Boozingo.url;
 
@@ -542,7 +536,7 @@ public class detailsActivityNight_club extends AppCompatActivity implements OnMa
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        locationHelper.onActivityResult(requestCode, resultCode, data);
+   //     locationHelper.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
