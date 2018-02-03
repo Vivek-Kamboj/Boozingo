@@ -20,20 +20,27 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".splash"
-            android:theme="@style/SplashTheme"></activity>
-        <activity android:name=".splash_screen.SplashScreen"></activity>
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".splash_screen.SplashScreen"/>
         <activity android:name=".disclaimer.disclaimer" />
         <activity android:name=".disclaimer.terms_n_conditions" />
         <activity
             android:name=".cities.Cities"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <activity
             android:name=".cities.MainSearch"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".bars_n_pubs.bars_n_pubs"
             android:theme="@style/BarsPubs"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".details.detailsActivityBar">
 
         </activity>
@@ -47,11 +54,7 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".details.TempBarActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

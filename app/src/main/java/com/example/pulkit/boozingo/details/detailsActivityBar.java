@@ -93,8 +93,8 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
     RelativeLayout container;
 
     private Location mLastLocation;
-    double latitude;
-    double longitude;
+    double latitude=0.0;
+    double longitude=0.0;
     LocationHelper locationHelper;
 
     FrameLayout f1;
@@ -206,7 +206,6 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
                 String uri = "http://maps.google.com/maps?f=d&hl=en&saddr=" + latitude + "," + longitude + "&daddr=" + latitudeBar + "," + longitudeBar;
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
                 startActivity(Intent.createChooser(intent, "Select an application"));
-
             }
         });
 

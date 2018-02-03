@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
+import com.example.pulkit.boozingo.details.TempBarActivity;
 import com.example.pulkit.boozingo.details.detailsActivityBar;
 import com.example.pulkit.boozingo.model.smallBarDetails;
 import com.google.gson.Gson;
@@ -78,7 +79,7 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
     public void onItemClick(int p) {
 
         if (internetStatus.equals(getString(R.string.net))) {
-            Intent i = new Intent(getActivity(), detailsActivityBar.class);
+            Intent i = new Intent(getActivity(), TempBarActivity.class);
             i.putExtra("type", "bar");
             i.putExtra("id", mDataset.get(p).getId());
 

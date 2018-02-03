@@ -73,7 +73,7 @@ import static com.example.pulkit.boozingo.helper.LocationHelper.REQUEST_CHECK_SE
 import static com.example.pulkit.boozingo.helper.LocationHelper.status;
 import static com.example.pulkit.boozingo.helper.Permission.RequestPermissionCode;
 
-public class TempBarActivity extends AppCompatActivity implements SnackBarClass.SnackbarMessage {
+public class TempBarActivity extends AppCompatActivity implements SnackBarClass.SnackbarMessage, GoogleApiClient.ConnectionCallbacks {
 
     ViewPager viewPager;
     //    ImageButton back;
@@ -101,6 +101,10 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
     Snackbar snackbar;
     private boolean internetConnected = true;
 
+    LocationHelper locationHelper;
+    private Location mLastLocation;
+    Double latitude=0.0, longitude=0.0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +127,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
 
 
         permission = new Permission(this);
+        locationHelper = new LocationHelper(this);
         snackBarClass = new SnackBarClass(this);
         snackBarClass.readySnackbarMessage(this);
 
@@ -182,7 +187,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
             }
         });
 
-        /*map.setOnClickListener(new View.OnClickListener() {
+        frag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -198,59 +203,58 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
 
             }
         });
-*/
+
         //to get data from net
         new net().execute();
 
     }
 
 
-    private void init(){
-        viewPager=(ViewPager)findViewById(R.id.pager);
+    private void init() {
+        viewPager = (ViewPager) findViewById(R.id.pager);
 
-        dot1=(ImageView)findViewById(R.id.dot1);
-        dot2=(ImageView)findViewById(R.id.dot2);
-        dot3=(ImageView)findViewById(R.id.dot3);
-        dot4=(ImageView)findViewById(R.id.dot4);
-        dot5=(ImageView)findViewById(R.id.dot5);
-        dot6=(ImageView)findViewById(R.id.dot6);
+        dot1 = (ImageView) findViewById(R.id.dot1);
+        dot2 = (ImageView) findViewById(R.id.dot2);
+        dot3 = (ImageView) findViewById(R.id.dot3);
+        dot4 = (ImageView) findViewById(R.id.dot4);
+        dot5 = (ImageView) findViewById(R.id.dot5);
+        dot6 = (ImageView) findViewById(R.id.dot6);
 
-        speciality=(TextView)findViewById(R.id.speciality);
-        name=(TextView)findViewById(R.id.name);
-        type=(TextView)findViewById(R.id.type);
-        timing=(TextView)findViewById(R.id.timings);
-        address=(TextView)findViewById(R.id.address);
-        icons=(LinearLayout)findViewById(R.id.icons);
-        container=(RelativeLayout)findViewById(R.id.container);
-        scroll=(ScrollView)findViewById(R.id.scroll);
+        speciality = (TextView) findViewById(R.id.speciality);
+        name = (TextView) findViewById(R.id.name);
+        type = (TextView) findViewById(R.id.type);
+        timing = (TextView) findViewById(R.id.timings);
+        address = (TextView) findViewById(R.id.address);
+        icons = (LinearLayout) findViewById(R.id.icons);
+        container = (RelativeLayout) findViewById(R.id.container);
+        scroll = (ScrollView) findViewById(R.id.scroll);
 
-        f1=(FrameLayout)findViewById(R.id.layout);
-        l1=(LinearLayout)findViewById(R.id.dots);
-        im1=(ImageView)findViewById(R.id.booze);
-        hsv=(HorizontalScrollView)findViewById(R.id.icon_holder);
-        r1=(RelativeLayout)findViewById(R.id.ll4);
-        frag= (ImageView) findViewById(R.id.map);
+        f1 = (FrameLayout) findViewById(R.id.layout);
+        l1 = (LinearLayout) findViewById(R.id.dots);
+        im1 = (ImageView) findViewById(R.id.booze);
+        hsv = (HorizontalScrollView) findViewById(R.id.icon_holder);
+        r1 = (RelativeLayout) findViewById(R.id.ll4);
+        frag = (ImageView) findViewById(R.id.map);
         locator = (TextView) findViewById(R.id.locator);
 
     }
 
-    private void setParams(){
+    private void setParams() {
 
-        height=getWindowManager().getDefaultDisplay().getHeight();
-        width=getWindowManager().getDefaultDisplay().getWidth();
+        height = getWindowManager().getDefaultDisplay().getHeight();
+        width = getWindowManager().getDefaultDisplay().getWidth();
 
-        f1.getLayoutParams().height=(int)(height*0.30);
-        l1.getLayoutParams().height=(int)(height*0.02);
-        im1.getLayoutParams().height=(int)(height*0.04);
-        hsv.getLayoutParams().height=(int)(height*0.10);
-        r1.getLayoutParams().height=(int)(height*0.30);
-        frag.getLayoutParams().height=(int)(height*0.30*0.87);
-        locator.getLayoutParams().height=(int)(height*0.30*0.12);
+        f1.getLayoutParams().height = (int) (height * 0.30);
+        l1.getLayoutParams().height = (int) (height * 0.02);
+        im1.getLayoutParams().height = (int) (height * 0.04);
+        hsv.getLayoutParams().height = (int) (height * 0.10);
+        r1.getLayoutParams().height = (int) (height * 0.30);
+        frag.getLayoutParams().height = (int) (height * 0.30 * 0.87);
+        locator.getLayoutParams().height = (int) (height * 0.30 * 0.12);
 
-        l1.getLayoutParams().width=(int)(width*0.25);
-        im1.getLayoutParams().width=(int)(width*0.30);
+        l1.getLayoutParams().width = (int) (width * 0.25);
+        im1.getLayoutParams().width = (int) (width * 0.30);
     }
-
 
     private class net extends AsyncTask<Void, Void, Void> {
         @Override
@@ -295,7 +299,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
                             longitudeBar = geo_location.substring(comma + 1);
 
 
-                            String path="http://maps.google.com/maps/api/staticmap?&zoom=19&size=600x240&markers=color:blue|"+latitudeBar+","+longitudeBar;
+                            String path = "http://maps.google.com/maps/api/staticmap?&zoom=19&size=600x240&markers=color:blue|" + latitudeBar + "," + longitudeBar;
 
                             Glide.with(TempBarActivity.this)
                                     .load(path)
@@ -539,7 +543,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
     @Override
     protected void onResume() {
         super.onResume();
-        //      locationHelper.checkPlayServices();
+        mLastLocation = locationHelper.getLocation();
         snackBarClass.registerInternetCheckReceiver();
 
         if (!permission.checkPermission())
@@ -563,7 +567,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
                     case RESULT_OK:
                         Log.e("d", "d");
                         // All required changes were successfully made
-        //                mLastLocation = locationHelper.getLocation();
+                        mLastLocation = locationHelper.getLocation();
                         break;
                     case RESULT_CANCELED:
                         // The user was asked to change settings, but chose not to
@@ -578,5 +582,15 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
         }
     }
 
+
+    @Override
+    public void onConnected(Bundle arg0) {
+        mLastLocation = locationHelper.getLocation();
+    }
+
+    @Override
+    public void onConnectionSuspended(int arg0) {
+        locationHelper.connectApiClient();
+    }
 
 }
