@@ -130,7 +130,7 @@
                     android:layout_marginRight="5dp"
                     android:gravity="bottom"
                     android:text="Open today ."
-                    android:textColor="#19dc40"
+                    android:textColor="#ef5350"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
@@ -140,9 +140,8 @@
                     android:layout_height="match_parent"
                     android:gravity="bottom"
                     android:text="            "
-                    android:textColor="#19dc40"
-                    android:textSize="12sp"
-                    android:textStyle="italic" />
+                    android:textColor="#ef5350"
+                    android:textSize="12sp" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -178,13 +177,12 @@
                 android:id="@+id/speciality"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="80dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/textview1"
                 android:gravity="left"
                 android:text=""
-                android:textColor="#424242"
+                android:layout_below="@+id/textview1"
+                android:textColor="#616161"
                 android:textSize="15sp" />
 
         </RelativeLayout>

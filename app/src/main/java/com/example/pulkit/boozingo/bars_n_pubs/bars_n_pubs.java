@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -47,6 +48,7 @@ import com.example.pulkit.boozingo.Session;
 import com.example.pulkit.boozingo.helper.DBHelper;
 import com.example.pulkit.boozingo.helper.HttpHandler;
 import com.example.pulkit.boozingo.helper.ImageUtils;
+import com.example.pulkit.boozingo.helper.SnackBarClass;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -58,27 +60,28 @@ import java.util.List;
 
 import static com.example.pulkit.boozingo.Boozingo.url;
 
-public class bars_n_pubs extends AppCompatActivity {
+public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.SnackbarMessage{
 
-    private Toolbar toolbar;
+    public CoordinatorLayout layout;
+    Toolbar toolbar;
+    AppBarLayout appBarLayout;
+    CollapsingToolbarLayout collapsingToolbarLayout;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+
     String city;
     TextView city_name;
     ImageView city_image;
     String TAG = "TAG";
     ProgressDialog pDialog;
-    public CoordinatorLayout layout;
     public static JSONArray bars = new JSONArray(), pubs = new JSONArray(), shops = new JSONArray(),
             lounges = new JSONArray(), clubs = new JSONArray();
 
     // for snack bar
-    public static int TYPE_WIFI = 1;
-    public static int TYPE_MOBILE = 2;
-    public static int TYPE_NOT_CONNECTED = 0;
-    private Snackbar snackbar;
+    SnackBarClass snackBarClass;
+    Snackbar snackbar;
     private boolean internetConnected = true;
-    public static String internetStatus;
+    public static String internetStatus = "";
 
     DBHelper dbHelper;
     byte[] bytes;
@@ -86,33 +89,53 @@ public class bars_n_pubs extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bars_n_pubs);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        bars = new JSONArray();
-
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-  //      params.setScrollFlags(0);
-
+        setContentView(R.layout.temp8);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-        city = getIntent().getStringExtra("city");
-  //      city = "lucknow";
-        internetStatus = getString(R.string.net);
+        init();
 
-        //initialise database
+        setSupportActionBar(toolbar);
+
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        //     city = getIntent().getStringExtra("city");
+        city = "delhi";
+
+
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+               //     collapsingToolbarLayout.setTitle(getString(R.string.app_name));
+                    collapsingToolbarLayout.setTitle(city.substring(0, 1).toUpperCase() + city.substring(1));
+                    isShow = true;
+
+                } else if(isShow) {
+                    collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
+                    isShow = false;
+                }
+            }
+        });
+
+
+        bars = new JSONArray();
+
+
+
         dbHelper = new DBHelper(this);
+        snackBarClass = new SnackBarClass(this);
+        snackBarClass.readySnackbarMessage(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.transparent));
-        city_name = (TextView) findViewById(R.id.city_name);
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        city_image = (ImageView) findViewById(R.id.city_image);
-        layout = (CoordinatorLayout) findViewById(R.id.container);
 
         city_name.setText("");
 
@@ -124,10 +147,21 @@ public class bars_n_pubs extends AppCompatActivity {
 
 
         setupViewPager(viewPager);
-        //       tabLayout.setupWithViewPager(viewPager);
 
         new net().execute();
 
+    }
+
+    private void init() {
+
+        collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
+        appBarLayout = findViewById(R.id.app_bar_layout);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        city_name = (TextView) findViewById(R.id.city_name);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        city_image = (ImageView) findViewById(R.id.city_image);
+        layout = (CoordinatorLayout) findViewById(R.id.container);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -288,56 +322,13 @@ public class bars_n_pubs extends AppCompatActivity {
     }
 
 
-    // functions for snack bar
-    private void registerInternetCheckReceiver() {
-        IntentFilter internetFilter = new IntentFilter();
-        internetFilter.addAction("android.net.wifi.STATE_CHANGE");
-        internetFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        registerReceiver(broadcastReceiver, internetFilter);
-    }
-
-    public BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String status = getConnectivityStatusString(context);
-            setSnackbarMessage(status, false);
-        }
-    };
-
-    public static int getConnectivityStatus(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (null != activeNetwork) {
-            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
-                return TYPE_WIFI;
-
-            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
-                return TYPE_MOBILE;
-        }
-        return TYPE_NOT_CONNECTED;
-    }
-
-    public static String getConnectivityStatusString(Context context) {
-        int conn = getConnectivityStatus(context);
-        String status = null;
-        if (conn == TYPE_WIFI) {
-            status = "Wifi enabled";
-        } else if (conn == TYPE_MOBILE) {
-            status = "Mobile data enabled";
-        } else if (conn == TYPE_NOT_CONNECTED) {
-            status = "Not connected to Internet";
-        }
-        return status;
-    }
-
-    private void setSnackbarMessage(String status, boolean showBar) {
-
+    @Override
+    public void setSnackbarMessage(String status, boolean showBar) {
+        internetStatus = "";
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
-
-            internetStatus = getString(R.string.net);
+            internetStatus = "Internet Connected";
         } else {
-            internetStatus = getString(R.string.no_net);
+            internetStatus = "Lost Internet Connection";
         }
         snackbar = Snackbar
                 .make(layout, internetStatus, Snackbar.LENGTH_LONG)
@@ -347,13 +338,15 @@ public class bars_n_pubs extends AppCompatActivity {
                         snackbar.dismiss();
                     }
                 });
+
         // Changing message text color
         snackbar.setActionTextColor(Color.WHITE);
         // Changing action button text color
         View sbView = snackbar.getView();
+
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
-        if (internetStatus.equalsIgnoreCase(getString(R.string.no_net))) {
+        if (internetStatus.equalsIgnoreCase("Lost Internet Connection")) {
             if (internetConnected) {
                 snackbar.show();
                 internetConnected = false;
@@ -369,13 +362,13 @@ public class bars_n_pubs extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerInternetCheckReceiver();
+        snackBarClass.registerInternetCheckReceiver();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(broadcastReceiver);
+        unregisterReceiver(snackBarClass.broadcastReceiver);
     }
 
 }

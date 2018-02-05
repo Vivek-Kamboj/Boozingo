@@ -14,12 +14,15 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -105,18 +108,20 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
     private Location mLastLocation;
     Double latitude=0.0, longitude=0.0;
 
+    Toolbar toolbar;
+    AppBarLayout appBarLayout;
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.temp6);
+        setContentView(R.layout.temp7);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         //      id = getIntent().getStringExtra("id");
         //    _type = getIntent().getStringExtra("type");
 
-        id = "2";
-        _type = "bar";
 
 
         // link views to objects
@@ -124,6 +129,37 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
 
         // set height and width programatically
         setParams();
+
+        setSupportActionBar(toolbar);
+
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbarLayout.setTitle(getString(R.string.app_name));
+                    isShow = true;
+                    l1.setVisibility(View.INVISIBLE);
+
+                } else if(isShow) {
+                    collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
+                    isShow = false;
+                    l1.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        id = "2";
+        _type = "bar";
 
 
         permission = new Permission(this);
@@ -211,6 +247,10 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
 
 
     private void init() {
+
+        collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
+        appBarLayout = findViewById(R.id.app_bar_layout);
+        toolbar = findViewById(R.id.toolbar);
         viewPager = (ViewPager) findViewById(R.id.pager);
 
         dot1 = (ImageView) findViewById(R.id.dot1);
@@ -244,7 +284,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
         height = getWindowManager().getDefaultDisplay().getHeight();
         width = getWindowManager().getDefaultDisplay().getWidth();
 
-        f1.getLayoutParams().height = (int) (height * 0.30);
+   //     f1.getLayoutParams().height = (int) (height * 0.30);
         l1.getLayoutParams().height = (int) (height * 0.02);
         im1.getLayoutParams().height = (int) (height * 0.04);
         hsv.getLayoutParams().height = (int) (height * 0.10);

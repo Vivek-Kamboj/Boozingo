@@ -11,7 +11,7 @@
     <item>
         <shape android:shape="rectangle">
             <corners android:bottomRightRadius="40dp" android:topRightRadius="40dp"/>
-            <gradient android:startColor="#FB365B" android:endColor="#ff708b" android:angle="90"/>
+            <gradient android:startColor="@color/appBarColor" android:endColor="#ff708b" android:angle="90"/>
         </shape>
     </item>
 

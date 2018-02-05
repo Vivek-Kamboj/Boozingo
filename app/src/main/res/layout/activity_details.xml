@@ -185,7 +185,7 @@
                 android:text="Speciality : "
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/speciality"

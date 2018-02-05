@@ -55,7 +55,7 @@ public class SplashScreen extends AppCompatActivity {
 
         session = new Session(getApplicationContext());
         permission = new Permission(this);
-   //     locationHelper = new LocationHelper(this);
+        locationHelper = new LocationHelper(this);
         connectionDetector = new ConnectionDetector(this);
 
         layout = (RelativeLayout) findViewById(R.id.layout);

@@ -15,4 +15,6 @@
     <color name="material_four">#dce1bee7</color>
     <color name="materiald_four">#dcedc8</color>
 
+    <color name="appBarColor">#FB365B</color>
+
 </resources>

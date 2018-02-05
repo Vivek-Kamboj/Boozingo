@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/top"
-            android:background="#FB365B"
+            android:background="@color/appBarColor"
             app:tabGravity="fill"
             app:tabMode="scrollable"
             app:tabSelectedTextColor="#FFFFFF"

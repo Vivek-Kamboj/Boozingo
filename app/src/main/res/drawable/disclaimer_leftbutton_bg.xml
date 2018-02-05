@@ -19,7 +19,7 @@
         <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
             <solid
-                android:color="#FB365B"/>
+                android:color="@color/appBarColor"/>
             <corners
                 android:bottomLeftRadius="30dp"/>
             <stroke
