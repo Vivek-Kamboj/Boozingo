@@ -102,8 +102,8 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        //     city = getIntent().getStringExtra("city");
-        city = "delhi";
+        city = getIntent().getStringExtra("city");
+        //city = "delhi";
 
 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {

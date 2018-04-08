@@ -76,11 +76,10 @@ public class FragBeer_shop extends Fragment implements Adapter_shop.ItemClickCal
 
     @Override
     public void onItemClick(int p) {
-        if(internetStatus.equals(getString(R.string.net))) {
+        if (internetStatus.equals(getString(R.string.net))) {
             Intent i = new Intent(getActivity(), detailsActivityBeer_shop.class);
-            i.putExtra("type","shop");
-            i.putExtra("id",mDataset.get(p).getId());
-
+            i.putExtra("type", "shop");
+            i.putExtra("id", mDataset.get(p).getId());
 
 
             if (!marshmallowPermissions.checkPermissionForFineLocation())
@@ -92,25 +91,23 @@ public class FragBeer_shop extends Fragment implements Adapter_shop.ItemClickCal
                 Toast.makeText(getActivity(), "Give Permission", Toast.LENGTH_SHORT).show();
                 marshmallowPermissions.requestPermissionForFineLocation();
             }
-        }
-        else
+        } else
             Toast.makeText(getActivity(), "Check network connection.", Toast.LENGTH_SHORT).show();
 
     }
 
     private void initDataset() throws JSONException {
 
-        for (int i=0; i < shops.length(); i++) {
+        for (int i = 0; i < shops.length(); i++) {
             JSONObject object = shops.getJSONObject(i);
             String pic;
 
 
             Gson gson = new Gson();
             smallDetail = gson.fromJson(object.toString(), smallBeer_shopDetails.class);
+
             pic = object.getString("beer_shop_icon");
-
-
-            pic = url +"/storage/" +pic;
+            pic = url + "/storage/" + pic;
 
             smallDetail.setBeer_shop_icon(pic);
             mDataset.add(smallDetail);

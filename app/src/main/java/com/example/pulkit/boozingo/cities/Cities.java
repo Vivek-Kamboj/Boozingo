@@ -54,12 +54,12 @@ import static com.example.pulkit.boozingo.Boozingo.url;
 import static com.example.pulkit.boozingo.helper.LocationHelper.REQUEST_CHECK_SETTINGS;
 import static com.example.pulkit.boozingo.helper.LocationHelper.status;
 
-public class Cities extends AppCompatActivity implements View.OnClickListener,SnackBarClass.SnackbarMessage,
-        GoogleApiClient.ConnectionCallbacks{
+public class Cities extends AppCompatActivity implements View.OnClickListener, SnackBarClass.SnackbarMessage,
+        GoogleApiClient.ConnectionCallbacks {
 
     public static String city = "";
     RelativeLayout rl;
-    TextView textView,t1,t2,t3,t4,t5;
+    TextView textView, t1, t2, t3, t4, t5;
     EditText search;
     ImageButton img;
     ImageView im1, im2, im3, im4, im5, banner, factimg1, factimg2, view_more;
@@ -82,7 +82,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener,Sn
     byte[] bytes;
     Boolean bool = true;
 
-    String[] cities_show = new String [5];
+    String[] cities_show = new String[5];
 
     RelativeLayout top;
     HorizontalScrollView hsv;
@@ -125,7 +125,6 @@ public class Cities extends AppCompatActivity implements View.OnClickListener,Sn
         snackBarClass.readySnackbarMessage(this);
 
 
-
         pDialog = new ProgressDialog(Cities.this);
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(true);
@@ -163,13 +162,13 @@ public class Cities extends AppCompatActivity implements View.OnClickListener,Sn
 
         cities_show = session.get_city_list();
 
-        if(cities_show==null){
+        if (cities_show == null) {
             bool = false;
-            cities_show = new String [5];
+            cities_show = new String[5];
         }
 
 
-        for (int i = 0; bool &&(i < cities_show.length) ; i++) {
+        for (int i = 0; bool && (i < cities_show.length); i++) {
             bytes = loadImageFromDB(cities_show[i]);
             if (bytes != null) {
                 switch (i) {
@@ -252,9 +251,9 @@ public class Cities extends AppCompatActivity implements View.OnClickListener,Sn
 
         height = getWindowManager().getDefaultDisplay().getHeight();
 
-        s1.getLayoutParams().height = (int) (height * 0.29);
-        s2.getLayoutParams().height = (int) (height * 0.35);
-        top.getLayoutParams().height = (int) (height * 0.45);
+        s1.getLayoutParams().height = (int) (height * 0.27);
+        s2.getLayoutParams().height = (int) (height * 0.33);
+        top.getLayoutParams().height = (int) (height * 0.43);
         hsv.getLayoutParams().height = (int) (height * 0.15);
         boozepedia.getLayoutParams().height = (int) (height * 0.09);
         c1.getLayoutParams().height = (int) (height * 0.25);
@@ -274,10 +273,13 @@ public class Cities extends AppCompatActivity implements View.OnClickListener,Sn
             } else if (v == rl) {
                 Intent i = new Intent(Cities.this, bars_n_pubs.class);
                 city = search.getText().toString();
-                if (!TextUtils.isEmpty(city)) {
-                    i.putExtra("city", city);
-                    startActivity(i);
-                }
+                if (cities_show[0].equals(city) || cities_show[1].equals(city) || cities_show[2].equals(city) || cities_show[3].equals(city)) {
+                    if (!TextUtils.isEmpty(city)) {
+                        i.putExtra("city", city);
+                        startActivity(i);
+                    }
+                } else
+                    Toast.makeText(this, "We will reach your city soon.", Toast.LENGTH_SHORT).show();
             } else if (v == myCity) {
                 Intent i = new Intent(Cities.this, bars_n_pubs.class);
                 {
@@ -311,6 +313,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener,Sn
             } else if (v == view_more) {
                 Intent i = new Intent(Cities.this, MainSearch.class);
                 startActivity(i);
+                //        Toast.makeText(this, "We will soon reach your city.", Toast.LENGTH_SHORT).show();
             }
         } else
             Toast.makeText(Cities.this, "Check network connection.", Toast.LENGTH_SHORT).show();
@@ -344,21 +347,21 @@ public class Cities extends AppCompatActivity implements View.OnClickListener,Sn
 
                             int a = 1, b = 1;
 
-                            String[] temp = new String [n];
+                            String[] temp = new String[n];
 
-                            for (int i = 0; i < n-1; i++) {
+                            for (int i = 0; i < n - 1; i++) {
                                 JSONObject c = images.getJSONObject(i);
                                 final String image = c.getString("image_url");
                                 temp[i] = url + "/storage/" + image;
                             }
 
-                            for (int i = 0; i < n-1; i++){
+                            for (int i = 0; i < n - 1; i++) {
                                 switch (i) {
                                     case 0:
                                         bytes = loadImageFromDB("banner");
                                         if (bytes != null) {
                                             factimg1.setImageBitmap(ImageUtils.getImage(bytes));
-                                        }else {
+                                        } else {
                                             Glide.with(Cities.this)
                                                     .load(temp[0])
                                                     .apply(options2)
@@ -455,7 +458,6 @@ public class Cities extends AppCompatActivity implements View.OnClickListener,Sn
 
                         }
                     } else {
-
 
 
                         Log.e(TAG, "Couldn't get json from server.");

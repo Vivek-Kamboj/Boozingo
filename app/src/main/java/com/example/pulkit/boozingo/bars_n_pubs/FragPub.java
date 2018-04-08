@@ -33,7 +33,7 @@ public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
     public static List<smallPubDetails> mDataset = new ArrayList<>();
     RecyclerView recview;
     Adapter_pub adapter;
-    int j = 0,i=0;
+    int j = 0, i = 0;
     smallPubDetails smallDetail;
 
     private MarshmallowPermissions marshmallowPermissions;
@@ -78,13 +78,13 @@ public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
 
     @Override
     public void onItemClick(int p) {
-   if(internetStatus.equals(getString(R.string.net))) {
-       Intent i = new Intent(getActivity(), detailsActivityPub.class);
-       i.putExtra("type","pub");
-       i.putExtra("id",mDataset.get(p).getId());
+        if (internetStatus.equals(getString(R.string.net))) {
+            Intent i = new Intent(getActivity(), detailsActivityPub.class);
+            i.putExtra("type", "pub");
+            i.putExtra("id", mDataset.get(p).getId());
 
 
-       if (!marshmallowPermissions.checkPermissionForFineLocation())
+            if (!marshmallowPermissions.checkPermissionForFineLocation())
                 marshmallowPermissions.requestPermissionForFineLocation();
 
             if (marshmallowPermissions.checkPermissionForFineLocation())
@@ -93,8 +93,7 @@ public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
                 Toast.makeText(getActivity(), "Give Permission", Toast.LENGTH_SHORT).show();
                 marshmallowPermissions.requestPermissionForFineLocation();
             }
-        }
-        else
+        } else
             Toast.makeText(getActivity(), "Check network connection.", Toast.LENGTH_SHORT).show();
 
     }
@@ -102,17 +101,16 @@ public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
     private void initDataset() throws JSONException {
 
 
-        for (i=0; i < pubs.length(); i++) {
+        for (i = 0; i < pubs.length(); i++) {
             JSONObject object = pubs.getJSONObject(i);
             String pic;
 
 
             Gson gson = new Gson();
             smallDetail = gson.fromJson(object.toString(), smallPubDetails.class);
+
             pic = object.getString("pub_icon");
-
-            pic = url +"/storage/" +pic;
-
+            pic = url + "/storage/" + pic;
 
             smallDetail.setPub_icon(pic);
             mDataset.add(smallDetail);

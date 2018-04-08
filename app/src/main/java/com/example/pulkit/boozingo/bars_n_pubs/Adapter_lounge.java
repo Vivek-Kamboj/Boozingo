@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.model.smallLoungeDetails;
 import com.squareup.picasso.Picasso;
@@ -35,11 +39,15 @@ public class Adapter_lounge extends RecyclerView.Adapter<Adapter_lounge.RecHolde
     //adapter
     public List<smallLoungeDetails> list;
     public LayoutInflater layoutInflater;
+    RequestOptions options;
 
     Adapter_lounge(List<smallLoungeDetails> list, Context c) {
         this.list = list;
         this.c = c;
         this.layoutInflater = LayoutInflater.from(c);
+        options = new RequestOptions()
+                .error(R.drawable.booze_fact_error_1)
+                .override(150, 150);
     }
 
     @Override
@@ -52,8 +60,8 @@ public class Adapter_lounge extends RecyclerView.Adapter<Adapter_lounge.RecHolde
     public void onBindViewHolder(Adapter_lounge.RecHolder holder, final int position) {
 
         String add = list.get(position).getLounge_address();
-        if(add.length()>60)
-            add = add.substring(0,60) + "...";
+        if (add.length() > 80)
+            add = add.substring(0, 80) + "...";
 
         holder.name.setText(list.get(position).getLounge_name());
         holder.address.setText(add);
@@ -62,14 +70,18 @@ public class Adapter_lounge extends RecyclerView.Adapter<Adapter_lounge.RecHolde
             @Override
             public void onClick(View v) {
                 Uri call = Uri.parse("tel:" + list.get(position).getLounge_contact());
-                Intent surf = new Intent(Intent.ACTION_DIAL, call);
-                c.startActivity(surf);
+                if (!TextUtils.isEmpty(list.get(position).getLounge_contact())) {
+                    Intent surf = new Intent(Intent.ACTION_DIAL, call);
+                    c.startActivity(surf);
+                } else
+                    Toast.makeText(c, "Contact not available.", Toast.LENGTH_SHORT).show();
+
             }
         });
 
-        Picasso.with(c)
+        Glide.with(c)
                 .load(list.get(position).getLounge_icon())
-                .fit()
+                .apply(options)
                 .into(holder.image);
     }
 
@@ -88,8 +100,8 @@ public class Adapter_lounge extends RecyclerView.Adapter<Adapter_lounge.RecHolde
 
 
         View view;
-        TextView name,address,time;
-        ImageView call,image;
+        TextView name, address, time;
+        ImageView call, image;
 
         public RecHolder(View itemView) {
             super(itemView);

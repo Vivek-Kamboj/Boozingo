@@ -79,7 +79,7 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
     public void onItemClick(int p) {
 
         if (internetStatus.equals(getString(R.string.net))) {
-            Intent i = new Intent(getActivity(), TempBarActivity.class);
+            Intent i = new Intent(getActivity(), detailsActivityBar.class);
             i.putExtra("type", "bar");
             i.putExtra("id", mDataset.get(p).getId());
 

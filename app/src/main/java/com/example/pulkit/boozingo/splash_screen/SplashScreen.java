@@ -25,12 +25,15 @@ import com.example.pulkit.boozingo.helper.Permission;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.Session;
 import com.example.pulkit.boozingo.disclaimer.disclaimer;
+import com.example.pulkit.boozingo.helper.SnackBarClass;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.OnMapReadyCallback;
 
 import static com.example.pulkit.boozingo.helper.LocationHelper.REQUEST_CHECK_SETTINGS;
 import static com.example.pulkit.boozingo.helper.LocationHelper.status;
 import static com.example.pulkit.boozingo.helper.Permission.RequestPermissionCode;
 
-public class SplashScreen extends AppCompatActivity {
+public class SplashScreen extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks{
 
     private Snackbar snackbar;
     RelativeLayout layout;
@@ -134,7 +137,7 @@ public class SplashScreen extends AppCompatActivity {
         }
     }
 
-/*
+
     @Override
     public void onConnected(Bundle arg0) {
         // Once connected with google api, get the location
@@ -144,7 +147,7 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     public void onConnectionSuspended(int arg0) {
         locationHelper.connectApiClient();
-    }*/
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

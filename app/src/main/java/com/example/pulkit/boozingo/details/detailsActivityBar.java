@@ -14,13 +14,18 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -73,9 +78,7 @@ import static com.example.pulkit.boozingo.helper.LocationHelper.REQUEST_CHECK_SE
 import static com.example.pulkit.boozingo.helper.LocationHelper.status;
 import static com.example.pulkit.boozingo.helper.Permission.RequestPermissionCode;
 
-public class detailsActivityBar extends AppCompatActivity implements OnMapReadyCallback, SnackBarClass.SnackbarMessage,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+public class detailsActivityBar extends AppCompatActivity implements SnackBarClass.SnackbarMessage, GoogleApiClient.ConnectionCallbacks {
 
     ViewPager viewPager;
     //    ImageButton back;
@@ -83,27 +86,18 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
     List<String> images = new ArrayList<>();
     picPagerAdapter adapter;
     LinearLayout icons;
-    TextView speciality, name, type, address, timing;
-    ImageView transparent, dot1, dot2, dot3, dot4, dot5, dot6;
+    TextView speciality, name, type, address, timing, locator;
+    ImageView dot1, dot2, dot3, dot4, dot5, dot6;
     ScrollView scroll;
     detailsBar details;
     ProgressDialog pDialog;
-    SupportMapFragment mapFragment;
 
     RelativeLayout container;
-
-    private Location mLastLocation;
-    double latitude=0.0;
-    double longitude=0.0;
-    LocationHelper locationHelper;
-
-    FrameLayout f1;
     LinearLayout l1;
     ImageView im1;
     HorizontalScrollView hsv;
     RelativeLayout r1;
-    View frag;
-    Button locator;
+    ImageView frag;
     int height, width;
 
     Permission permission;
@@ -111,18 +105,24 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
     Snackbar snackbar;
     private boolean internetConnected = true;
 
+    LocationHelper locationHelper;
+    private Location mLastLocation;
+    Double latitude = 0.0, longitude = 0.0;
+
+    CoordinatorLayout layout;
+    Toolbar toolbar;
+    AppBarLayout appBarLayout;
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.temp5);
+        setContentView(R.layout.temp7);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        //      id = getIntent().getStringExtra("id");
-        //    _type = getIntent().getStringExtra("type");
-
-        id = "2";
-        _type = "bar";
+        id = getIntent().getStringExtra("id");
+        _type = getIntent().getStringExtra("type");
 
 
         // link views to objects
@@ -130,6 +130,36 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
 
         // set height and width programatically
         setParams();
+
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbarLayout.setTitle(getString(R.string.app_name));
+                    isShow = true;
+                    l1.setVisibility(View.INVISIBLE);
+
+                } else if (isShow) {
+                    collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
+                    isShow = false;
+                    l1.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
 
 
         permission = new Permission(this);
@@ -193,7 +223,7 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
             }
         });
 
-        locator.setOnClickListener(new View.OnClickListener() {
+        frag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -206,251 +236,209 @@ public class detailsActivityBar extends AppCompatActivity implements OnMapReadyC
                 String uri = "http://maps.google.com/maps?f=d&hl=en&saddr=" + latitude + "," + longitude + "&daddr=" + latitudeBar + "," + longitudeBar;
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
                 startActivity(Intent.createChooser(intent, "Select an application"));
+
             }
         });
 
         //to get data from net
         new net().execute();
 
-        String path="http://maps.google.com/maps/api/staticmap?center=37.4223662,-122.0839445&zoom=15&size=200x200&sensor=false";
-
-        //     new setImageFromUrl().execute();
-        Glide.with(this)
-                .load(path)
-                .into(im1);
-
-        // for scrolling map fragment
-        transparent.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                switch (action) {
-                    case MotionEvent.ACTION_DOWN:
-                        // Disallow ScrollView to intercept touch events.
-                        scroll.requestDisallowInterceptTouchEvent(true);
-                        // Disable touch on transparent view
-                        return false;
-
-                    case MotionEvent.ACTION_UP:
-                        // Allow ScrollView to intercept touch events.
-                        scroll.requestDisallowInterceptTouchEvent(false);
-                        return true;
-
-                    case MotionEvent.ACTION_MOVE:
-                        scroll.requestDisallowInterceptTouchEvent(true);
-                        return false;
-
-                    default:
-                        return true;
-                }
-            }
-        });
-
     }
 
 
-private void init(){
-        viewPager=(ViewPager)findViewById(R.id.pager);
+    private void init() {
 
-        dot1=(ImageView)findViewById(R.id.dot1);
-        dot2=(ImageView)findViewById(R.id.dot2);
-        dot3=(ImageView)findViewById(R.id.dot3);
-        dot4=(ImageView)findViewById(R.id.dot4);
-        dot5=(ImageView)findViewById(R.id.dot5);
-        dot6=(ImageView)findViewById(R.id.dot6);
+        layout = findViewById(R.id.layout);
+        collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
+        appBarLayout = findViewById(R.id.app_bar_layout);
+        toolbar = findViewById(R.id.toolbar);
+        viewPager = (ViewPager) findViewById(R.id.pager);
 
-        speciality=(TextView)findViewById(R.id.speciality);
-        name=(TextView)findViewById(R.id.name);
-        type=(TextView)findViewById(R.id.type);
-        timing=(TextView)findViewById(R.id.timings);
-        address=(TextView)findViewById(R.id.address);
-        icons=(LinearLayout)findViewById(R.id.icons);
-        container=(RelativeLayout)findViewById(R.id.container);
-        scroll=(ScrollView)findViewById(R.id.scroll);
-        transparent=(ImageView)findViewById(R.id.imagetrans);
+        dot1 = (ImageView) findViewById(R.id.dot1);
+        dot2 = (ImageView) findViewById(R.id.dot2);
+        dot3 = (ImageView) findViewById(R.id.dot3);
+        dot4 = (ImageView) findViewById(R.id.dot4);
+        dot5 = (ImageView) findViewById(R.id.dot5);
+        dot6 = (ImageView) findViewById(R.id.dot6);
 
-        f1=(FrameLayout)findViewById(R.id.layout);
-        l1=(LinearLayout)findViewById(R.id.dots);
-        im1=(ImageView)findViewById(R.id.booze);
-        hsv=(HorizontalScrollView)findViewById(R.id.icon_holder);
-        r1=(RelativeLayout)findViewById(R.id.ll4);
-        frag=findViewById(R.id.map);
-        locator=(Button)findViewById(R.id.locator);
+        speciality = (TextView) findViewById(R.id.speciality);
+        name = (TextView) findViewById(R.id.name);
+        type = (TextView) findViewById(R.id.type);
+        timing = (TextView) findViewById(R.id.timings);
+        address = (TextView) findViewById(R.id.address);
+        icons = (LinearLayout) findViewById(R.id.icons);
+        container = (RelativeLayout) findViewById(R.id.container);
+        //  scroll = (ScrollView) findViewById(R.id.scroll);
 
-        mapFragment=(SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
-        }
+        l1 = (LinearLayout) findViewById(R.id.dots);
+        im1 = (ImageView) findViewById(R.id.booze);
+        hsv = (HorizontalScrollView) findViewById(R.id.icon_holder);
+        r1 = (RelativeLayout) findViewById(R.id.ll4);
+        frag = (ImageView) findViewById(R.id.map);
+        locator = (TextView) findViewById(R.id.locator);
 
-private void setParams(){
+    }
 
-        height=getWindowManager().getDefaultDisplay().getHeight();
-        width=getWindowManager().getDefaultDisplay().getWidth();
+    private void setParams() {
 
-        f1.getLayoutParams().height=(int)(height*0.30);
-        l1.getLayoutParams().height=(int)(height*0.02);
-        im1.getLayoutParams().height=(int)(height*0.54);
-        hsv.getLayoutParams().height=(int)(height*0.10);
-        r1.getLayoutParams().height=(int)(height*0.30);
-        frag.getLayoutParams().height=(int)(height*0.30*0.85);
-        locator.getLayoutParams().height=(int)(height*0.30*0.25);
+        height = getWindowManager().getDefaultDisplay().getHeight();
+        width = getWindowManager().getDefaultDisplay().getWidth();
 
-        l1.getLayoutParams().width=(int)(width*0.25);
-        im1.getLayoutParams().width=(int)(width*0.30);
-        locator.getLayoutParams().width=(int)(width*0.15);
-        }
+        //     f1.getLayoutParams().height = (int) (height * 0.30);
+        l1.getLayoutParams().height = (int) (height * 0.02);
+        im1.getLayoutParams().height = (int) (height * 0.04);
+        hsv.getLayoutParams().height = (int) (height * 0.10);
+        r1.getLayoutParams().height = (int) (height * 0.30);
+        frag.getLayoutParams().height = (int) (height * 0.30 * 0.87);
+        locator.getLayoutParams().height = (int) (height * 0.30 * 0.12);
 
-@Override
-public void onMapReady(GoogleMap map){
-        map.addMarker(new MarkerOptions()
-        .position(new LatLng(Float.parseFloat(latitudeBar),Float.parseFloat(longitudeBar)))
-        .title(_type.toUpperCase()));
+        l1.getLayoutParams().width = (int) (width * 0.25);
+        im1.getLayoutParams().width = (int) (width * 0.30);
+    }
 
-        CameraPosition cameraPosition=new CameraPosition.Builder()
-        .target(new LatLng(Float.parseFloat(latitudeBar),Float.parseFloat(longitudeBar)))
-        .zoom(15)
-        .build();
-        //Zoom in and animate the camera.
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
+    private class net extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            HttpHandler sh = new HttpHandler();
+
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall(url + "/bar/" + id);
 
 
-private class net extends AsyncTask<Void, Void, Void> {
-    @Override
-    protected Void doInBackground(Void... params) {
-        HttpHandler sh = new HttpHandler();
+            Log.e(TAG, "Response from url: " + jsonStr);
 
-        // Making a request to url and getting response
-        String jsonStr = sh.makeServiceCall(url + "/bar/" + id);
+            if (jsonStr != null) {
+                try {
+                    final JSONObject object = new JSONObject(jsonStr);
+                    JSONArray array = object.getJSONArray("bar");
 
+                    JSONObject temp = array.getJSONObject(0);
+                    String userJson = temp.toString();
 
-        Log.e(TAG, "Response from url: " + jsonStr);
+                    Gson gson = new Gson();
 
-        if (jsonStr != null) {
-            try {
-                final JSONObject object = new JSONObject(jsonStr);
-                JSONArray array = object.getJSONArray("bar");
+                    details = new detailsBar();
+                    details = gson.fromJson(userJson, detailsBar.class);
 
-                JSONObject temp = array.getJSONObject(0);
-                String userJson = temp.toString();
+                    runOnUiThread(new Runnable() {
+                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                        @Override
+                        public void run() {
 
-                Gson gson = new Gson();
-
-                details = new detailsBar();
-                details = gson.fromJson(userJson, detailsBar.class);
-
-                runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                    @Override
-                    public void run() {
-
-                        name.setText(details.getBar_name());
-                        address.setText(details.getBar_address());
-                        type.setText("(" + _type + ")");
-                        timing.setText(details.getBar_time());
-                        geo_location = details.getBar_geolocation();
-                        specs = details.getBar_details();
-                        cost = details.getBar_cost();
+                            name.setText(details.getBar_name());
+                            address.setText(details.getBar_address());
+                            type.setText("(" + _type + ")");
+                            timing.setText(details.getBar_time());
+                            geo_location = details.getBar_geolocation();
+                            specs = details.getBar_details();
+                            cost = details.getBar_cost();
 
 
-                        int comma = geo_location.indexOf('-');
-                        latitudeBar = geo_location.substring(0, comma);
-                        longitudeBar = geo_location.substring(comma + 1);
-
-                        mapFragment.getMapAsync(detailsActivityBar.this);
+                            int comma = geo_location.indexOf('-');
+                            latitudeBar = geo_location.substring(0, comma);
+                            longitudeBar = geo_location.substring(comma + 1);
 
 
-                        try {
-                            image = object.getJSONArray("bar_images").getJSONObject(0).getString("bar_images");
-                            image = image.substring(2, image.length() - 2);
-                            image = image.replaceAll("\\\\", "");
+                            String path = "http://maps.google.com/maps/api/staticmap?&zoom=19&size=600x240&markers=color:blue|" + latitudeBar + "," + longitudeBar;
 
-                            for (int i = 0; i < image.length(); ) {
-                                int j = image.indexOf(',', i);
-                                if (j == -1) {
-                                    images.add(url + "/storage/" + image.substring(i, image.length()));
+                            Glide.with(detailsActivityBar.this)
+                                    .load(path)
+                                    .into(frag);
+
+
+                            try {
+                                image = object.getJSONArray("bar_images").getJSONObject(0).getString("bar_images");
+                                image = image.substring(2, image.length() - 2);
+                                image = image.replaceAll("\\\\", "");
+
+                                for (int i = 0; i < image.length(); ) {
+                                    int j = image.indexOf(',', i);
+                                    if (j == -1) {
+                                        images.add(url + "/storage/" + image.substring(i, image.length()));
+                                        break;
+                                    } else
+                                        images.add(url + "/storage/" + image.substring(i, j - 1));
+                                    i = j + 2;
+
+                                }
+
+                                //to randomise pics
+                                Collections.shuffle(images);
+
+                                //to select only 3 pics
+                                images = images.subList(0, 3);
+
+
+                                adapter = new picPagerAdapter(detailsActivityBar.this, images);
+                                viewPager.setAdapter(adapter);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            // for speciality
+                            String y;
+                            for (int i = 0; i < specs.length(); ) {
+                                int x = specs.indexOf('/', i);
+                                if (x < specs.length() && x != -1) {
+                                    y = speciality.getText() + "\u25CF " + specs.substring(i, x) + "\n";
+                                    speciality.setText(y);
+                                    i = x + 1;
+                                } else {
+                                    y = speciality.getText() + "\u25CF " + specs.substring(i, specs.length());
+                                    speciality.setText(y);
                                     break;
-                                } else
-                                    images.add(url + "/storage/" + image.substring(i, j - 1));
-                                i = j + 2;
+                                }
 
                             }
 
-                            //to randomise pics
-                            Collections.shuffle(images);
 
-                            //to select only 3 pics
-                            images = images.subList(0, 3);
+                            // for cost of 2 person
+                            y = speciality.getText() + "\n\u25CF Average cost for 2 Boozinga: \u20B9" + cost;
+                            speciality.setText(y);
 
+                            facilities();
 
-                            adapter = new picPagerAdapter(detailsActivityBar.this, images);
-                            viewPager.setAdapter(adapter);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            pDialog.dismiss();
                         }
+                    });
 
-
-                        // for speciality
-                        String y;
-                        for (int i = 0; i < specs.length(); ) {
-                            int x = specs.indexOf('/', i);
-                            if (x < specs.length() && x != -1) {
-                                y = speciality.getText() + "\u25CF " + specs.substring(i, x) + "\n";
-                                speciality.setText(y);
-                                i = x + 1;
-                            } else {
-                                y = speciality.getText() + "\u25CF " + specs.substring(i, specs.length());
-                                speciality.setText(y);
-                                break;
-                            }
+                } catch (final JSONException e) {
+                    Log.e(TAG, "Json parsing error: " + e.getMessage());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    "Problem retrieving data. Restart application.",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                            pDialog.dismiss();
 
                         }
+                    });
 
+                }
 
-                        // for cost of 2 person
-                        y = speciality.getText() + "\n\u25CF Average cost for 2 Boozinga: \u20B9" + cost;
-                        speciality.setText(y);
-
-                        facilities();
-
-                        pDialog.dismiss();
-                    }
-                });
-
-            } catch (final JSONException e) {
-                Log.e(TAG, "Json parsing error: " + e.getMessage());
+            } else {
+                Log.e(TAG, "Couldn't get json from server.");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(getApplicationContext(),
-                                "Problem retrieving data. Restart application.",
+                                "Network problem. Check network connection.",
                                 Toast.LENGTH_LONG)
                                 .show();
                         pDialog.dismiss();
 
                     }
                 });
-
             }
 
-        } else {
-            Log.e(TAG, "Couldn't get json from server.");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(),
-                            "Network problem. Check network connection.",
-                            Toast.LENGTH_LONG)
-                            .show();
-                    pDialog.dismiss();
-
-                }
-            });
+            return null;
         }
 
-        return null;
     }
-
-}
 
     @SuppressWarnings("ResourceType")
     private void facilities() {
@@ -563,7 +551,7 @@ private class net extends AsyncTask<Void, Void, Void> {
             internetStatus = "Lost Internet Connection";
         }
         snackbar = Snackbar
-                .make(scroll, internetStatus, Snackbar.LENGTH_LONG)
+                .make(layout, internetStatus, Snackbar.LENGTH_LONG)
                 .setAction("X", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -591,11 +579,21 @@ private class net extends AsyncTask<Void, Void, Void> {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //      locationHelper.checkPlayServices();
+        mLastLocation = locationHelper.getLocation();
         snackBarClass.registerInternetCheckReceiver();
 
         if (!permission.checkPermission())
@@ -608,25 +606,6 @@ private class net extends AsyncTask<Void, Void, Void> {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(snackBarClass.broadcastReceiver);
-    }
-
-
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        Log.i("Connection failed:", " ConnectionResult.getErrorCode() = "
-                + result.getErrorCode());
-    }
-
-    @Override
-    public void onConnected(Bundle arg0) {
-
-        // Once connected with google api, get the location
-        mLastLocation = locationHelper.getLocation();
-    }
-
-    @Override
-    public void onConnectionSuspended(int arg0) {
-        locationHelper.connectApiClient();
     }
 
 
@@ -653,5 +632,15 @@ private class net extends AsyncTask<Void, Void, Void> {
         }
     }
 
+
+    @Override
+    public void onConnected(Bundle arg0) {
+        mLastLocation = locationHelper.getLocation();
+    }
+
+    @Override
+    public void onConnectionSuspended(int arg0) {
+        locationHelper.connectApiClient();
+    }
 
 }

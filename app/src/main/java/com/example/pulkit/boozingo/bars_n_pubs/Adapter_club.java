@@ -1,13 +1,11 @@
 package com.example.pulkit.boozingo.bars_n_pubs;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.model.smallNight_clubDetails;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -42,12 +41,16 @@ public class Adapter_club extends RecyclerView.Adapter<Adapter_club.RecHolder> {
     //adapter
     public List<smallNight_clubDetails> list;
     public LayoutInflater layoutInflater;
+    RequestOptions options;
 
     Adapter_club(List<smallNight_clubDetails> list, Context c) {
         this.list = list;
         this.c = c;
         this.layoutInflater = LayoutInflater.from(c);
         marshmallowPermissions = new MarshmallowPermissions((Activity) c);
+        options = new RequestOptions()
+                .error(R.drawable.booze_fact_error_1)
+                .override(150, 150);
     }
 
     @Override
@@ -60,8 +63,8 @@ public class Adapter_club extends RecyclerView.Adapter<Adapter_club.RecHolder> {
     public void onBindViewHolder(Adapter_club.RecHolder holder, final int position) {
 
         String add = list.get(position).getNight_club_address();
-        if (add.length() > 60)
-            add = add.substring(0, 60) + "...";
+        if (add.length() > 80)
+            add = add.substring(0, 80) + "...";
 
         holder.name.setText(list.get(position).getNight_club_name());
         holder.address.setText(add);
@@ -69,26 +72,20 @@ public class Adapter_club extends RecyclerView.Adapter<Adapter_club.RecHolder> {
         holder.call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!marshmallowPermissions.checkPermissionForCall())
-                    marshmallowPermissions.requestPermissionForCall();
 
-                if (marshmallowPermissions.checkPermissionForCall()) {
-
-                    Uri call = Uri.parse("tel:" + list.get(position).getNight_club_contact());
-                    Intent surf = new Intent(Intent.ACTION_CALL, call);
+                Uri call = Uri.parse("tel:" + list.get(position).getNight_club_contact());
+                if (!TextUtils.isEmpty(list.get(position).getNight_club_contact())) {
+                    Intent surf = new Intent(Intent.ACTION_DIAL, call);
                     c.startActivity(surf);
-                }
-                else{
-                    Toast.makeText(c, "Give Location Permission", Toast.LENGTH_SHORT).show();
-                    marshmallowPermissions.requestPermissionForCall();
-                }
+                } else
+                    Toast.makeText(c, "Contact not available.", Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        Picasso.with(c)
+        Glide.with(c)
                 .load(list.get(position).getNight_club_icon())
-                .fit()
+                .apply(options)
                 .into(holder.image);
     }
 
@@ -107,8 +104,8 @@ public class Adapter_club extends RecyclerView.Adapter<Adapter_club.RecHolder> {
 
 
         View view;
-        TextView name,address,time;
-        ImageView call,image;
+        TextView name, address, time;
+        ImageView call, image;
 
         public RecHolder(View itemView) {
             super(itemView);

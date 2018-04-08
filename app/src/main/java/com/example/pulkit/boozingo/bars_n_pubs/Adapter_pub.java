@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.pulkit.boozingo.R;
 import com.example.pulkit.boozingo.model.smallPubDetails;
 import com.squareup.picasso.Picasso;
@@ -34,11 +38,15 @@ public class Adapter_pub extends RecyclerView.Adapter<Adapter_pub.RecHolder> {
     //adapter
     public List<smallPubDetails> list;
     public LayoutInflater layoutInflater;
+    RequestOptions options;
 
     Adapter_pub(List<smallPubDetails> list, Context c) {
         this.list = list;
         this.c = c;
         this.layoutInflater = LayoutInflater.from(c);
+        options = new RequestOptions()
+                .error(R.drawable.booze_fact_error_1)
+                .override(150, 150);
     }
 
     @Override
@@ -51,8 +59,8 @@ public class Adapter_pub extends RecyclerView.Adapter<Adapter_pub.RecHolder> {
     public void onBindViewHolder(Adapter_pub.RecHolder holder, final int position) {
 
         String add = list.get(position).getPub_address();
-        if(add.length()>60)
-            add = add.substring(0,60) + "...";
+        if (add.length() > 80)
+            add = add.substring(0, 80) + "...";
 
         holder.name.setText(list.get(position).getPub_name());
         holder.address.setText(add);
@@ -61,14 +69,18 @@ public class Adapter_pub extends RecyclerView.Adapter<Adapter_pub.RecHolder> {
             @Override
             public void onClick(View v) {
                 Uri call = Uri.parse("tel:" + list.get(position).getPub_contact());
-                Intent surf = new Intent(Intent.ACTION_DIAL, call);
-                c.startActivity(surf);
+                if (!TextUtils.isEmpty(list.get(position).getPub_contact())) {
+                    Intent surf = new Intent(Intent.ACTION_DIAL, call);
+                    c.startActivity(surf);
+                } else
+                    Toast.makeText(c, "Contact not available.", Toast.LENGTH_SHORT).show();
+
             }
         });
 
-        Picasso.with(c)
+        Glide.with(c)
                 .load(list.get(position).getPub_icon())
-                .fit()
+                .apply(options)
                 .into(holder.image);
     }
 
@@ -87,8 +99,8 @@ public class Adapter_pub extends RecyclerView.Adapter<Adapter_pub.RecHolder> {
 
 
         View view;
-        TextView name,address,time;
-        ImageView call,image;
+        TextView name, address, time;
+        ImageView call, image;
 
         public RecHolder(View itemView) {
             super(itemView);

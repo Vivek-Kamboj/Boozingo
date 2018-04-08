@@ -75,10 +75,10 @@ public class FragLounge extends Fragment implements Adapter_lounge.ItemClickCall
 
     @Override
     public void onItemClick(int p) {
-        if(internetStatus.equals(getString(R.string.net))) {
+        if (internetStatus.equals(getString(R.string.net))) {
             Intent i = new Intent(getActivity(), detailsActivityLounge.class);
-            i.putExtra("type","lounge");
-            i.putExtra("id",mDataset.get(p).getId());
+            i.putExtra("type", "lounge");
+            i.putExtra("id", mDataset.get(p).getId());
 
 
             if (!marshmallowPermissions.checkPermissionForFineLocation())
@@ -90,23 +90,22 @@ public class FragLounge extends Fragment implements Adapter_lounge.ItemClickCall
                 Toast.makeText(getActivity(), "Give Permission", Toast.LENGTH_SHORT).show();
                 marshmallowPermissions.requestPermissionForFineLocation();
             }
-        }
-        else
+        } else
             Toast.makeText(getActivity(), "Check network connection.", Toast.LENGTH_SHORT).show();
 
     }
 
     private void initDataset() throws JSONException {
 
-        for (int i=0; i < lounges.length(); i++) {
+        for (int i = 0; i < lounges.length(); i++) {
             JSONObject object = lounges.getJSONObject(i);
             String pic;
 
             Gson gson = new Gson();
             smallDetail = gson.fromJson(object.toString(), smallLoungeDetails.class);
-            pic = object.getString("lounge_icon");
 
-            pic = url +"/storage/" +pic;
+            pic = object.getString("lounge_icon");
+            pic = url + "/storage/" + pic;
 
             smallDetail.setLounge_icon(pic);
             mDataset.add(smallDetail);

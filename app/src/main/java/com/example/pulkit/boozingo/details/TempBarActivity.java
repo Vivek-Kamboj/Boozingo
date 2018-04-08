@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -24,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -91,7 +93,6 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
     ProgressDialog pDialog;
 
     RelativeLayout container;
-    FrameLayout f1;
     LinearLayout l1;
     ImageView im1;
     HorizontalScrollView hsv;
@@ -106,8 +107,9 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
 
     LocationHelper locationHelper;
     private Location mLastLocation;
-    Double latitude=0.0, longitude=0.0;
+    Double latitude = 0.0, longitude = 0.0;
 
+    CoordinatorLayout layout;
     Toolbar toolbar;
     AppBarLayout appBarLayout;
     CollapsingToolbarLayout collapsingToolbarLayout;
@@ -119,9 +121,8 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
         setContentView(R.layout.temp7);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        //      id = getIntent().getStringExtra("id");
-        //    _type = getIntent().getStringExtra("type");
-
+        id = getIntent().getStringExtra("id");
+        _type = getIntent().getStringExtra("type");
 
 
         // link views to objects
@@ -132,8 +133,9 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
 
         setSupportActionBar(toolbar);
 
-        if(getSupportActionBar()!=null)
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -150,7 +152,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
                     isShow = true;
                     l1.setVisibility(View.INVISIBLE);
 
-                } else if(isShow) {
+                } else if (isShow) {
                     collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
                     isShow = false;
                     l1.setVisibility(View.VISIBLE);
@@ -158,8 +160,6 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
             }
         });
 
-        id = "2";
-        _type = "bar";
 
 
         permission = new Permission(this);
@@ -248,6 +248,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
 
     private void init() {
 
+        layout = findViewById(R.id.layout);
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
         appBarLayout = findViewById(R.id.app_bar_layout);
         toolbar = findViewById(R.id.toolbar);
@@ -267,9 +268,8 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
         address = (TextView) findViewById(R.id.address);
         icons = (LinearLayout) findViewById(R.id.icons);
         container = (RelativeLayout) findViewById(R.id.container);
-        scroll = (ScrollView) findViewById(R.id.scroll);
+      //  scroll = (ScrollView) findViewById(R.id.scroll);
 
-        f1 = (FrameLayout) findViewById(R.id.layout);
         l1 = (LinearLayout) findViewById(R.id.dots);
         im1 = (ImageView) findViewById(R.id.booze);
         hsv = (HorizontalScrollView) findViewById(R.id.icon_holder);
@@ -284,7 +284,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
         height = getWindowManager().getDefaultDisplay().getHeight();
         width = getWindowManager().getDefaultDisplay().getWidth();
 
-   //     f1.getLayoutParams().height = (int) (height * 0.30);
+        //     f1.getLayoutParams().height = (int) (height * 0.30);
         l1.getLayoutParams().height = (int) (height * 0.02);
         im1.getLayoutParams().height = (int) (height * 0.04);
         hsv.getLayoutParams().height = (int) (height * 0.10);
@@ -551,7 +551,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
             internetStatus = "Lost Internet Connection";
         }
         snackbar = Snackbar
-                .make(scroll, internetStatus, Snackbar.LENGTH_LONG)
+                .make(layout, internetStatus, Snackbar.LENGTH_LONG)
                 .setAction("X", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -579,6 +579,16 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onResume() {

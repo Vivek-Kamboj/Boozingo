@@ -74,11 +74,11 @@ public class FragNight_club extends Fragment implements Adapter_club.ItemClickCa
 
     @Override
     public void onItemClick(int p) {
-        if(internetStatus.equals(getString(R.string.net))) {
+        if (internetStatus.equals(getString(R.string.net))) {
 
             Intent i = new Intent(getActivity(), detailsActivityNight_club.class);
-            i.putExtra("type","club");
-            i.putExtra("id",mDataset.get(p).getId());
+            i.putExtra("type", "club");
+            i.putExtra("id", mDataset.get(p).getId());
 
 
             if (!marshmallowPermissions.checkPermissionForFineLocation())
@@ -90,25 +90,23 @@ public class FragNight_club extends Fragment implements Adapter_club.ItemClickCa
                 Toast.makeText(getActivity(), "Give Permission", Toast.LENGTH_SHORT).show();
                 marshmallowPermissions.requestPermissionForFineLocation();
             }
-        }
-        else
+        } else
             Toast.makeText(getActivity(), "Check network connection.", Toast.LENGTH_SHORT).show();
 
     }
 
     private void initDataset() throws JSONException {
 
-        for (int i=0; i < clubs.length(); i++) {
+        for (int i = 0; i < clubs.length(); i++) {
             JSONObject object = clubs.getJSONObject(i);
             String pic;
 
 
             Gson gson = new Gson();
             smallDetail = gson.fromJson(object.toString(), smallNight_clubDetails.class);
+
             pic = object.getString("night_club_icon");
-
-
-            pic = url +"/storage/" +pic;
+            pic = url + "/storage/" + pic;
 
             smallDetail.setNight_club_icon(pic);
             mDataset.add(smallDetail);
