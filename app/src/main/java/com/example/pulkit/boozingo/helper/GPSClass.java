@@ -1,6 +1,7 @@
 package com.example.pulkit.boozingo.helper;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.provider.Settings;
@@ -31,7 +32,7 @@ public class GPSClass {
 
 
     public void GPSStatus() {
-        locationManager = (LocationManager) activity.getSystemService(activity.LOCATION_SERVICE);
+        locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         GpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 

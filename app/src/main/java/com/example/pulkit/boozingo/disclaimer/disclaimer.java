@@ -89,13 +89,13 @@ public class disclaimer extends AppCompatActivity {
         ss.setSpan(new UnderlineSpan(), 54, 74, 0);
         ss.setSpan(new StyleSpan(Typeface.BOLD), 54, 74, 0);
 
-        TextView text = (TextView) dialog.findViewById(R.id.text2);
+        TextView text = dialog.findViewById(R.id.text2);
         text.setText(ss);
         text.setMovementMethod(LinkMovementMethod.getInstance());
         text.setHighlightColor(Color.TRANSPARENT);
 
-        Button dialogButton1 = (Button) dialog.findViewById(R.id.dialogButton1);
-        Button dialogButton2 = (Button) dialog.findViewById(R.id.dialogButton2);
+        Button dialogButton1 = dialog.findViewById(R.id.dialogButton1);
+        Button dialogButton2 = dialog.findViewById(R.id.dialogButton2);
         dialogButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

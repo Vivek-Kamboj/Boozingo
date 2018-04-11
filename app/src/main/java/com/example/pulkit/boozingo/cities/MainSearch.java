@@ -82,8 +82,8 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
         toolbar = new Toolbar(getBaseContext());
         setSupportActionBar(toolbar);
 
-        search = (EditText) findViewById(R.id.search);
-        layout = (CoordinatorLayout) findViewById(R.id.layout);
+        search = findViewById(R.id.search);
+        layout = findViewById(R.id.layout);
 
         city = "";
         new city_search().execute();
@@ -140,7 +140,7 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
             }
         });
 
-        recview = (RecyclerView) findViewById(R.id.recycler);
+        recview = findViewById(R.id.recycler);
         recview.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RecAdapter_emp(list, this, bold);
         recview.setAdapter(adapter);
@@ -319,7 +319,7 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
         snackbar.setActionTextColor(Color.WHITE);
         // Changing action button text color
         View sbView = snackbar.getView();
-        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
         if (internetStatus.equalsIgnoreCase(getString(R.string.no_net))) {
             if (internetConnected) {

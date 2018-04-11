@@ -53,7 +53,7 @@ public class RecAdapter extends RecyclerView.Adapter<RecAdapter.RecHolder>{
         public RecHolder(View itemView) {
             super(itemView);
 
-            text = (TextView) itemView.findViewById(R.id.text_input);
+            text = itemView.findViewById(R.id.text_input);
 
         }
     }

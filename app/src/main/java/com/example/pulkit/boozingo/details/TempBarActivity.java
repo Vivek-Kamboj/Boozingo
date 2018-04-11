@@ -1,37 +1,35 @@
+/*
 package com.example.pulkit.boozingo.details;
 
-import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -39,13 +37,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.pulkit.boozingo.helper.LocationHelper;
-import com.example.pulkit.boozingo.helper.Permission;
+import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
-import com.example.pulkit.boozingo.helper.SnackBarClass;
 import com.example.pulkit.boozingo.helper.HttpHandler;
-import com.example.pulkit.boozingo.model.detailsBar;
+import com.example.pulkit.boozingo.model.detailsNight_club;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -57,125 +53,142 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 
 import static com.example.pulkit.boozingo.Boozingo.url;
-import static com.example.pulkit.boozingo.helper.LocationHelper.REQUEST_CHECK_SETTINGS;
-import static com.example.pulkit.boozingo.helper.LocationHelper.status;
-import static com.example.pulkit.boozingo.helper.Permission.RequestPermissionCode;
 
-public class TempBarActivity extends AppCompatActivity implements SnackBarClass.SnackbarMessage, GoogleApiClient.ConnectionCallbacks {
+public class hdetailsActivityNight_club extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     ViewPager viewPager;
-    //    ImageButton back;
-    String TAG = "TAG", id = "2", text, geo_location, latitudeBar, longitudeBar, image, specs, cost, _type;
+    ImageButton back;
+    String TAG = "TAG", id = "2", text, geo_location, latitudeNight_club, longitudeNight_club, image, specs;
     List<String> images = new ArrayList<>();
     picPagerAdapter adapter;
     LinearLayout icons;
-    TextView speciality, name, type, address, timing, locator;
-    ImageView dot1, dot2, dot3, dot4, dot5, dot6;
+    TextView show, speciality, name, type, address, timing;
+    ImageView transparent, dot1, dot2, dot3, dot4, dot5, dot6;
     ScrollView scroll;
-    detailsBar details;
+    detailsNight_club details;
     ProgressDialog pDialog;
+    SupportMapFragment mapFragment;
 
     RelativeLayout container;
+    public static int TYPE_WIFI = 1;
+    public static int TYPE_MOBILE = 2;
+    public static int TYPE_NOT_CONNECTED = 0;
+    private Snackbar snackbar;
+    private boolean internetConnected = true;
+
+    private Location mLastLocation;
+    double latitude;
+    double longitude;
+    LocationHelper locationHelper;
+    private MarshmallowPermissions marshmallowPermissions;
+
+    FrameLayout f1;
     LinearLayout l1;
     ImageView im1;
     HorizontalScrollView hsv;
     RelativeLayout r1;
-    ImageView frag;
+    View frag;
+    Button locator;
     int height, width;
 
-    Permission permission;
-    SnackBarClass snackBarClass;
-    Snackbar snackbar;
-    private boolean internetConnected = true;
-
-    LocationHelper locationHelper;
-    private Location mLastLocation;
-    Double latitude = 0.0, longitude = 0.0;
-
-    CoordinatorLayout layout;
-    Toolbar toolbar;
-    AppBarLayout appBarLayout;
-    CollapsingToolbarLayout collapsingToolbarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.temp7);
+        setContentView(R.layout.temp5);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        id = getIntent().getStringExtra("id");
-        _type = getIntent().getStringExtra("type");
-
-
-        // link views to objects
-        init();
-
-        // set height and width programatically
-        setParams();
-
-        setSupportActionBar(toolbar);
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
-
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = true;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.setTitle(getString(R.string.app_name));
-                    isShow = true;
-                    l1.setVisibility(View.INVISIBLE);
-
-                } else if (isShow) {
-                    collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
-                    isShow = false;
-                    l1.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-
-
-        permission = new Permission(this);
+        // location initialise
         locationHelper = new LocationHelper(this);
-        snackBarClass = new SnackBarClass(this);
-        snackBarClass.readySnackbarMessage(this);
+        locationHelper.checkpermission();
 
+        id = getIntent().getStringExtra("id");
+        //       id = "2";
+        marshmallowPermissions = new MarshmallowPermissions(this);
+        height = getWindowManager().getDefaultDisplay().getHeight();
+        width = getWindowManager().getDefaultDisplay().getWidth();
 
-        pDialog = new ProgressDialog(TempBarActivity.this);
+        viewPager = (ViewPager) findViewById(R.id.pager);
+
+        back = (ImageButton) findViewById(R.id.back);
+        dot1 = (ImageView) findViewById(R.id.dot1);
+        dot2 = (ImageView) findViewById(R.id.dot2);
+        dot3 = (ImageView) findViewById(R.id.dot3);
+        dot4 = (ImageView) findViewById(R.id.dot4);
+        dot5 = (ImageView) findViewById(R.id.dot5);
+        dot6 = (ImageView) findViewById(R.id.dot6);
+
+        show = (TextView) findViewById(R.id.show);
+        speciality = (TextView) findViewById(R.id.speciality);
+        name = (TextView) findViewById(R.id.name);
+        type = (TextView) findViewById(R.id.type);
+        timing = (TextView) findViewById(R.id.timings);
+        address = (TextView) findViewById(R.id.address);
+        icons = (LinearLayout) findViewById(R.id.icons);
+        container = (RelativeLayout) findViewById(R.id.container);
+        scroll = (ScrollView) findViewById(R.id.scroll);
+        transparent = (ImageView)findViewById(R.id.imagetrans);
+
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+
+        pDialog = new ProgressDialog(detailsActivityNight_club.this);
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(true);
         pDialog.show();
 
+        if (locationHelper.checkPlayServices()) {
+            locationHelper.buildGoogleApiClient();
+        }
+
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                mLastLocation = locationHelper.getLocation();
+                if (mLastLocation != null) {
+                    latitude = mLastLocation.getLatitude();
+                    longitude = mLastLocation.getLongitude();
+
+
+                }
+            }
+        }, 1000);
+
+
+        f1 = (FrameLayout) findViewById(R.id.layout);
+        l1 = (LinearLayout) findViewById(R.id.dots);
+        im1 = (ImageView) findViewById(R.id.booze);
+        hsv = (HorizontalScrollView) findViewById(R.id.icon_holder);
+        r1 = (RelativeLayout) findViewById(R.id.ll4);
+        frag = findViewById(R.id.map);
+        locator = (Button) findViewById(R.id.locator);
+
+
+        f1.getLayoutParams().height = (int) (height * 0.40);
+        l1.getLayoutParams().height = (int) (height * 0.02);
+        im1.getLayoutParams().height = (int) (height * 0.05);
+        hsv.getLayoutParams().height = (int) (height * 0.12);
+        r1.getLayoutParams().height = (int) (height * 0.35);
+        frag.getLayoutParams().height = (int) (height * 0.35 * 0.85);
+        locator.getLayoutParams().height = (int) (height * 0.35 * 0.25);
+
+        l1.getLayoutParams().width = (int) (width * 0.25);
+        im1.getLayoutParams().width = (int) (width * 0.30);
+        locator.getLayoutParams().width = (int) (width * 0.15);
+
 
         dot1.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ring));
 
+        text = "It's not what enters men's mouth that is evil, it's what comes out of their mouths that is - Be Responsible it's not what enters men's mouth that is evil, it's what comes out of their mouths that is - Be Responsible it's not what enters men's mouth that is evil, it's what comes out of their mouths that is - Be Responsible";
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -186,34 +199,36 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        dot1.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.ring));
-                        dot2.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
+                        dot1.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.ring));
+                        dot2.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.dot));
                         break;
 
                     case 1:
-                        dot1.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
-                        dot2.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.ring));
-                        dot3.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
+                        dot1.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.dot));
+                        dot2.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.ring));
+                        dot3.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.dot));
                         break;
                     case 2:
-                        dot2.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
-                        dot3.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.ring));
-                        //            dot4.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
+                        dot2.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.dot));
+                        dot3.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.ring));
+                        //            dot4.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.dot));
                         break;
-                   /* case 3:
-                        dot3.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
-                        dot4.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.ring));
-                        dot5.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
+                   */
+/* case 3:
+                        dot3.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.dot));
+                        dot4.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.ring));
+                        dot5.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.dot));
                         break;
                     case 4:
-                        dot4.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
-                        dot5.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.ring));
-                        dot6.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
+                        dot4.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.dot));
+                        dot5.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.ring));
+                        dot6.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.dot));
                         break;
                     case 5:
-                        dot5.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.dot));
-                        dot6.setImageDrawable(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.ring));
-                        break;*/
+                        dot5.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.dot));
+                        dot6.setImageDrawable(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.ring));
+                        break;*//*
+
                 }
             }
 
@@ -223,78 +238,110 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
             }
         });
 
-        frag.setOnClickListener(new View.OnClickListener() {
+        */
+/*show.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        speciality.setText(text);
+                                        show.setVisibility(View.GONE);
+                                    }
+                                }
+        );
+*//*
+
+
+        show.setVisibility(View.GONE);
+
+        locator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                mLastLocation = locationHelper.getLocation();
-                if (mLastLocation != null) {
-                    latitude = mLastLocation.getLatitude();
-                    longitude = mLastLocation.getLongitude();
+                if(marshmallowPermissions.checkPermissionForCoarseLocation() && marshmallowPermissions.checkPermissionForFineLocation()) {
+                    String uri = "http://maps.google.com/maps?f=d&hl=en&saddr=" + latitude + "," + longitude + "&daddr=" + latitudeNight_club + "," + longitudeNight_club;
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
+                    startActivity(Intent.createChooser(intent, "Select an application"));
                 }
+                else{
 
-                String uri = "http://maps.google.com/maps?f=d&hl=en&saddr=" + latitude + "," + longitude + "&daddr=" + latitudeBar + "," + longitudeBar;
-                Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
-                startActivity(Intent.createChooser(intent, "Select an application"));
+                    Toast.makeText(detailsActivityNight_club.this, "Please allow us to use locations.", Toast.LENGTH_SHORT).show();
+*/
+/*
 
+                    if (!marshmallowPermissions.checkPermissionForCoarseLocation())
+                        marshmallowPermissions.requestPermissionForCoarseLocation();
+*//*
+
+
+                    if (!marshmallowPermissions.checkPermissionForFineLocation())
+                        marshmallowPermissions.requestPermissionForFineLocation();
+                }
             }
         });
 
-        //to get data from net
+        // for scrolling map fragment
+        transparent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disallow ScrollView to intercept touch events.
+                        scroll.requestDisallowInterceptTouchEvent(true);
+                        // Disable touch on transparent view
+                        return false;
+
+                    case MotionEvent.ACTION_UP:
+                        // Allow ScrollView to intercept touch events.
+                        scroll.requestDisallowInterceptTouchEvent(false);
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        scroll.requestDisallowInterceptTouchEvent(true);
+                        return false;
+
+                    default:
+                        return true;
+                }
+            }
+        });
+
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         new net().execute();
 
     }
 
+    @Override
+    public void onMapReady(GoogleMap map) {
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(Float.parseFloat(latitudeNight_club), Float.parseFloat(longitudeNight_club)))
+                .title(getIntent().getStringExtra("type").toUpperCase()));
 
-    private void init() {
+  */
+/*      map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(Float.parseFloat(latitudeNight_club), Float.parseFloat(longitudeNight_club))));
+  //      map.animateCamera(CameraUpdateFactory.zoomTo(14));
 
-        layout = findViewById(R.id.layout);
-        collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
-        appBarLayout = findViewById(R.id.app_bar_layout);
-        toolbar = findViewById(R.id.toolbar);
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        map.animateCamera(CameraUpdateFactory.zoomIn());
+        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+        map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+        map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(Float.parseFloat(latitudeNight_club), Float.parseFloat(longitudeNight_club))));
+*//*
 
-        dot1 = (ImageView) findViewById(R.id.dot1);
-        dot2 = (ImageView) findViewById(R.id.dot2);
-        dot3 = (ImageView) findViewById(R.id.dot3);
-        dot4 = (ImageView) findViewById(R.id.dot4);
-        dot5 = (ImageView) findViewById(R.id.dot5);
-        dot6 = (ImageView) findViewById(R.id.dot6);
-
-        speciality = (TextView) findViewById(R.id.speciality);
-        name = (TextView) findViewById(R.id.name);
-        type = (TextView) findViewById(R.id.type);
-        timing = (TextView) findViewById(R.id.timings);
-        address = (TextView) findViewById(R.id.address);
-        icons = (LinearLayout) findViewById(R.id.icons);
-        container = (RelativeLayout) findViewById(R.id.container);
-      //  scroll = (ScrollView) findViewById(R.id.scroll);
-
-        l1 = (LinearLayout) findViewById(R.id.dots);
-        im1 = (ImageView) findViewById(R.id.booze);
-        hsv = (HorizontalScrollView) findViewById(R.id.icon_holder);
-        r1 = (RelativeLayout) findViewById(R.id.ll4);
-        frag = (ImageView) findViewById(R.id.map);
-        locator = (TextView) findViewById(R.id.locator);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(Float.parseFloat(latitudeNight_club), Float.parseFloat(longitudeNight_club)))
+                .zoom(15)
+                .build();
+        //Zoom in and animate the camera.
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
     }
 
-    private void setParams() {
-
-        height = getWindowManager().getDefaultDisplay().getHeight();
-        width = getWindowManager().getDefaultDisplay().getWidth();
-
-        //     f1.getLayoutParams().height = (int) (height * 0.30);
-        l1.getLayoutParams().height = (int) (height * 0.02);
-        im1.getLayoutParams().height = (int) (height * 0.04);
-        hsv.getLayoutParams().height = (int) (height * 0.10);
-        r1.getLayoutParams().height = (int) (height * 0.30);
-        frag.getLayoutParams().height = (int) (height * 0.30 * 0.87);
-        locator.getLayoutParams().height = (int) (height * 0.30 * 0.12);
-
-        l1.getLayoutParams().width = (int) (width * 0.25);
-        im1.getLayoutParams().width = (int) (width * 0.30);
-    }
 
     private class net extends AsyncTask<Void, Void, Void> {
         @Override
@@ -302,7 +349,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
             HttpHandler sh = new HttpHandler();
 
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall(url + "/bar/" + id);
+            String jsonStr = sh.makeServiceCall(url + "/night_club/" + id);
 
 
             Log.e(TAG, "Response from url: " + jsonStr);
@@ -310,48 +357,42 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
             if (jsonStr != null) {
                 try {
                     final JSONObject object = new JSONObject(jsonStr);
-                    JSONArray array = object.getJSONArray("bar");
+                    JSONArray array = object.getJSONArray("night_club");
 
                     JSONObject temp = array.getJSONObject(0);
                     String userJson = temp.toString();
 
                     Gson gson = new Gson();
 
-                    details = new detailsBar();
-                    details = gson.fromJson(userJson, detailsBar.class);
+                    details = new detailsNight_club();
+                    details = gson.fromJson(userJson, detailsNight_club.class);
 
                     runOnUiThread(new Runnable() {
                         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                         @Override
                         public void run() {
 
-                            name.setText(details.getBar_name());
-                            address.setText(details.getBar_address());
-                            type.setText("(" + _type + ")");
-                            timing.setText(details.getBar_time());
-                            geo_location = details.getBar_geolocation();
-                            specs = details.getBar_details();
-                            cost = details.getBar_cost();
+                            name.setText(details.getNight_club_name());
+                            address.setText(details.getNight_club_address());
+                            type.setText("(" + getIntent().getStringExtra("type") + ")");
+                            timing.setText(details.getNight_club_time());
+                            geo_location = details.getNight_club_geolocation();
+                            specs = details.getNight_club_details();
 
 
                             int comma = geo_location.indexOf('-');
-                            latitudeBar = geo_location.substring(0, comma);
-                            longitudeBar = geo_location.substring(comma + 1);
+                            latitudeNight_club = geo_location.substring(0, comma);
+                            longitudeNight_club = geo_location.substring(comma + 1);
 
-
-                            String path = "http://maps.google.com/maps/api/staticmap?&zoom=19&size=600x240&markers=color:blue|" + latitudeBar + "," + longitudeBar;
-
-                            Glide.with(TempBarActivity.this)
-                                    .load(path)
-                                    .into(frag);
+                            mapFragment.getMapAsync(detailsActivityNight_club.this);
 
 
                             try {
-                                image = object.getJSONArray("bar_images").getJSONObject(0).getString("bar_images");
+                                image = object.getJSONArray("night_club_images").getJSONObject(0).getString("night_club_images");
                                 image = image.substring(2, image.length() - 2);
                                 image = image.replaceAll("\\\\", "");
 
-                                for (int i = 0; i < image.length(); ) {
+                                for (int i = 0 ; i < image.length(); ) {
                                     int j = image.indexOf(',', i);
                                     if (j == -1) {
                                         images.add(url + "/storage/" + image.substring(i, image.length()));
@@ -366,10 +407,10 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
                                 Collections.shuffle(images);
 
                                 //to select only 3 pics
-                                images = images.subList(0, 3);
+                                images =  images.subList(0,3);
 
 
-                                adapter = new picPagerAdapter(TempBarActivity.this, images);
+                                adapter = new picPagerAdapter(detailsActivityNight_club.this, images);
                                 viewPager.setAdapter(adapter);
 
                             } catch (JSONException e) {
@@ -377,26 +418,22 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
                             }
 
 
+
                             // for speciality
                             String y;
-                            for (int i = 0; i < specs.length(); ) {
-                                int x = specs.indexOf('/', i);
-                                if (x < specs.length() && x != -1) {
+                            for(int i=0;i<specs.length();){
+                                int x = specs.indexOf('/',i);
+                                if(x<specs.length() && x!=-1) {
                                     y = speciality.getText() + "\u25CF " + specs.substring(i, x) + "\n";
                                     speciality.setText(y);
-                                    i = x + 1;
-                                } else {
+                                    i = x+1;
+                                }
+                                else{
                                     y = speciality.getText() + "\u25CF " + specs.substring(i, specs.length());
                                     speciality.setText(y);
                                     break;
                                 }
-
                             }
-
-
-                            // for cost of 2 person
-                            y = speciality.getText() + "\n\u25CF Average cost for 2 Boozinga: \u20B9" + cost;
-                            speciality.setText(y);
 
                             facilities();
 
@@ -437,10 +474,8 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
 
             return null;
         }
-
     }
 
-    @SuppressWarnings("ResourceType")
     private void facilities() {
         for (int i = 0; i < 8; i++) {
             View child = View.inflate(getBaseContext(), R.layout.smallpicrow, null);
@@ -454,50 +489,50 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
                     icons.addView(child);
                     break;
                 case 1:
-                    if (details.getBar_food().equals("both") || details.getBar_food().equals("veg")) {
-                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.veg));
+                    if (details.getNight_club_food().equals("both") || details.getNight_club_food().equals("veg")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.veg));
                         text.setText("Veg");
                         icons.addView(child);
                     }
                     break;
                 case 2:
-                    if (details.getBar_food().equals("both") || details.getBar_food().equals("nonveg")) {
-                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.drawable.non_veg));
+                    if (details.getNight_club_food().equals("both") || details.getNight_club_food().equals("nonveg")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityNight_club.this, R.drawable.non_veg));
                         text.setText("Non Veg");
                         icons.addView(child);
                     }
                     break;
                 case 3:
-                    if (details.getBar_sitting_facility().equals("yes")) {
-                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.raw.table));
+                    if (details.getNight_club_sitting_facility().equals("yes")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityNight_club.this, R.raw.table));
                         text.setText("Sitting");
                         icons.addView(child);
                     }
                     break;
                 case 4:
-                    if (details.getBar_music().equals("available")) {
-                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.raw.music_player));
+                    if (details.getNight_club_music().equals("available")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityNight_club.this, R.raw.music_player));
                         text.setText("Music");
                         icons.addView(child);
                     }
                     break;
                 case 5:
-                    if (details.getBar_ac().equals("ac")) {
-                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.raw.minisplit1));
+                    if (details.getNight_club_ac().equals("ac")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityNight_club.this, R.raw.minisplit1));
                         text.setText("Ac");
                         icons.addView(child);
                     }
                     break;
                 case 6:
-                    if (details.getBar_payment().equals("cash") || details.getBar_payment().equals("all")) {
-                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.raw.notes));
+                    if (details.getNight_club_payment().equals("cash") || details.getNight_club_payment().equals("all")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityNight_club.this, R.raw.notes));
                         text.setText("Cash");
                         icons.addView(child);
                     }
                     break;
                 case 7:
-                    if (details.getBar_payment().equals("credit/debit card") || details.getBar_payment().equals("all")) {
-                        x.setBackground(ContextCompat.getDrawable(TempBarActivity.this, R.raw.credit_card));
+                    if (details.getNight_club_payment().equals("credit/debit card") || details.getNight_club_payment().equals("all")) {
+                        x.setBackground(ContextCompat.getDrawable(detailsActivityNight_club.this, R.raw.credit_card));
                         text.setText("Card");
                         icons.addView(child);
                     }
@@ -508,42 +543,86 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //     locationHelper.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.i("Connection failed:", " ConnectionResult.getErrorCode() = "
+                + result.getErrorCode());
+    }
+
+    @Override
+    public void onConnected(Bundle arg0) {
+
+        // Once connected with google api, get the location
+        mLastLocation = locationHelper.getLocation();
+    }
+
+    @Override
+    public void onConnectionSuspended(int arg0) {
+        locationHelper.connectApiClient();
+    }
+
+
     // Permission check functions
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-
-        switch (requestCode) {
-
-            case RequestPermissionCode:
-                if (grantResults.length > 0) {
-
-                    boolean CoarseLocation = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean FineLocaion = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
-                    if (CoarseLocation && FineLocaion) {
-
-                        Toast.makeText(this, "Permission Granted", Toast.LENGTH_LONG).show();
-                        //                  setSnackbarMessage(status, false);
-
-                    } else {
-
-                        // permission was not granted
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                            permission.requestPermission();
-                        } else {
-                            Toast.makeText(this, "Permissions are necessary. Allow them from app settings.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-
-                break;
-        }
-
+        // redirects to utils
+        locationHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    @Override
-    public void setSnackbarMessage(String status, boolean showBar) {
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+
+    private void registerInternetCheckReceiver() {
+        IntentFilter internetFilter = new IntentFilter();
+        internetFilter.addAction("android.net.wifi.STATE_CHANGE");
+        internetFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(broadcastReceiver, internetFilter);
+    }
+
+    public BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String status = getConnectivityStatusString(context);
+            setSnackbarMessage(status, false);
+        }
+    };
+
+    public static int getConnectivityStatus(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (null != activeNetwork) {
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                return TYPE_WIFI;
+
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return TYPE_MOBILE;
+        }
+        return TYPE_NOT_CONNECTED;
+    }
+
+    public static String getConnectivityStatusString(Context context) {
+        int conn = getConnectivityStatus(context);
+        String status = null;
+        if (conn == TYPE_WIFI) {
+            status = "Wifi enabled";
+        } else if (conn == TYPE_MOBILE) {
+            status = "Mobile data enabled";
+        } else if (conn == TYPE_NOT_CONNECTED) {
+            status = "Not connected to Internet";
+        }
+        return status;
+    }
+
+    private void setSnackbarMessage(String status, boolean showBar) {
         String internetStatus = "";
         if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
             internetStatus = "Internet Connected";
@@ -551,7 +630,7 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
             internetStatus = "Lost Internet Connection";
         }
         snackbar = Snackbar
-                .make(layout, internetStatus, Snackbar.LENGTH_LONG)
+                .make(scroll, internetStatus, Snackbar.LENGTH_LONG)
                 .setAction("X", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -580,67 +659,18 @@ public class TempBarActivity extends AppCompatActivity implements SnackBarClass.
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        mLastLocation = locationHelper.getLocation();
-        snackBarClass.registerInternetCheckReceiver();
-
-        if (!permission.checkPermission())
-            permission.requestPermission();
-
+        locationHelper.checkPlayServices();
+        registerInternetCheckReceiver();
     }
 
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(snackBarClass.broadcastReceiver);
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CHECK_SETTINGS:
-                switch (resultCode) {
-                    case RESULT_OK:
-                        Log.e("d", "d");
-                        // All required changes were successfully made
-                        mLastLocation = locationHelper.getLocation();
-                        break;
-                    case RESULT_CANCELED:
-                        // The user was asked to change settings, but chose not to
-                        try {
-                            status.startResolutionForResult(this, REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                }
-                break;
-        }
-    }
-
-
-    @Override
-    public void onConnected(Bundle arg0) {
-        mLastLocation = locationHelper.getLocation();
-    }
-
-    @Override
-    public void onConnectionSuspended(int arg0) {
-        locationHelper.connectApiClient();
+        unregisterReceiver(broadcastReceiver);
     }
 
 }
+*/

@@ -82,7 +82,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
     byte[] bytes;
     Boolean bool = true;
 
-    String[] cities_show = new String[5];
+    String[] cities_show = new String[4];
 
     RelativeLayout top;
     HorizontalScrollView hsv;
@@ -164,7 +164,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
 
         if (cities_show == null) {
             bool = false;
-            cities_show = new String[5];
+            cities_show = new String[4];
         }
 
 
@@ -208,42 +208,42 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
 
     private void init() {
 
-        img = (ImageButton) findViewById(R.id.search_button_city_2);
-        textView = (TextView) findViewById(R.id.text2);
-        search = (EditText) findViewById(R.id.search_text);
-        rl = (RelativeLayout) findViewById(R.id.search_button_city);
-        im1 = (ImageView) findViewById(R.id.im1);
-        im2 = (ImageView) findViewById(R.id.im2);
-        im3 = (ImageView) findViewById(R.id.im3);
-        im4 = (ImageView) findViewById(R.id.im4);
-        im5 = (ImageView) findViewById(R.id.im5);
-        view_more = (ImageView) findViewById(R.id.view_more);
+        img = findViewById(R.id.search_button_city_2);
+        textView = findViewById(R.id.text2);
+        search = findViewById(R.id.search_text);
+        rl = findViewById(R.id.search_button_city);
+        im1 = findViewById(R.id.im1);
+        im2 = findViewById(R.id.im2);
+        im3 = findViewById(R.id.im3);
+        im4 = findViewById(R.id.im4);
+        im5 = findViewById(R.id.im5);
+        view_more = findViewById(R.id.view_more);
 
-        t1 = (TextView) findViewById(R.id.t1);
-        t2 = (TextView) findViewById(R.id.t2);
-        t3 = (TextView) findViewById(R.id.t3);
-        t4 = (TextView) findViewById(R.id.t4);
-        t5 = (TextView) findViewById(R.id.t5);
+        t1 = findViewById(R.id.t1);
+        t2 = findViewById(R.id.t2);
+        t3 = findViewById(R.id.t3);
+        t4 = findViewById(R.id.t4);
+        t5 = findViewById(R.id.t5);
 
-        factimg1 = (ImageView) findViewById(R.id.cim1);
-        factimg2 = (ImageView) findViewById(R.id.cim2);
+        factimg1 = findViewById(R.id.cim1);
+        factimg2 = findViewById(R.id.cim2);
 
-        top = (RelativeLayout) findViewById(R.id.top);
-        hsv = (HorizontalScrollView) findViewById(R.id.cities);
-        c1 = (CardView) findViewById(R.id.card1);
-        c2 = (CardView) findViewById(R.id.card2);
-        s1 = (Space) findViewById(R.id.s1);
-        s2 = (Space) findViewById(R.id.s2);
-        boozepedia = (ImageView) findViewById(R.id.boozepedia);
+        top = findViewById(R.id.top);
+        hsv = findViewById(R.id.cities);
+        c1 = findViewById(R.id.card1);
+        c2 = findViewById(R.id.card2);
+        s1 = findViewById(R.id.s1);
+        s2 = findViewById(R.id.s2);
+        boozepedia = findViewById(R.id.boozepedia);
 
-        myCity = (LinearLayout) findViewById(R.id.city0);
-        l1 = (LinearLayout) findViewById(R.id.city1);
-        l2 = (LinearLayout) findViewById(R.id.city2);
-        l3 = (LinearLayout) findViewById(R.id.city3);
-        l4 = (LinearLayout) findViewById(R.id.city4);
-        l5 = (LinearLayout) findViewById(R.id.city5);
-        banner = (ImageView) findViewById(R.id.banner);
-        layout = (RelativeLayout) findViewById(R.id.layout);
+        myCity = findViewById(R.id.city0);
+        l1 = findViewById(R.id.city1);
+        l2 = findViewById(R.id.city2);
+        l3 = findViewById(R.id.city3);
+        l4 = findViewById(R.id.city4);
+        l5 = findViewById(R.id.city5);
+        banner = findViewById(R.id.banner);
+        layout = findViewById(R.id.layout);
 
     }
 
@@ -283,11 +283,9 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
             } else if (v == myCity) {
                 Intent i = new Intent(Cities.this, bars_n_pubs.class);
                 {
-
                     // myCity logic
                     /*i.putExtra("city", "myCity city");
                     startActivity(i);*/
-
                     Toast.makeText(this, "Nearest city", Toast.LENGTH_SHORT).show();
                 }
             } else if (v == l1) {
@@ -514,7 +512,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
                                           JSONArray cities = object.getJSONArray("cities");
 
                                           // 5 for 5 cities
-                                          for (int i = 0; i < 5; i++) {
+                                          for (int i = 0; i < 4; i++) {
                                               JSONObject c = cities.getJSONObject(i);
 
                                               final String city_icon = c.getString("city_icon");
@@ -591,7 +589,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
                                                               });
 
                                                       break;
-                                                  case 4:
+                                                  /*case 4:
                                                       Glide.with(Cities.this)
                                                               .load(temp)
                                                               .apply(options)
@@ -604,7 +602,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
                                                                       saveImageInDB(bitmap, city_name);
                                                                   }
                                                               });
-                                                      break;
+                                                      break;*/
                                               }
 
                                           }
@@ -732,7 +730,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
         snackbar.setActionTextColor(Color.WHITE);
         // Changing action button text color
         View sbView = snackbar.getView();
-        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
 
         if (internetStatus.equalsIgnoreCase(getString(R.string.no_net))) {

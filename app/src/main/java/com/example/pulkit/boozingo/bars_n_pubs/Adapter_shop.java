@@ -107,11 +107,11 @@ public class Adapter_shop extends RecyclerView.Adapter<Adapter_shop.RecHolder> {
         public RecHolder(View itemView) {
             super(itemView);
 
-            name = (TextView) itemView.findViewById(R.id.name);
-            address = (TextView) itemView.findViewById(R.id.address);
-            time = (TextView) itemView.findViewById(R.id.time);
-            call = (ImageView) itemView.findViewById(R.id.call);
-            image = (ImageView) itemView.findViewById(R.id.image);
+            name = itemView.findViewById(R.id.name);
+            address = itemView.findViewById(R.id.address);
+            time = itemView.findViewById(R.id.time);
+            call = itemView.findViewById(R.id.call);
+            image = itemView.findViewById(R.id.image);
             view = itemView.findViewById(R.id.container);
             view.setOnClickListener(this);
         }

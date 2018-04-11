@@ -98,9 +98,9 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
 
         setSupportActionBar(toolbar);
 
-        if(getSupportActionBar()!=null)
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        }
 
         city = getIntent().getStringExtra("city");
         //city = "delhi";
@@ -156,12 +156,12 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
 
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
         appBarLayout = findViewById(R.id.app_bar_layout);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        city_name = (TextView) findViewById(R.id.city_name);
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        city_image = (ImageView) findViewById(R.id.city_image);
-        layout = (CoordinatorLayout) findViewById(R.id.container);
+        toolbar = findViewById(R.id.toolbar);
+        city_name = findViewById(R.id.city_name);
+        viewPager = findViewById(R.id.viewpager);
+        tabLayout = findViewById(R.id.tabs);
+        city_image = findViewById(R.id.city_image);
+        layout = findViewById(R.id.container);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -344,7 +344,7 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
         // Changing action button text color
         View sbView = snackbar.getView();
 
-        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
         if (internetStatus.equalsIgnoreCase("Lost Internet Connection")) {
             if (internetConnected) {

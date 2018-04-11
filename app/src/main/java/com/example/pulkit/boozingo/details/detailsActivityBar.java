@@ -161,7 +161,6 @@ public class detailsActivityBar extends AppCompatActivity implements SnackBarCla
         });
 
 
-
         permission = new Permission(this);
         locationHelper = new LocationHelper(this);
         snackBarClass = new SnackBarClass(this);
@@ -252,30 +251,30 @@ public class detailsActivityBar extends AppCompatActivity implements SnackBarCla
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
         appBarLayout = findViewById(R.id.app_bar_layout);
         toolbar = findViewById(R.id.toolbar);
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = findViewById(R.id.pager);
 
-        dot1 = (ImageView) findViewById(R.id.dot1);
-        dot2 = (ImageView) findViewById(R.id.dot2);
-        dot3 = (ImageView) findViewById(R.id.dot3);
-        dot4 = (ImageView) findViewById(R.id.dot4);
-        dot5 = (ImageView) findViewById(R.id.dot5);
-        dot6 = (ImageView) findViewById(R.id.dot6);
+        dot1 = findViewById(R.id.dot1);
+        dot2 = findViewById(R.id.dot2);
+        dot3 = findViewById(R.id.dot3);
+        dot4 = findViewById(R.id.dot4);
+        dot5 = findViewById(R.id.dot5);
+        dot6 = findViewById(R.id.dot6);
 
-        speciality = (TextView) findViewById(R.id.speciality);
-        name = (TextView) findViewById(R.id.name);
-        type = (TextView) findViewById(R.id.type);
-        timing = (TextView) findViewById(R.id.timings);
-        address = (TextView) findViewById(R.id.address);
-        icons = (LinearLayout) findViewById(R.id.icons);
-        container = (RelativeLayout) findViewById(R.id.container);
+        speciality = findViewById(R.id.speciality);
+        name = findViewById(R.id.name);
+        type = findViewById(R.id.type);
+        timing = findViewById(R.id.timings);
+        address = findViewById(R.id.address);
+        icons = findViewById(R.id.icons);
+        container = findViewById(R.id.container);
         //  scroll = (ScrollView) findViewById(R.id.scroll);
 
-        l1 = (LinearLayout) findViewById(R.id.dots);
-        im1 = (ImageView) findViewById(R.id.booze);
-        hsv = (HorizontalScrollView) findViewById(R.id.icon_holder);
-        r1 = (RelativeLayout) findViewById(R.id.ll4);
-        frag = (ImageView) findViewById(R.id.map);
-        locator = (TextView) findViewById(R.id.locator);
+        l1 = findViewById(R.id.dots);
+        im1 = findViewById(R.id.booze);
+        hsv = findViewById(R.id.icon_holder);
+        r1 = findViewById(R.id.ll4);
+        frag = findViewById(R.id.map);
+        locator = findViewById(R.id.locator);
 
     }
 
@@ -444,8 +443,8 @@ public class detailsActivityBar extends AppCompatActivity implements SnackBarCla
     private void facilities() {
         for (int i = 0; i < 8; i++) {
             View child = View.inflate(getBaseContext(), R.layout.smallpicrow, null);
-            ImageView x = (ImageView) child.findViewById(R.id.pic);
-            TextView text = (TextView) child.findViewById(R.id.text);
+            ImageView x = child.findViewById(R.id.pic);
+            TextView text = child.findViewById(R.id.text);
 
             switch (i) {
                 case 0:
@@ -564,7 +563,7 @@ public class detailsActivityBar extends AppCompatActivity implements SnackBarCla
         // Changing action button text color
         View sbView = snackbar.getView();
 
-        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
         if (internetStatus.equalsIgnoreCase("Lost Internet Connection")) {
             if (internetConnected) {

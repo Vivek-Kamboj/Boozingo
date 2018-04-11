@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.example.pulkit.boozingo.MarshmallowPermissions;
 import com.example.pulkit.boozingo.R;
-import com.example.pulkit.boozingo.details.TempBarActivity;
 import com.example.pulkit.boozingo.details.detailsActivityBar;
 import com.example.pulkit.boozingo.model.smallBarDetails;
 import com.google.gson.Gson;
@@ -58,7 +57,7 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
         marshmallowPermissions = new MarshmallowPermissions(getActivity());
 
         View rootView = inflater.inflate(R.layout.fragment_bar, container, false);
-        recview = (RecyclerView) rootView.findViewById(R.id.recycler);
+        recview = rootView.findViewById(R.id.recycler);
         recview.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         adapter = new Adapter_bar(mDataset, getContext());

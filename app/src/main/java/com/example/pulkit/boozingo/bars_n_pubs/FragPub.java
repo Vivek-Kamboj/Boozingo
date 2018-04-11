@@ -59,7 +59,7 @@ public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
         marshmallowPermissions = new MarshmallowPermissions(getActivity());
 
         View rootView = inflater.inflate(R.layout.fragment_bar, container, false);
-        recview = (RecyclerView) rootView.findViewById(R.id.recycler);
+        recview = rootView.findViewById(R.id.recycler);
         recview.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         adapter = new Adapter_pub(mDataset, getContext());

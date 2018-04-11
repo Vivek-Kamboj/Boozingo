@@ -61,7 +61,7 @@ public class SplashScreen extends AppCompatActivity implements GoogleApiClient.C
         locationHelper = new LocationHelper(this);
         connectionDetector = new ConnectionDetector(this);
 
-        layout = (RelativeLayout) findViewById(R.id.layout);
+        layout = findViewById(R.id.layout);
         _status = connectionDetector.getConnectivityStatusString(this);
 
         if (permission.checkPermission()) {
@@ -91,7 +91,7 @@ public class SplashScreen extends AppCompatActivity implements GoogleApiClient.C
 
             // Changing action button text color
             View sbView = snackbar.getView();
-            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
 
             snackbar.show();

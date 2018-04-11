@@ -29,7 +29,7 @@ public class terms_n_conditions extends AppCompatActivity {
         setContentView(R.layout.activity_terms_n_conditions);
 
         list = RecData.retList();
-        recview = (RecyclerView) findViewById(R.id.recycler);
+        recview = findViewById(R.id.recycler);
         recview.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RecAdapter(list, this);
         recview.setAdapter(adapter);

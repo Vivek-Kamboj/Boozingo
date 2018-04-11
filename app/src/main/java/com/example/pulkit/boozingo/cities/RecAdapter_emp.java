@@ -70,7 +70,7 @@ public class RecAdapter_emp extends RecyclerView.Adapter<RecAdapter_emp.RecHolde
         public RecHolder(View itemView) {
             super(itemView);
 
-            text = (TextView) itemView.findViewById(R.id.text);
+            text = itemView.findViewById(R.id.text);
             view = itemView.findViewById(R.id.container);
             view.setOnClickListener(this);
 
