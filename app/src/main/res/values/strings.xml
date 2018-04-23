@@ -3,7 +3,7 @@
     <string name="title_activity_disclaimer">disclaimer</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="disclaimer">You should be 18+.\nBy clicking ENTER you agree to all <u><b>Terms and Conditions</b></u> of Boozingo.</string>
+    <string name="disclaimer">You should be 21+.\nBy clicking ENTER you agree to all <u><b>Terms and Conditions</b></u> of Boozingo.</string>
     <string name="quote">"It's not what enters men's mouth that is evil, it's what comes out of their mouths that is - \n<b>Be Responsible</b>"</string>
     <string-array name="cities">
         <item>Delhi</item>
@@ -19,4 +19,5 @@
     <string name="supreme">Some Hangouts may have been closed after the Supreme court\'s order</string>
     <string name="net">Internet Connected</string>
     <string name="no_net">Lost Internet Connection</string>
+
 </resources>

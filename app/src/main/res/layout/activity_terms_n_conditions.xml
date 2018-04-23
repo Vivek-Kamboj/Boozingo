@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_vertical_margin"
-    tools:context="com.example.pulkit.boozingo.disclaimer.terms_n_conditions"
+    tools:context="com.boozingo.disclaimer.terms_n_conditions"
     android:background="@drawable/blur">
 
     <RelativeLayout

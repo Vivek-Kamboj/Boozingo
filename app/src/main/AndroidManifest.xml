@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pulkit.boozingo">
+    package="com.boozingo">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -10,7 +10,7 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <application
-        android:name=".Boozingo"
+        android:name="com.boozingo.Boozingo"
         android:allowBackup="true"
         android:icon="@drawable/new_logo"
         android:label="@string/app_name"
@@ -18,49 +18,45 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".splash"
+            android:name="com.boozingo.splash"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".splash_screen.SplashScreen"/>
-        <activity android:name=".disclaimer.disclaimer" >
+        <activity android:name="com.boozingo.splash_screen.SplashScreen"/>
+        <activity android:name="com.boozingo.disclaimer.disclaimer" >
 
         </activity>
-        <activity android:name=".disclaimer.terms_n_conditions" />
+        <activity android:name="com.boozingo.disclaimer.terms_n_conditions" />
         <activity
-            android:name=".cities.Cities"
+            android:name="com.boozingo.cities.Cities"
             android:windowSoftInputMode="stateAlwaysHidden">
 
         </activity>
         <activity
-            android:name=".cities.MainSearch"
+            android:name="com.boozingo.cities.MainSearch"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".bars_n_pubs.bars_n_pubs"
+            android:name="com.boozingo.bars_n_pubs.bars_n_pubs"
             android:theme="@style/noActionBar"
             android:windowSoftInputMode="stateHidden">
 
         </activity>
 
-        <activity android:name=".details.detailsActivityBar">
+        <activity android:name="com.boozingo.details.detailsActivityBar">
 
         </activity>
-        <activity android:name=".details.detailsActivityPub" />
-        <activity android:name=".details.detailsActivityBeer_shop" />
-        <activity android:name=".details.detailsActivityLounge" />
-        <activity android:name=".details.detailsActivityNight_club" />
+        <activity android:name="com.boozingo.details.detailsActivityPub" />
+        <activity android:name="com.boozingo.details.detailsActivityBeer_shop" />
+        <activity android:name="com.boozingo.details.detailsActivityLounge" />
+        <activity android:name="com.boozingo.details.detailsActivityNight_club" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".details.TempBarActivity"
-            android:theme="@style/noActionBar">
-
-        </activity>
     </application>
 
 </manifest>

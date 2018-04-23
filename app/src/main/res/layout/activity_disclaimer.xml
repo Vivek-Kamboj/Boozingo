@@ -4,7 +4,7 @@
     android:id="@+id/activity_disclaimer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.pulkit.boozingo.disclaimer.disclaimer"
+    tools:context="com.boozingo.disclaimer.disclaimer"
     android:background="@drawable/blur"
     android:alpha="0.8">
 
