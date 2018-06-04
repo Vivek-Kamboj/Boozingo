@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.boozingo.SearchAnimationToolbar;
+import com.boozingo.ToolbarActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.request.RequestOptions;
@@ -46,14 +49,15 @@ import java.util.List;
 
 import static com.boozingo.Boozingo.url;
 
-public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.SnackbarMessage{
+public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.SnackbarMessage, SearchAnimationToolbar.OnSearchQueryChangedListener {
 
     public CoordinatorLayout layout;
-    Toolbar toolbar;
+    SearchAnimationToolbar toolbar;
     AppBarLayout appBarLayout;
     CollapsingToolbarLayout collapsingToolbarLayout;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    ViewPagerAdapter adapter;
 
     String city;
     TextView city_name;
@@ -72,6 +76,12 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
     DBHelper dbHelper;
     byte[] bytes;
 
+    FragBar fragBar = new FragBar();
+    FragPub fragPub = new FragPub();
+    FragLounge fragLounge = new FragLounge();
+    FragBeer_shop fragBeer_shop = new FragBeer_shop();
+    FragNight_club fragNight_club = new FragNight_club();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,15 +92,14 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
 
         init();
 
-        setSupportActionBar(toolbar);
+        toolbar.setSupportActionBar(bars_n_pubs.this);
+        toolbar.setOnSearchQueryChangedListener(bars_n_pubs.this);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //       city = getIntent().getStringExtra("city");
+        city = "delhi";
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
-        city = getIntent().getStringExtra("city");
-        //city = "delhi";
-
+        toolbar.setVisibility(View.GONE);
 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = true;
@@ -101,13 +110,15 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
-                if (scrollRange + verticalOffset == 0) {
-               //     collapsingToolbarLayout.setTitle(getString(R.string.app_name));
-                    collapsingToolbarLayout.setTitle(city.substring(0, 1).toUpperCase() + city.substring(1));
+                if (scrollRange + verticalOffset <= 100) {
+                    //     collapsingToolbarLayout.setTitle(getString(R.string.app_name));
+                    //                  collapsingToolbarLayout.setTitle(city.substring(0, 1).toUpperCase() + city.substring(1));
+                    toolbar.setVisibility(View.VISIBLE);
                     isShow = true;
 
-                } else if(isShow) {
+                } else if (isShow) {
                     collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
+                    toolbar.setVisibility(View.GONE);
                     isShow = false;
                 }
             }
@@ -115,7 +126,6 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
 
 
         bars = new JSONArray();
-
 
 
         dbHelper = new DBHelper(this);
@@ -151,14 +161,67 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new FragBar(), "Bars");
-        adapter.addFragment(new FragPub(), "Pubs");
-        adapter.addFragment(new FragLounge(), "Lounges");
-        adapter.addFragment(new FragBeer_shop(), "Shops");
-        adapter.addFragment(new FragNight_club(), "Night Clubs");
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(fragBar, "Bars");
+        adapter.addFragment(fragPub, "Pubs");
+        adapter.addFragment(fragLounge, "Lounges");
+        adapter.addFragment(fragBeer_shop, "Shops");
+        adapter.addFragment(fragNight_club, "Night Clubs");
         viewPager.setAdapter(adapter);
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        boolean handledByToolbar = toolbar.onBackPressed();
+
+        if (!handledByToolbar) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onSearchCollapsed() {
+        fragBar.search("");
+    }
+
+    @Override
+    public void onSearchQueryChanged(String query) {
+
+    }
+
+    @Override
+    public void onSearchExpanded() {
+
+    }
+
+    @Override
+    public void onSearchSubmitted(String query) {
+
+
+        String f = adapter.getItem(viewPager.getCurrentItem()).getTag();
+
+        if (f.equals(fragBar.getTag()))
+            fragBar.search(query);
+        else if (f.equals(fragLounge.getTag()))
+            fragLounge.search(query);
+        else if (f.equals(fragPub.getTag()))
+            fragPub.search(query);
+        else if (f.equals(fragBeer_shop.getTag()))
+            fragBeer_shop.search(query);
+        else if (f.equals(fragNight_club.getTag()))
+            fragNight_club.search(query);
+
+    }
+
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -347,12 +410,21 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                finish();
-                return true;
+
+        int itemId = item.getItemId();
+
+
+        if (itemId == android.R.id.home) {
+            finish();
+            return true;
+        } else if (itemId == R.id.action_search) {
+            toolbar.onSearchIconClick();
+            return true;
+        } else if (itemId == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

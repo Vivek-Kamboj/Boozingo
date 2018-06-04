@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.boozingo.MarshmallowPermissions;
 import com.boozingo.R;
 import com.boozingo.details.detailsActivityNight_club;
+import com.boozingo.model.smallBarDetails;
 import com.boozingo.model.smallNight_clubDetails;
 import com.google.gson.Gson;
 
@@ -29,7 +31,7 @@ import static com.boozingo.bars_n_pubs.bars_n_pubs.internetStatus;
 
 public class FragNight_club extends Fragment implements Adapter_club.ItemClickCallback {
 
-    public static List<smallNight_clubDetails> mDataset = new ArrayList<>();
+    public List<smallNight_clubDetails> mDataset = new ArrayList<>();
     RecyclerView recview;
     Adapter_club adapter;
     smallNight_clubDetails smallDetail;
@@ -110,7 +112,26 @@ public class FragNight_club extends Fragment implements Adapter_club.ItemClickCa
 
             smallDetail.setNight_club_icon(pic);
             mDataset.add(smallDetail);
-            adapter.notifyDataSetChanged();
         }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    public void search(String searchString) {
+
+        List<smallNight_clubDetails> tempDataset = new ArrayList<>();
+
+        if (TextUtils.isEmpty(searchString))
+            tempDataset = mDataset;
+        else
+            for (smallNight_clubDetails currentX : mDataset) {
+                if (currentX.getNight_club_name().toLowerCase().contains(searchString))
+                    tempDataset.add(currentX);
+            }
+
+        adapter = new Adapter_club(tempDataset, getContext());
+        recview.setAdapter(adapter);
+        adapter.setItemClickCallback(this);
+
     }
 }

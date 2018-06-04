@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ import static com.boozingo.bars_n_pubs.bars_n_pubs.internetStatus;
 
 public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
 
-    public static List<smallBarDetails> mDataset = new ArrayList<>();
+    public List<smallBarDetails> mDataset = new ArrayList<>();
     RecyclerView recview;
     Adapter_bar adapter;
     smallBarDetails smallDetail;
@@ -52,13 +53,12 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        mDataset.clear();
-
         marshmallowPermissions = new MarshmallowPermissions(getActivity());
 
         View rootView = inflater.inflate(R.layout.fragment_bar, container, false);
         recview = rootView.findViewById(R.id.recycler);
         recview.setLayoutManager(new LinearLayoutManager(getActivity()));
+
 
         adapter = new Adapter_bar(mDataset, getContext());
         recview.setAdapter(adapter);
@@ -111,7 +111,27 @@ public class FragBar extends Fragment implements Adapter_bar.ItemClickCallback {
 
             smallDetail.setBar_icon(pic);
             mDataset.add(smallDetail);
-            adapter.notifyDataSetChanged();
         }
+
+        adapter.notifyDataSetChanged();
+
+    }
+
+    public void search(String searchString) {
+
+        List<smallBarDetails> tempDataset = new ArrayList<>();
+
+        if (TextUtils.isEmpty(searchString))
+            tempDataset.addAll(mDataset);
+        else
+            for (smallBarDetails currentX : mDataset) {
+                if (currentX.getBar_name().toLowerCase().contains(searchString))
+                    tempDataset.add(currentX);
+            }
+
+        adapter = new Adapter_bar(tempDataset, getContext());
+        recview.setAdapter(adapter);
+        adapter.setItemClickCallback(this);
+
     }
 }

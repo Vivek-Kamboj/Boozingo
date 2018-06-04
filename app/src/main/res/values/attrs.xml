@@ -9,4 +9,15 @@
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="SearchAnimationToolbar">
+        <attr name="title" format="string" />
+        <attr name="titleTextColor" format="color" />
+        <attr name="subtitle" format="string" />
+        <attr name="subtitleTextColor" format="color" />
+        <attr name="searchHint" format="string" />
+        <attr name="searchBackgroundColor" format="color" />
+
+    </declare-styleable>
+
+
 </resources>

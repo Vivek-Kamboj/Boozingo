@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.boozingo.MarshmallowPermissions;
 import com.boozingo.R;
 import com.boozingo.details.detailsActivityPub;
+import com.boozingo.model.smallBarDetails;
 import com.boozingo.model.smallPubDetails;
 import com.google.gson.Gson;
 
@@ -29,8 +31,7 @@ import static com.boozingo.bars_n_pubs.bars_n_pubs.pubs;
 
 public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
 
-    private static final int DATASET_COUNT = 60;
-    public static List<smallPubDetails> mDataset = new ArrayList<>();
+    public List<smallPubDetails> mDataset = new ArrayList<>();
     RecyclerView recview;
     Adapter_pub adapter;
     int j = 0, i = 0;
@@ -114,7 +115,26 @@ public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
 
             smallDetail.setPub_icon(pic);
             mDataset.add(smallDetail);
-            adapter.notifyDataSetChanged();
         }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    public void search(String searchString) {
+
+        List<smallPubDetails> tempDataset = new ArrayList<>();
+
+        if (TextUtils.isEmpty(searchString))
+            tempDataset.addAll(mDataset);
+        else
+            for (smallPubDetails currentX : mDataset) {
+                if (currentX.getPub_name().toLowerCase().contains(searchString))
+                    tempDataset.add(currentX);
+            }
+
+        adapter = new Adapter_pub(tempDataset, getContext());
+        recview.setAdapter(adapter);
+        adapter.setItemClickCallback(this);
+
     }
 }
