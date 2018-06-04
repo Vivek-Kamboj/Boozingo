@@ -2,6 +2,7 @@ package com.boozingo;
 
 import android.app.Application;
 import android.content.Context;
+import android.view.inputmethod.InputMethodManager;
 
 import com.boozingo.helper.TypefaceUtil;
 
@@ -22,4 +23,5 @@ public class Boozingo extends Application {
     public static Context getAppContext() {
         return appContext;
     }
+
 }

@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,8 +74,13 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
     private boolean internetConnected = true;
     public static String internetStatus = "";
 
+    private final List<Fragment> mFragmentList = new ArrayList<>();
+    private final List<String> mFragmentTitleList = new ArrayList<>();
+
     DBHelper dbHelper;
     byte[] bytes;
+
+    int currentFragmentIndex = 0;
 
     FragBar fragBar = new FragBar();
     FragPub fragPub = new FragPub();
@@ -96,8 +102,8 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
         toolbar.setOnSearchQueryChangedListener(bars_n_pubs.this);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //       city = getIntent().getStringExtra("city");
-        city = "delhi";
+        city = getIntent().getStringExtra("city");
+        //city = "delhi";
 
         toolbar.setVisibility(View.GONE);
 
@@ -146,6 +152,20 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
 
         new net().execute();
 
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) {
+            }
+
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            public void onPageSelected(int position) {
+                // Check if this is the page you want.
+                currentFragmentIndex = position;
+                toolbar.setTitle(mFragmentTitleList.get(position));
+            }
+        });
     }
 
     private void init() {
@@ -206,34 +226,44 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
     @Override
     public void onSearchSubmitted(String query) {
 
+        switch (currentFragmentIndex) {
+            case 0:
+                fragBar.search(query);
+                break;
+            case 1:
+                fragPub.search(query);
+                break;
+            case 2:
+                fragLounge.search(query);
+                break;
+            case 3:
+                fragBeer_shop.search(query);
+                break;
+            case 4:
+                fragNight_club.search(query);
+                break;
 
-        String f = adapter.getItem(viewPager.getCurrentItem()).getTag();
+        }
 
-        if (f.equals(fragBar.getTag()))
-            fragBar.search(query);
-        else if (f.equals(fragLounge.getTag()))
-            fragLounge.search(query);
-        else if (f.equals(fragPub.getTag()))
-            fragPub.search(query);
-        else if (f.equals(fragBeer_shop.getTag()))
-            fragBeer_shop.search(query);
-        else if (f.equals(fragNight_club.getTag()))
-            fragNight_club.search(query);
+        hideSoftInputKeyboard();
+
 
     }
 
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
+
 
         public ViewPagerAdapter(FragmentManager manager) {
             super(manager);
+            mFragmentList.clear();
+            mFragmentTitleList.clear();
         }
 
         @Override
         public Fragment getItem(int position) {
             return mFragmentList.get(position);
+
         }
 
         @Override
@@ -438,6 +468,15 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
     protected void onPause() {
         super.onPause();
         unregisterReceiver(snackBarClass.broadcastReceiver);
+    }
+
+    public void hideSoftInputKeyboard() {
+        try {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {
+
+        }
     }
 
 }

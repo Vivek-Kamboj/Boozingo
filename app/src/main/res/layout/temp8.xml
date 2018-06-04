@@ -80,9 +80,10 @@
             android:layout_height="wrap_content"
             app:titleTextColor="@color/black"
             app:subtitle=""
+            android:textCursorDrawable="@null"
             app:searchBackgroundColor="@color/appBarColor"
             app:subtitleTextColor="@color/appBarColor"
-            app:title="title" />
+            app:title="Bars" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"

@@ -63,7 +63,7 @@ public class detailsActivityBar extends AppCompatActivity implements SnackBarCla
 
     ViewPager viewPager;
     //    ImageButton back;
-    String TAG = "TAG", id = "2", text, geo_location, latitudeBar, longitudeBar, image, specs, cost, _type;
+    String TAG = "TAG", id = "2", text, geo_location, latitudeBar, longitudeBar, image, specs, cost, _type = "bar";
     List<String> images = new ArrayList<>();
     picPagerAdapter adapter;
     LinearLayout icons;

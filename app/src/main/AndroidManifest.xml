@@ -21,7 +21,11 @@
             android:name=".splash"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".splash_screen.SplashScreen"
@@ -45,11 +49,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/noActionBar"
             android:windowSoftInputMode="stateHidden" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".details.detailsActivityBar"
