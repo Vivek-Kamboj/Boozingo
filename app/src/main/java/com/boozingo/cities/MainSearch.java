@@ -121,7 +121,8 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
                 } else if (count == 0) {
 
                     bold = 0;
-                    adapter = new RecAdapter_emp(fullList, MainSearch.this, bold);
+                    list = fullList;
+                    adapter = new RecAdapter_emp(list, MainSearch.this, bold);
                     recview.setAdapter(adapter);
                     num = 0;
                     adapter.setItemClickCallback(MainSearch.this);

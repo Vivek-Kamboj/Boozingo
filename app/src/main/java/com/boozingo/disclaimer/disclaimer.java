@@ -3,6 +3,7 @@ package com.boozingo.disclaimer;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -14,8 +15,10 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
+import android.text.style.TextAppearanceSpan;
 import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.Window;
@@ -79,9 +82,11 @@ public class disclaimer extends AppCompatActivity {
             @Override
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
+                ds.setColor(0xFFFB365B);
                 ds.setUnderlineText(false);
             }
         };
+
         ss.setSpan(clickableSpan, 53, 75, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         ss.setSpan(new UnderlineSpan(), 54, 74, 0);
         ss.setSpan(new StyleSpan(Typeface.BOLD), 54, 74, 0);
