@@ -25,7 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.boozingo.Boozingo.url;
+import static com.boozingo.Boozingo.URL;
 import static com.boozingo.bars_n_pubs.bars_n_pubs.internetStatus;
 import static com.boozingo.bars_n_pubs.bars_n_pubs.shops;
 
@@ -106,7 +106,7 @@ public class FragBeer_shop extends Fragment implements Adapter_shop.ItemClickCal
             smallDetail = gson.fromJson(object.toString(), smallBeer_shopDetails.class);
 
             pic = object.getString("beer_shop_icon");
-            pic = url + "/storage/" + pic;
+            pic = URL + "/storage/" + pic;
 
             smallDetail.setBeer_shop_icon(pic);
             mDataset.add(smallDetail);

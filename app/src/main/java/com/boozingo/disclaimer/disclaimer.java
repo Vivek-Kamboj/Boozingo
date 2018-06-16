@@ -27,14 +27,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.boozingo.Session;
 import com.boozingo.cities.Cities;
 import com.boozingo.R;
+
+import static com.boozingo.Boozingo.session;
 
 public class disclaimer extends AppCompatActivity {
 
     Dialog dialog;
-    Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +43,6 @@ public class disclaimer extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //Full screen is set for the Window
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        session = new Session(getApplicationContext());
 
         if (session.isolduser()) {
             startActivity(new Intent(disclaimer.this, Cities.class));

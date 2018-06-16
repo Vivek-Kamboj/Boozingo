@@ -23,7 +23,6 @@ import com.boozingo.helper.LocationHelper;
 import com.boozingo.helper.ConnectionDetector;
 import com.boozingo.helper.Permission;
 import com.boozingo.R;
-import com.boozingo.Session;
 import com.boozingo.disclaimer.disclaimer;
 import com.boozingo.helper.SnackBarClass;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,7 +36,6 @@ public class SplashScreen extends AppCompatActivity implements GoogleApiClient.C
     private Snackbar snackbar;
     SnackBarClass snackBarClass;
     RelativeLayout layout;
-    Session session;
     String _status;
     Permission permission;
     final int DELAY_TIME = 1500;
@@ -56,7 +54,6 @@ public class SplashScreen extends AppCompatActivity implements GoogleApiClient.C
 
         setContentView(R.layout.activity_splash_screen);
 
-        session = new Session(getApplicationContext());
         permission = new Permission(this);
         locationHelper = new LocationHelper(this);
         connectionDetector = new ConnectionDetector(this);

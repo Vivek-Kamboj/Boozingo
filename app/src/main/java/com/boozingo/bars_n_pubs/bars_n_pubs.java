@@ -1,6 +1,7 @@
 package com.boozingo.bars_n_pubs;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -28,6 +29,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.boozingo.SearchAnimationToolbar;
 import com.boozingo.ToolbarActivity;
 import com.bumptech.glide.Glide;
@@ -48,9 +53,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.boozingo.Boozingo.url;
+import static com.boozingo.Boozingo.*;
 
-public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.SnackbarMessage, SearchAnimationToolbar.OnSearchQueryChangedListener {
+public class bars_n_pubs extends AppCompatActivity implements SearchAnimationToolbar.OnSearchQueryChangedListener {
 
     public CoordinatorLayout layout;
     SearchAnimationToolbar toolbar;
@@ -63,21 +68,14 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
     String city;
     TextView city_name;
     ImageView city_image;
-    String TAG = "TAG";
     ProgressDialog pDialog;
     public static JSONArray bars = new JSONArray(), pubs = new JSONArray(), shops = new JSONArray(),
             lounges = new JSONArray(), clubs = new JSONArray();
 
-    // for snack bar
-    SnackBarClass snackBarClass;
-    Snackbar snackbar;
-    private boolean internetConnected = true;
-    public static String internetStatus = "";
-
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
 
-    DBHelper dbHelper;
+
     byte[] bytes;
 
     int currentFragmentIndex = 0;
@@ -133,12 +131,6 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
 
         bars = new JSONArray();
 
-
-        dbHelper = new DBHelper(this);
-        snackBarClass = new SnackBarClass(this);
-        snackBarClass.readySnackbarMessage(this);
-
-
         city_name.setText("");
 
 
@@ -147,10 +139,8 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
         pDialog.setCancelable(true);
         pDialog.show();
 
-
         setupViewPager(viewPager);
-
-        new net().execute();
+        cityDetailsRequest();
 
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -164,8 +154,79 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
                 // Check if this is the page you want.
                 currentFragmentIndex = position;
                 toolbar.setTitle(mFragmentTitleList.get(position));
+                toolbar.clearFocus();
             }
         });
+    }
+
+    private void cityDetailsRequest() {
+
+        final String url = URL + city;
+        final JsonObjectRequest jsonObjReq;
+
+        jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONObject object = null;
+                        try {
+                            object = new JSONObject(response.toString());
+                            JSONObject data = object.getJSONObject("city_detail");
+                            final String pic_url = URL + "/storage/" + data.getString("city_image");
+                            bars = object.getJSONArray("bars");
+
+                            //change pubs ro rest
+                            pubs = object.getJSONArray("pubs");
+
+                            shops = object.getJSONArray("beer_shops");
+
+                            lounges = object.getJSONArray("lounges");
+
+                            clubs = object.getJSONArray("night_clubs");
+
+                            setupViewPager(viewPager);
+                            tabLayout.setupWithViewPager(viewPager);
+
+                            bytes = loadImageFromDB(city + "_full");
+                            if (bytes != null) {
+                                city_image.setImageBitmap(ImageUtils.getImage(bytes));
+                                pDialog.dismiss();
+                            } else {
+
+                                RequestOptions options = new RequestOptions()
+                                        .centerInside()
+                                        .priority(Priority.HIGH);
+
+                                Glide.with(bars_n_pubs.this)
+                                        .load(pic_url)
+                                        .apply(options)
+                                        .into(new SimpleTarget<Drawable>() {
+                                            @Override
+                                            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                                Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                                                city_image.setImageBitmap(bitmap);
+                                                saveImageInDB(bitmap, city + "_full");
+                                                pDialog.dismiss();
+                                            }
+                                        });
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showError(error, bars_n_pubs.this);
+                    }
+                });
+
+        // Adding the request to the queue along with a unique String tag
+        requestQueue.add(jsonObjReq).setTag(this);
     }
 
     private void init() {
@@ -200,7 +261,6 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
 
     @Override
     public void onBackPressed() {
-
         boolean handledByToolbar = toolbar.onBackPressed();
 
         if (!handledByToolbar) {
@@ -215,7 +275,8 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
 
     @Override
     public void onSearchQueryChanged(String query) {
-
+        if (query.equals(""))
+            onSearchSubmitted("");
     }
 
     @Override
@@ -282,161 +343,7 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
         }
     }
 
-    private class net extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            HttpHandler sh = new HttpHandler();
 
-            // Making a request to url and getting response
-            final String jsonStr = sh.makeServiceCall(url + "/" + city);
-
-
-            Log.e(TAG, "Response from url: " + jsonStr);
-
-            if (jsonStr != null) {
-                try {
-                    JSONObject object = new JSONObject(jsonStr);
-                    JSONObject data = object.getJSONObject("city_detail");
-                    final String pic_url = url + "/storage/" + data.getString("city_image");
-                    bars = object.getJSONArray("bars");
-
-                    //change pubs ro rest
-                    pubs = object.getJSONArray("pubs");
-
-                    shops = object.getJSONArray("beer_shops");
-
-                    lounges = object.getJSONArray("lounges");
-
-                    clubs = object.getJSONArray("night_clubs");
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            setupViewPager(viewPager);
-                            tabLayout.setupWithViewPager(viewPager);
-
-                            bytes = loadImageFromDB(city + "_full");
-                            if (bytes != null) {
-                                city_image.setImageBitmap(ImageUtils.getImage(bytes));
-                                pDialog.dismiss();
-                            } else {
-
-                                RequestOptions options = new RequestOptions()
-                                        .centerInside()
-                                        .priority(Priority.HIGH);
-
-                                Glide.with(bars_n_pubs.this)
-                                        .load(pic_url)
-                                        .apply(options)
-                                        .into(new SimpleTarget<Drawable>() {
-                                            @Override
-                                            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                                                Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
-                                                city_image.setImageBitmap(bitmap);
-                                                saveImageInDB(bitmap, city + "_full");
-                                                pDialog.dismiss();
-                                            }
-                                        });
-                            }
-
-                        }
-                    });
-
-                } catch (final JSONException e) {
-                    Log.e(TAG, "Json parsing error: " + e.getMessage());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(),
-                                    "Problem retrieving data. Restart application.",
-                                    Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                    });
-
-                }
-
-            } else {
-                Log.e(TAG, "Couldn't get json from server.");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(),
-                                "Network problem. Check network connection.",
-                                Toast.LENGTH_LONG)
-                                .show();
-                    }
-                });
-            }
-
-            return null;
-        }
-    }
-
-
-    // for database images
-    void saveImageInDB(Bitmap bitmap, String id) {
-
-        dbHelper.open();
-        byte[] inputData = ImageUtils.getImageBytes(bitmap);
-        dbHelper.insertImage(inputData, id);
-        dbHelper.close();
-
-    }
-
-    byte[] loadImageFromDB(String id) {
-
-        byte[] bytes = null;
-        try {
-            dbHelper.open();
-            bytes = dbHelper.retreiveImageFromDB(id);
-            dbHelper.close();
-        } catch (Exception e) {
-            Log.e(TAG, "<loadImageFromDB> Error : " + e.getLocalizedMessage());
-            dbHelper.close();
-        }
-
-        return bytes;
-    }
-
-
-    @Override
-    public void setSnackbarMessage(String status, boolean showBar) {
-        internetStatus = "";
-        if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
-            internetStatus = "Internet Connected";
-        } else {
-            internetStatus = "Lost Internet Connection";
-        }
-        snackbar = Snackbar
-                .make(layout, internetStatus, Snackbar.LENGTH_LONG)
-                .setAction("X", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        snackbar.dismiss();
-                    }
-                });
-
-        // Changing message text color
-        snackbar.setActionTextColor(Color.WHITE);
-        // Changing action button text color
-        View sbView = snackbar.getView();
-
-        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-        if (internetStatus.equalsIgnoreCase("Lost Internet Connection")) {
-            if (internetConnected) {
-                snackbar.show();
-                internetConnected = false;
-            }
-        } else {
-            if (!internetConnected) {
-                internetConnected = true;
-                snackbar.show();
-            }
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -461,12 +368,15 @@ public class bars_n_pubs extends AppCompatActivity implements SnackBarClass.Snac
     @Override
     protected void onResume() {
         super.onResume();
-        snackBarClass.registerInternetCheckReceiver();
+        snackBarClass.registerInternetCheckReceiver(layout);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        if (requestQueue != null) {
+            requestQueue.cancelAll(this);
+        }
         unregisterReceiver(snackBarClass.broadcastReceiver);
     }
 

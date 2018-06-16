@@ -36,7 +36,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.boozingo.Boozingo.url;
+import static com.boozingo.Boozingo.URL;
 import static com.boozingo.cities.Cities.cities_show;
 
 public class MainSearch extends AppCompatActivity implements RecAdapter_emp.ItemClickCallback {
@@ -113,19 +113,15 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
                     }
 
 
-                    adapter = new RecAdapter_emp(list, MainSearch.this, bold);
-                    recview.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
                     num = 1;
-                    adapter.setItemClickCallback(MainSearch.this);
 
                 } else if (count == 0) {
 
                     bold = 0;
                     list = fullList;
-                    adapter = new RecAdapter_emp(list, MainSearch.this, bold);
-                    recview.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
                     num = 0;
-                    adapter.setItemClickCallback(MainSearch.this);
 
                 }
 
@@ -174,7 +170,7 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
             HttpHandler sh = new HttpHandler();
 
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall(url + "/search");
+            String jsonStr = sh.makeServiceCall(URL + "/search");
 
             Log.e(TAG, "Response from url: " + jsonStr);
 

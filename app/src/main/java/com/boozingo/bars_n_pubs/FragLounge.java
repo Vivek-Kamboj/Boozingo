@@ -25,7 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.boozingo.Boozingo.url;
+import static com.boozingo.Boozingo.URL;
 import static com.boozingo.bars_n_pubs.bars_n_pubs.internetStatus;
 import static com.boozingo.bars_n_pubs.bars_n_pubs.lounges;
 
@@ -105,7 +105,7 @@ public class FragLounge extends Fragment implements Adapter_lounge.ItemClickCall
             smallDetail = gson.fromJson(object.toString(), smallLoungeDetails.class);
 
             pic = object.getString("lounge_icon");
-            pic = url + "/storage/" + pic;
+            pic = URL + "/storage/" + pic;
 
             smallDetail.setLounge_icon(pic);
             mDataset.add(smallDetail);

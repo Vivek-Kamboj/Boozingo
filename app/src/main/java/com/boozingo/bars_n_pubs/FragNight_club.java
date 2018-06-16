@@ -25,9 +25,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.boozingo.Boozingo.url;
+import static com.boozingo.Boozingo.*;
 import static com.boozingo.bars_n_pubs.bars_n_pubs.clubs;
-import static com.boozingo.bars_n_pubs.bars_n_pubs.internetStatus;
 
 public class FragNight_club extends Fragment implements Adapter_club.ItemClickCallback {
 
@@ -108,7 +107,7 @@ public class FragNight_club extends Fragment implements Adapter_club.ItemClickCa
             smallDetail = gson.fromJson(object.toString(), smallNight_clubDetails.class);
 
             pic = object.getString("night_club_icon");
-            pic = url + "/storage/" + pic;
+            pic = URL + "/storage/" + pic;
 
             smallDetail.setNight_club_icon(pic);
             mDataset.add(smallDetail);

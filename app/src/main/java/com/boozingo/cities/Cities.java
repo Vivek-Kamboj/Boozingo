@@ -34,7 +34,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.boozingo.helper.LocationHelper;
 import com.boozingo.R;
-import com.boozingo.Session;
 import com.boozingo.bars_n_pubs.bars_n_pubs;
 import com.boozingo.helper.DBHelper;
 import com.boozingo.helper.HttpHandler;
@@ -47,7 +46,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.boozingo.Boozingo.url;
+import static com.boozingo.Boozingo.session;
+import static com.boozingo.Boozingo.URL;
 import static com.boozingo.helper.LocationHelper.REQUEST_CHECK_SETTINGS;
 import static com.boozingo.helper.LocationHelper.status;
 
@@ -73,7 +73,6 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
     LinearLayout l1, l2, l3, l4, l5, myCity;
 
     DBHelper dbHelper;
-    Session session;
     byte[] bytes;
     public static String[] cities_show = new String[4];
 
@@ -111,7 +110,6 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
 
         //initialise database
         dbHelper = new DBHelper(this);
-        session = new Session(getApplicationContext());
         locationHelper = new LocationHelper(this);
         permission = new Permission(this);
         snackBarClass = new SnackBarClass(this);
@@ -281,7 +279,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
         protected Void doInBackground(Void... params) {
 
             HttpHandler sh = new HttpHandler();
-            final String jsonStr = sh.makeServiceCall(url);
+            final String jsonStr = sh.makeServiceCall(URL);
 
 
             runOnUiThread(new Runnable() {
@@ -307,7 +305,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
                             for (int i = 0; i < n - 1; i++) {
                                 JSONObject c = images.getJSONObject(i);
                                 final String image = c.getString("image_url");
-                                temp[i] = url + "/storage/" + image;
+                                temp[i] = URL + "/storage/" + image;
                             }
 
                             for (int i = 0; i < n - 1; i++) {
@@ -455,7 +453,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
 
 
             // Making a request to url and getting response
-            final String jsonStr = sh.makeServiceCall(url);
+            final String jsonStr = sh.makeServiceCall(URL);
 
             runOnUiThread(new Runnable() {
                               @Override
@@ -476,7 +474,7 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
                                               final String city_name = c.getString("city_name");
                                               cities_show[i] = city_name;
 
-                                              String temp = url + "/storage/" + city_icon;
+                                              String temp = URL + "/storage/" + city_icon;
 
                                               RequestOptions options = new RequestOptions()
                                                       .centerCrop()

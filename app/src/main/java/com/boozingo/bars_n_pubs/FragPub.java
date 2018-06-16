@@ -25,7 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.boozingo.Boozingo.url;
+import static com.boozingo.Boozingo.URL;
 import static com.boozingo.bars_n_pubs.bars_n_pubs.internetStatus;
 import static com.boozingo.bars_n_pubs.bars_n_pubs.pubs;
 
@@ -111,7 +111,7 @@ public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
             smallDetail = gson.fromJson(object.toString(), smallPubDetails.class);
 
             pic = object.getString("pub_icon");
-            pic = url + "/storage/" + pic;
+            pic = URL + "/storage/" + pic;
 
             smallDetail.setPub_icon(pic);
             mDataset.add(smallDetail);
