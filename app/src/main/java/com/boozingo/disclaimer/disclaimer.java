@@ -80,7 +80,7 @@ public class disclaimer extends AppCompatActivity {
             @Override
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
-                ds.setColor(0xFFFB365B);
+           //     ds.setColor(0xFFFB365B);
                 ds.setUnderlineText(false);
             }
         };

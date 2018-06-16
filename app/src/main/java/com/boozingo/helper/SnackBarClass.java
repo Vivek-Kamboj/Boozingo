@@ -3,20 +3,23 @@ package com.boozingo.helper;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Toast;
 
+import static com.boozingo.Boozingo.snackBarClass;
+
 public class SnackBarClass {
     public Snackbar snackbar;
     public boolean internetConnected = true;
-    Activity activity;
+    Context activity;
     View layout;
     ConnectionDetector connectionDetector;
 
-    public SnackBarClass(Activity activity) {
+    public SnackBarClass(Context activity) {
         this.activity = activity;
         connectionDetector = new ConnectionDetector(activity);
     }

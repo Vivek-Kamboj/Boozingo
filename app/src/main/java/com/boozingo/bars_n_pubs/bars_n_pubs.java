@@ -44,7 +44,6 @@ import com.boozingo.R;
 import com.boozingo.helper.DBHelper;
 import com.boozingo.helper.HttpHandler;
 import com.boozingo.helper.ImageUtils;
-import com.boozingo.helper.SnackBarClass;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,6 +103,7 @@ public class bars_n_pubs extends AppCompatActivity implements SearchAnimationToo
         //city = "delhi";
 
         toolbar.setVisibility(View.GONE);
+        tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = true;
@@ -222,6 +222,7 @@ public class bars_n_pubs extends AppCompatActivity implements SearchAnimationToo
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         showError(error, bars_n_pubs.this);
+                        pDialog.dismiss();
                     }
                 });
 
@@ -344,7 +345,6 @@ public class bars_n_pubs extends AppCompatActivity implements SearchAnimationToo
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -377,7 +377,8 @@ public class bars_n_pubs extends AppCompatActivity implements SearchAnimationToo
         if (requestQueue != null) {
             requestQueue.cancelAll(this);
         }
-        unregisterReceiver(snackBarClass.broadcastReceiver);
+        if (snackBarClass.broadcastReceiver.isOrderedBroadcast())
+            unregisterReceiver(snackBarClass.broadcastReceiver);
     }
 
     public void hideSoftInputKeyboard() {

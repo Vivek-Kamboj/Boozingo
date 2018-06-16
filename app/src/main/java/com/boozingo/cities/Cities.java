@@ -26,6 +26,10 @@ import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -46,34 +50,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.boozingo.Boozingo.session;
-import static com.boozingo.Boozingo.URL;
+import static com.boozingo.Boozingo.*;
 import static com.boozingo.helper.LocationHelper.REQUEST_CHECK_SETTINGS;
 import static com.boozingo.helper.LocationHelper.status;
 
-public class Cities extends AppCompatActivity implements View.OnClickListener, SnackBarClass.SnackbarMessage,
+public class Cities extends AppCompatActivity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks {
 
-    public static String city = "";
     RelativeLayout rl;
     TextView textView, t1, t2, t3, t4, t5;
     EditText search;
     ImageView im1, im2, im3, im4, im5, banner, factimg1, factimg2, view_more;
-    String TAG = "TAG";
-
-
-    private Snackbar snackbar;
-    private boolean internetConnected = true;
-    SnackBarClass snackBarClass;
-    String internetStatus;
-
+    byte[] bytes;
 
     ProgressDialog pDialog;
     RelativeLayout layout;
     LinearLayout l1, l2, l3, l4, l5, myCity;
 
-    DBHelper dbHelper;
-    byte[] bytes;
     public static String[] cities_show = new String[4];
 
     RelativeLayout top;
@@ -105,19 +98,10 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
         setParams();
 
 
-        //initially net is assumed to be connected
-        internetStatus = getString(R.string.net);
-
-        //initialise database
-        dbHelper = new DBHelper(this);
         locationHelper = new LocationHelper(this);
         permission = new Permission(this);
-        snackBarClass = new SnackBarClass(this);
-        snackBarClass.readySnackbarMessage(this);
 
-        if (!permission.checkPermission())
-            permission.requestPermission();
-
+        permission.requestPermission();
 
         pDialog = new ProgressDialog(Cities.this);
         pDialog.setMessage("Please wait...");
@@ -152,9 +136,8 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
 
         Uri uri = Uri.parse("http://35.160.58.203/storage/bar-images/July2017/2kcOKeS88yWLcadKLMBz.jpeg");
 
-        new city_search().execute();
-
-        new boozefacts().execute();
+        citySearchRequest();
+        boozefactsRequest();
 
     }
 
@@ -273,22 +256,18 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
     }
 
 
-    private class boozefacts extends AsyncTask<Void, Void, Void> {
+    private void boozefactsRequest() {
+        final String url = URL;
+        final JsonObjectRequest jsonObjReq;
 
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            HttpHandler sh = new HttpHandler();
-            final String jsonStr = sh.makeServiceCall(URL);
-
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-                    if (jsonStr != null) {
+        jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONObject object = null;
                         try {
-                            JSONObject object = new JSONObject(jsonStr);
+                            object = new JSONObject(response.toString());
                             JSONArray images = object.getJSONArray("images");
 
                             // for banner and booze facts
@@ -384,164 +363,143 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
                                         break;
                                 }
                             }
+                        } catch (JSONException e) {
+                            Toast.makeText(getApplicationContext(),
+                                    "Problem retrieving data. Restart application.",
+                                    Toast.LENGTH_LONG)
+                                    .show();
 
-                        } catch (final JSONException e) {
-                            Log.e(TAG, "Json parsing error: " + e.getMessage());
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Problem retrieving data. Restart application.",
-                                            Toast.LENGTH_LONG)
-                                            .show();
-
-                                    Glide.with(Cities.this)
-                                            .load(R.drawable.booze_fact_error_1)
-                                            .into(factimg1);
+                            Glide.with(Cities.this)
+                                    .load(R.drawable.booze_fact_error_1)
+                                    .into(factimg1);
 
 
-                                    Glide.with(Cities.this)
-                                            .load(R.drawable.booze_fact_error_2)
-                                            .into(factimg2);
+                            Glide.with(Cities.this)
+                                    .load(R.drawable.booze_fact_error_2)
+                                    .into(factimg2);
 
-                                    pDialog.dismiss();
-
-                                }
-                            });
-
+                            pDialog.dismiss();
+                            e.printStackTrace();
                         }
-                    } else {
-
-
-                        Log.e(TAG, "Couldn't get json from server.");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(),
-                                        "Network problem. Check network connection.",
-                                        Toast.LENGTH_LONG)
-                                        .show();
-
-
-                                Glide.with(Cities.this)
-                                        .load(R.drawable.booze_fact_error_1)
-                                        .into(factimg1);
-
-
-                                Glide.with(Cities.this)
-                                        .load(R.drawable.booze_fact_error_2)
-                                        .into(factimg2);
-
-                                pDialog.dismiss();
-
-                            }
-                        });
                     }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showError(error, Cities.this);
+                        Toast.makeText(getApplicationContext(),
+                                "Problem retrieving data. Restart application.",
+                                Toast.LENGTH_LONG)
+                                .show();
+
+                        Glide.with(Cities.this)
+                                .load(R.drawable.booze_fact_error_1)
+                                .into(factimg1);
 
 
-                }
-            });
-            return null;
-        }
+                        Glide.with(Cities.this)
+                                .load(R.drawable.booze_fact_error_2)
+                                .into(factimg2);
+
+                        pDialog.dismiss();
+                    }
+                });
+
+        // Adding the request to the queue along with a unique String tag
+        requestQueue.add(jsonObjReq).setTag(this);
     }
 
-    private class city_search extends AsyncTask<Void, Void, Void> {
+    private void citySearchRequest() {
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            HttpHandler sh = new HttpHandler();
+        final String url = URL;
+        final JsonObjectRequest jsonObjReq;
 
+        jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONObject object = null;
+                        try {
+                            object = new JSONObject(response.toString());
+                            JSONArray cities = object.getJSONArray("cities");
 
-            // Making a request to url and getting response
-            final String jsonStr = sh.makeServiceCall(URL);
+                            // 4 for 4 cities
+                            for (int i = 0; i < 4; i++) {
+                                JSONObject c = cities.getJSONObject(i);
 
-            runOnUiThread(new Runnable() {
-                              @Override
-                              public void run() {
+                                final String city_icon = c.getString("city_icon");
+                                final String city_name = c.getString("city_name");
+                                cities_show[i] = city_name;
 
-                                  Log.e(TAG, "Response from url: " + jsonStr);
+                                String temp = URL + "/storage/" + city_icon;
 
-                                  if (jsonStr != null) {
-                                      try {
-                                          JSONObject object = new JSONObject(jsonStr);
-                                          JSONArray cities = object.getJSONArray("cities");
+                                RequestOptions options = new RequestOptions()
+                                        .centerCrop()
+                                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                                        .apply(RequestOptions.circleCropTransform())
+                                        .override(250, 250)
+                                        .priority(Priority.HIGH);
 
-                                          // 4 for 4 cities
-                                          for (int i = 0; i < 4; i++) {
-                                              JSONObject c = cities.getJSONObject(i);
+                                switch (i) {
+                                    case 0:
+                                        Glide.with(Cities.this)
+                                                .load(temp)
+                                                .apply(options)
+                                                .into(new SimpleTarget<Drawable>() {
+                                                    @Override
+                                                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                                        Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                                                        im1.setImageBitmap(bitmap);
+                                                        t1.setText(city_name);
+                                                        saveImageInDB(bitmap, city_name);
+                                                    }
+                                                });
 
-                                              final String city_icon = c.getString("city_icon");
-                                              final String city_name = c.getString("city_name");
-                                              cities_show[i] = city_name;
+                                        break;
+                                    case 1:
+                                        Glide.with(Cities.this)
+                                                .load(temp)
+                                                .apply(options)
+                                                .into(new SimpleTarget<Drawable>() {
+                                                    @Override
+                                                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                                        Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                                                        im2.setImageBitmap(bitmap);
+                                                        t2.setText(city_name);
+                                                        saveImageInDB(bitmap, city_name);
+                                                    }
+                                                });
+                                        break;
+                                    case 2:
+                                        Glide.with(Cities.this)
+                                                .load(temp)
+                                                .apply(options)
+                                                .into(new SimpleTarget<Drawable>() {
+                                                    @Override
+                                                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                                        Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                                                        im3.setImageBitmap(bitmap);
+                                                        t3.setText(city_name);
+                                                        saveImageInDB(bitmap, city_name);
+                                                    }
+                                                });
+                                        break;
+                                    case 3:
+                                        Glide.with(Cities.this)
+                                                .load(temp)
+                                                .apply(options)
+                                                .into(new SimpleTarget<Drawable>() {
+                                                    @Override
+                                                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                                        Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                                                        im4.setImageBitmap(bitmap);
+                                                        t4.setText(city_name);
+                                                        saveImageInDB(bitmap, city_name);
+                                                    }
+                                                });
 
-                                              String temp = URL + "/storage/" + city_icon;
-
-                                              RequestOptions options = new RequestOptions()
-                                                      .centerCrop()
-                                                      .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                                                      .apply(RequestOptions.circleCropTransform())
-                                                      .override(250, 250)
-                                                      .priority(Priority.HIGH);
-
-                                              switch (i) {
-                                                  case 0:
-                                                      Glide.with(Cities.this)
-                                                              .load(temp)
-                                                              .apply(options)
-                                                              .into(new SimpleTarget<Drawable>() {
-                                                                  @Override
-                                                                  public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                                                                      Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
-                                                                      im1.setImageBitmap(bitmap);
-                                                                      t1.setText(city_name);
-                                                                      saveImageInDB(bitmap, city_name);
-                                                                  }
-                                                              });
-
-                                                      break;
-                                                  case 1:
-                                                      Glide.with(Cities.this)
-                                                              .load(temp)
-                                                              .apply(options)
-                                                              .into(new SimpleTarget<Drawable>() {
-                                                                  @Override
-                                                                  public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                                                                      Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
-                                                                      im2.setImageBitmap(bitmap);
-                                                                      t2.setText(city_name);
-                                                                      saveImageInDB(bitmap, city_name);
-                                                                  }
-                                                              });
-                                                      break;
-                                                  case 2:
-                                                      Glide.with(Cities.this)
-                                                              .load(temp)
-                                                              .apply(options)
-                                                              .into(new SimpleTarget<Drawable>() {
-                                                                  @Override
-                                                                  public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                                                                      Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
-                                                                      im3.setImageBitmap(bitmap);
-                                                                      t3.setText(city_name);
-                                                                      saveImageInDB(bitmap, city_name);
-                                                                  }
-                                                              });
-                                                      break;
-                                                  case 3:
-                                                      Glide.with(Cities.this)
-                                                              .load(temp)
-                                                              .apply(options)
-                                                              .into(new SimpleTarget<Drawable>() {
-                                                                  @Override
-                                                                  public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                                                                      Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
-                                                                      im4.setImageBitmap(bitmap);
-                                                                      t4.setText(city_name);
-                                                                      saveImageInDB(bitmap, city_name);
-                                                                  }
-                                                              });
-
-                                                      break;
+                                        break;
                                                   /*case 4:
                                                       Glide.with(Cities.this)
                                                               .load(temp)
@@ -556,86 +514,34 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
                                                                   }
                                                               });
                                                       break;*/
-                                              }
+                                }
 
-                                          }
-
-
-                                          //to make sure after first time net is checked at this page not at second splash
-                                          session.create_isfirst();
+                            }
 
 
-                                      } catch (final JSONException e) {
-                                          Log.e(TAG, "Json parsing error: " + e.getMessage());
-                                          runOnUiThread(new Runnable() {
-                                              @Override
-                                              public void run() {
-                                                  Toast.makeText(getApplicationContext(),
-                                                          "Problem retrieving data. Restart application.",
-                                                          Toast.LENGTH_LONG)
-                                                          .show();
-                                                  pDialog.dismiss();
+                            //to make sure after first time net is checked at this page not at second splash
+                            session.create_isfirst();
+                            pDialog.dismiss();
 
-                                              }
-                                          });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
 
-                                      }
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showError(error, Cities.this);
+                        pDialog.dismiss();
+                    }
+                });
 
-                                  } else {
-                                      Log.e(TAG, "Couldn't get json from server.");
-                                      runOnUiThread(new Runnable() {
-                                          @Override
-                                          public void run() {
-                                              Toast.makeText(getApplicationContext(),
-                                                      "Network problem. Check network connection.",
-                                                      Toast.LENGTH_LONG)
-                                                      .show();
-                                              pDialog.dismiss();
-
-                                          }
-                                      });
-                                  }
-                              }
-                          }
-
-            );
-
-
-            return null;
-        }
-
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-        }
+        // Adding the request to the queue along with a unique String tag
+        requestQueue.add(jsonObjReq).setTag(this);
     }
 
-
-    //
-    void saveImageInDB(Bitmap bitmap, String id) {
-
-        dbHelper.open();
-        byte[] inputData = ImageUtils.getImageBytes(bitmap);
-        dbHelper.insertImage(inputData, id);
-        dbHelper.close();
-
-    }
-
-    byte[] loadImageFromDB(String id) {
-
-        byte[] bytes = null;
-        try {
-            dbHelper.open();
-            bytes = dbHelper.retreiveImageFromDB(id);
-            dbHelper.close();
-        } catch (Exception e) {
-            Log.e(TAG, "<loadImageFromDB> Error : " + e.getLocalizedMessage());
-            dbHelper.close();
-        }
-
-        return bytes;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -661,55 +567,17 @@ public class Cities extends AppCompatActivity implements View.OnClickListener, S
     }
 
     @Override
-    public void setSnackbarMessage(String status, boolean showBar) {
-
-        if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
-
-            search.setText(city);
-            search.setSelection(city.length());
-            internetStatus = getString(R.string.net);
-        } else {
-            internetStatus = getString(R.string.no_net);
-        }
-        snackbar = Snackbar
-                .make(layout, internetStatus, Snackbar.LENGTH_LONG)
-                .setAction("X", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        snackbar.dismiss();
-                    }
-                });
-        // Changing message text color
-        snackbar.setActionTextColor(Color.WHITE);
-        // Changing action button text color
-        View sbView = snackbar.getView();
-        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextColor(Color.WHITE);
-
-        if (internetStatus.equalsIgnoreCase(getString(R.string.no_net))) {
-            if (internetConnected) {
-                snackbar.show();
-                internetConnected = false;
-            }
-        } else {
-            if (!internetConnected) {
-                internetConnected = true;
-                snackbar.show();
-            }
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        snackBarClass.registerInternetCheckReceiver();
-
+        snackBarClass.registerInternetCheckReceiver(layout);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(snackBarClass.broadcastReceiver);
+
+        if (snackBarClass.broadcastReceiver.isOrderedBroadcast())
+            unregisterReceiver(snackBarClass.broadcastReceiver);
     }
 
     @Override

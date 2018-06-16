@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.boozingo.cities.Cities;
 import com.boozingo.helper.LocationHelper;
 import com.boozingo.helper.ConnectionDetector;
 import com.boozingo.helper.Permission;
@@ -27,14 +28,13 @@ import com.boozingo.disclaimer.disclaimer;
 import com.boozingo.helper.SnackBarClass;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import static com.boozingo.Boozingo.snackBarClass;
 import static com.boozingo.helper.LocationHelper.REQUEST_CHECK_SETTINGS;
 import static com.boozingo.helper.LocationHelper.status;
 import static com.boozingo.helper.Permission.RequestPermissionCode;
 
-public class SplashScreen extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, SnackBarClass.SnackbarMessage {
+public class SplashScreen extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks {
 
-    private Snackbar snackbar;
-    SnackBarClass snackBarClass;
     RelativeLayout layout;
     String _status;
     Permission permission;
@@ -57,46 +57,10 @@ public class SplashScreen extends AppCompatActivity implements GoogleApiClient.C
         permission = new Permission(this);
         locationHelper = new LocationHelper(this);
         connectionDetector = new ConnectionDetector(this);
-        snackBarClass = new SnackBarClass(this);
-        snackBarClass.readySnackbarMessage(this);
         layout = findViewById(R.id.layout);
 
-    //    if (!permission.checkPermission())
-            permission.requestPermission();
+        permission.requestPermission();
 
-
-    }
-
-    @Override
-    public void setSnackbarMessage(String status, boolean showBar) {
-
-        String internetStatus = "No Internet. Check Connection";
-        if (!status.equalsIgnoreCase("Wifi enabled") && !status.equalsIgnoreCase("Mobile data enabled")) {
-            snackbar = Snackbar
-                    .make(layout, internetStatus, Snackbar.LENGTH_INDEFINITE)
-                    .setAction("X", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            snackbar.dismiss();
-                        }
-                    });
-            // Changing message text color
-            snackbar.setActionTextColor(Color.WHITE);
-
-            // Changing action button text color
-            View sbView = snackbar.getView();
-            TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
-            textView.setTextColor(Color.WHITE);
-
-            snackbar.show();
-        } else {
-            new Handler().postDelayed(new Runnable() {
-                public void run() {
-                    startActivity(new Intent(SplashScreen.this, disclaimer.class));
-                    finish();
-                }
-            }, DELAY_TIME);
-        }
 
     }
 
@@ -137,13 +101,13 @@ public class SplashScreen extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onResume() {
         super.onResume();
-
+        snackBarClass.registerInternetCheckReceiver(layout);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(snackBarClass.broadcastReceiver.isOrderedBroadcast())
+        if (snackBarClass.broadcastReceiver.isOrderedBroadcast())
             unregisterReceiver(snackBarClass.broadcastReceiver);
     }
 
@@ -165,9 +129,8 @@ public class SplashScreen extends AppCompatActivity implements GoogleApiClient.C
                         } else {
                             Toast.makeText(this, "Permissions are necessary. Allow them from app settings.", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                    else
-                        snackBarClass.registerInternetCheckReceiver();
+                    } else
+                        startActivity(new Intent(SplashScreen.this, Cities.class));
                 }
                 break;
         }

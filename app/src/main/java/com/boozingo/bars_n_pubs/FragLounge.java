@@ -25,8 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.boozingo.Boozingo.URL;
-import static com.boozingo.bars_n_pubs.bars_n_pubs.internetStatus;
+import static com.boozingo.Boozingo.*;
 import static com.boozingo.bars_n_pubs.bars_n_pubs.lounges;
 
 public class FragLounge extends Fragment implements Adapter_lounge.ItemClickCallback {

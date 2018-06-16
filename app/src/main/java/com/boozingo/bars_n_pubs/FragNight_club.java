@@ -76,7 +76,6 @@ public class FragNight_club extends Fragment implements Adapter_club.ItemClickCa
     @Override
     public void onItemClick(int p) {
         if (internetStatus.equals(getString(R.string.net))) {
-
             Intent i = new Intent(getActivity(), detailsActivityNight_club.class);
             i.putExtra("type", "club");
             i.putExtra("id", mDataset.get(p).getId());

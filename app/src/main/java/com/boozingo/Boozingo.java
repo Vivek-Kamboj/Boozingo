@@ -49,11 +49,14 @@ public class Boozingo extends Application implements SnackBarClass.SnackbarMessa
     public void onCreate() {
         super.onCreate();
         appContext = this;
+
+        internetStatus = getString(R.string.net);
+
         dbHelper = new DBHelper(getApplicationContext());
         session = new Session(getApplicationContext());
         requestQueue = Volley.newRequestQueue(getApplicationContext());
 
-        snackBarClass = new SnackBarClass((Activity) getApplicationContext());
+        snackBarClass = new SnackBarClass( getApplicationContext());
         snackBarClass.readySnackbarMessage((SnackBarClass.SnackbarMessage) getApplicationContext());
 
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Medium.ttf"); // font from assets: "assets/fonts/Roboto-Regular.ttf

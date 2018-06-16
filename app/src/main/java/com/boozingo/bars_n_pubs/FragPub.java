@@ -25,8 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.boozingo.Boozingo.URL;
-import static com.boozingo.bars_n_pubs.bars_n_pubs.internetStatus;
+import static com.boozingo.Boozingo.*;
 import static com.boozingo.bars_n_pubs.bars_n_pubs.pubs;
 
 public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
@@ -79,7 +78,7 @@ public class FragPub extends Fragment implements Adapter_pub.ItemClickCallback {
 
     @Override
     public void onItemClick(int p) {
-        if (internetStatus.equals(getString(R.string.net))) {
+      if (internetStatus.equals(getString(R.string.net))) {
             Intent i = new Intent(getActivity(), detailsActivityPub.class);
             i.putExtra("type", "pub");
             i.putExtra("id", mDataset.get(p).getId());

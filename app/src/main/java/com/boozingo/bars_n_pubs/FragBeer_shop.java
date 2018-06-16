@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.boozingo.MarshmallowPermissions;
 import com.boozingo.R;
 import com.boozingo.details.detailsActivityBeer_shop;
-import com.boozingo.model.smallBarDetails;
 import com.boozingo.model.smallBeer_shopDetails;
 import com.google.gson.Gson;
 
@@ -25,8 +24,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.boozingo.Boozingo.URL;
-import static com.boozingo.bars_n_pubs.bars_n_pubs.internetStatus;
+import static com.boozingo.Boozingo.*;
 import static com.boozingo.bars_n_pubs.bars_n_pubs.shops;
 
 public class FragBeer_shop extends Fragment implements Adapter_shop.ItemClickCallback {
