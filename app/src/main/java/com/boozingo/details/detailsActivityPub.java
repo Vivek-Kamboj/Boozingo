@@ -35,6 +35,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.boozingo.model.detailsBar;
 import com.bumptech.glide.Glide;
 import com.boozingo.helper.LocationHelper;
 import com.boozingo.helper.Permission;
@@ -83,9 +88,6 @@ public class detailsActivityPub extends AppCompatActivity implements GoogleApiCl
     Button feedback, share;
 
     Permission permission;
-    SnackBarClass snackBarClass;
-    Snackbar snackbar;
-    private boolean internetConnected = true;
 
     LocationHelper locationHelper;
     private Location mLastLocation;
@@ -245,8 +247,8 @@ public class detailsActivityPub extends AppCompatActivity implements GoogleApiCl
         });
 
 
-        //to get data from net
-        new net().execute();
+        // to get details
+        detailsRequest();
 
     }
 
@@ -305,34 +307,30 @@ public class detailsActivityPub extends AppCompatActivity implements GoogleApiCl
         im1.getLayoutParams().width = (int) (width * 0.30);
     }
 
-    private class net extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            HttpHandler sh = new HttpHandler();
 
-            // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall(URL + "/pub/" + id);
+    private void detailsRequest() {
 
+        final String url = URL + "pub/" + id;
+        final JsonObjectRequest jsonObjReq;
 
-            Log.e(TAG, "Response from url: " + jsonStr);
+        jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONObject object = null;
+                        try {
+                            object = new JSONObject(response.toString());
+                            JSONArray array = object.getJSONArray("pub");
 
-            if (jsonStr != null) {
-                try {
-                    final JSONObject object = new JSONObject(jsonStr);
-                    JSONArray array = object.getJSONArray("pub");
+                            JSONObject temp = array.getJSONObject(0);
+                            String userJson = temp.toString();
 
-                    JSONObject temp = array.getJSONObject(0);
-                    String userJson = temp.toString();
+                            Gson gson = new Gson();
 
-                    Gson gson = new Gson();
+                            details = new detailsPub();
+                            details = gson.fromJson(userJson, detailsPub.class);
 
-                    details = new detailsPub();
-                    details = gson.fromJson(userJson, detailsPub.class);
-
-                    runOnUiThread(new Runnable() {
-                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                        @Override
-                        public void run() {
 
                             name.setText(details.getPub_name());
                             address.setText(details.getPub_address());
@@ -353,36 +351,30 @@ public class detailsActivityPub extends AppCompatActivity implements GoogleApiCl
                                     .load(path)
                                     .into(frag);
 
+                            image = object.getJSONArray("pub_images").getJSONObject(0).getString("pub_images");
+                            image = image.substring(2, image.length() - 2);
+                            image = image.replaceAll("\\\\", "");
 
-                            try {
-                                image = object.getJSONArray("pub_images").getJSONObject(0).getString("pub_images");
-                                image = image.substring(2, image.length() - 2);
-                                image = image.replaceAll("\\\\", "");
+                            for (int i = 0; i < image.length(); ) {
+                                int j = image.indexOf(',', i);
+                                if (j == -1) {
+                                    images.add(URL + "/storage/" + image.substring(i, image.length()));
+                                    break;
+                                } else
+                                    images.add(URL + "/storage/" + image.substring(i, j - 1));
+                                i = j + 2;
 
-                                for (int i = 0; i < image.length(); ) {
-                                    int j = image.indexOf(',', i);
-                                    if (j == -1) {
-                                        images.add(URL + "/storage/" + image.substring(i, image.length()));
-                                        break;
-                                    } else
-                                        images.add(URL + "/storage/" + image.substring(i, j - 1));
-                                    i = j + 2;
-
-                                }
-
-                                //to randomise pics
-                                Collections.shuffle(images);
-
-                                //to select only 3 pics
-                                images = images.subList(0, 3);
-
-
-                                adapter = new picPagerAdapter(detailsActivityPub.this, images);
-                                viewPager.setAdapter(adapter);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
                             }
+
+                            //to randomise pics
+                            Collections.shuffle(images);
+
+                            //to select only 3 pics
+                            images = images.subList(0, 3);
+
+
+                            adapter = new picPagerAdapter(detailsActivityPub.this, images);
+                            viewPager.setAdapter(adapter);
 
 
                             // for speciality
@@ -407,43 +399,28 @@ public class detailsActivityPub extends AppCompatActivity implements GoogleApiCl
                             facilities();
 
                             pDialog.dismiss();
-                        }
-                    });
 
-                } catch (final JSONException e) {
-                    Log.e(TAG, "Json parsing error: " + e.getMessage());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(),
-                                    "Problem retrieving data. Restart application.",
-                                    Toast.LENGTH_LONG)
-                                    .show();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                             pDialog.dismiss();
-
                         }
-                    });
+                    }
+                },
+                new Response.ErrorListener()
 
-                }
-
-            } else {
-                Log.e(TAG, "Couldn't get json from server.");
-                runOnUiThread(new Runnable() {
+                {
                     @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(),
-                                "Network problem. Check network connection.",
-                                Toast.LENGTH_LONG)
-                                .show();
+                    public void onErrorResponse(VolleyError error) {
+                        showError(error, detailsActivityPub.this);
                         pDialog.dismiss();
-
                     }
                 });
-            }
 
-            return null;
-        }
+        // Adding the request to the queue along with a unique String tag
+        requestQueue.add(jsonObjReq).setTag(this);
     }
+
 
     @SuppressWarnings("ResourceType")
     private void facilities() {
@@ -564,7 +541,8 @@ public class detailsActivityPub extends AppCompatActivity implements GoogleApiCl
         mLastLocation = locationHelper.getLocation();
         snackBarClass.registerInternetCheckReceiver(layout);
 
-        permission.requestPermission();
+        if(!permission.checkPermission())
+            permission.requestPermission();
 
     }
 
@@ -572,7 +550,10 @@ public class detailsActivityPub extends AppCompatActivity implements GoogleApiCl
     @Override
     protected void onPause() {
         super.onPause();
-        if (snackBarClass.broadcastReceiver.isOrderedBroadcast())            unregisterReceiver(snackBarClass.broadcastReceiver);
+        if (requestQueue != null)
+            requestQueue.cancelAll(this);
+        if (snackBarClass.broadcastReceiver.isOrderedBroadcast())
+            unregisterReceiver(snackBarClass.broadcastReceiver);
     }
 
 

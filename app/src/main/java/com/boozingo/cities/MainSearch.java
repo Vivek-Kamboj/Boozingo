@@ -4,7 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -25,9 +28,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.boozingo.R;
 import com.boozingo.bars_n_pubs.bars_n_pubs;
 import com.boozingo.helper.HttpHandler;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,7 +87,8 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
         layout = findViewById(R.id.layout);
 
         city = "";
-        new city_search().execute();
+
+        citySearchRequest();
 
         search.addTextChangedListener(new TextWatcher() {
 
@@ -153,76 +168,50 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
 
     }
 
+    private void citySearchRequest() {
 
-    private class city_search extends AsyncTask<Void, Void, Void> {
+        final String url = URL + "search";
+        final JsonArrayRequest jsonArrayRequest;
+        fullList.clear();
+        list.clear();
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            HttpHandler sh = new HttpHandler();
 
-            // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall(URL + "/search");
-
-            Log.e(TAG, "Response from url: " + jsonStr);
-
-            fullList.clear();
-            list.clear();
-            if (jsonStr != null) {
-                try {
-                    JSONArray cities = new JSONArray(jsonStr);
-
-                    int n = cities.length();
-                    for (int i = 0; i < n; i++) {
-                        JSONObject c = cities.getJSONObject(i);
-
-                        String city_name = c.getString("city_name");
-
-                        fullList.add(city_name);
-                        list.add(city_name);
-
-                    }
-                } catch (final JSONException e) {
-                    Log.e(TAG, "Json parsing error: " + e.getMessage());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(),
-                                    "Problem retrieving data. Restart application.",
-                                    Toast.LENGTH_LONG)
-                                    .show();
-
-                        }
-                    });
-
-                }
-
-            } else {
-                Log.e(TAG, "Couldn't get json from server.");
-                runOnUiThread(new Runnable() {
+        jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
+                url, null,
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(),
-                                "Network problem. Check network connection.",
-                                Toast.LENGTH_LONG)
-                                .show();
+                    public void onResponse(JSONArray response) {
+                        JSONArray cities = null;
 
+                        try {
+                            cities = new JSONArray(response.toString());
+                            int n = cities.length();
+                            for (int i = 0; i < n; i++) {
+                                JSONObject c = cities.getJSONObject(i);
+
+                                String city_name = c.getString("city_name");
+
+                                fullList.add(city_name);
+                                list.add(city_name);
+                            }
+
+                            adapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showError(error, MainSearch.this);
                     }
                 });
 
-
-            }
-
-            return null;
-        }
-
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            //       search.setBackground(new ColorDrawable(getResources().getColor(R.color.white)));
-            adapter.notifyDataSetChanged();
-
-        }
+        // Adding the request to the queue along with a unique String tag
+        requestQueue.add(jsonArrayRequest).setTag(this);
     }
 
     @Override
@@ -234,6 +223,8 @@ public class MainSearch extends AppCompatActivity implements RecAdapter_emp.Item
     @Override
     protected void onPause() {
         super.onPause();
+        if (requestQueue != null)
+            requestQueue.cancelAll(this);
         if (snackBarClass.broadcastReceiver.isOrderedBroadcast())
             unregisterReceiver(snackBarClass.broadcastReceiver);
     }

@@ -101,7 +101,8 @@ public class Cities extends AppCompatActivity implements View.OnClickListener,
         locationHelper = new LocationHelper(this);
         permission = new Permission(this);
 
-        permission.requestPermission();
+        if(!permission.checkPermission())
+            permission.requestPermission();
 
         pDialog = new ProgressDialog(Cities.this);
         pDialog.setMessage("Please wait...");
@@ -132,9 +133,6 @@ public class Cities extends AppCompatActivity implements View.OnClickListener,
         rl.setOnClickListener(this);
         view_more.setOnClickListener(this);
         search.setOnClickListener(this);
-
-
-        Uri uri = Uri.parse("http://35.160.58.203/storage/bar-images/July2017/2kcOKeS88yWLcadKLMBz.jpeg");
 
         citySearchRequest();
         boozefactsRequest();
@@ -575,7 +573,10 @@ public class Cities extends AppCompatActivity implements View.OnClickListener,
     @Override
     protected void onPause() {
         super.onPause();
-
+        /*
+        if (requestQueue != null) {
+            requestQueue.cancelAll(this);
+        }*/
         if (snackBarClass.broadcastReceiver.isOrderedBroadcast())
             unregisterReceiver(snackBarClass.broadcastReceiver);
     }

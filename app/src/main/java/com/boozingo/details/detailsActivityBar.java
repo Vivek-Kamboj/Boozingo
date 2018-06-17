@@ -5,7 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -35,6 +38,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.boozingo.cities.Cities;
 import com.bumptech.glide.Glide;
 import com.boozingo.helper.LocationHelper;
 import com.boozingo.helper.Permission;
@@ -42,6 +50,11 @@ import com.boozingo.R;
 import com.boozingo.helper.SnackBarClass;
 import com.boozingo.helper.HttpHandler;
 import com.boozingo.model.detailsBar;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 
@@ -242,11 +255,10 @@ public class detailsActivityBar extends AppCompatActivity implements GoogleApiCl
             }
         });
 
-        //to get data from net
-        new net().execute();
+        // to get details
+        detailsRequest();
 
     }
-
 
     private void init() {
 
@@ -302,34 +314,30 @@ public class detailsActivityBar extends AppCompatActivity implements GoogleApiCl
         im1.getLayoutParams().width = (int) (width * 0.30);
     }
 
-    private class net extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            HttpHandler sh = new HttpHandler();
 
-            // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall(URL + "/bar/" + id);
+    private void detailsRequest() {
 
+        final String url = URL + "bar/" + id;
+        final JsonObjectRequest jsonObjReq;
 
-            Log.e(TAG, "Response from url: " + jsonStr);
+        jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONObject object = null;
+                        try {
+                            object = new JSONObject(response.toString());
+                            JSONArray array = object.getJSONArray("bar");
 
-            if (jsonStr != null) {
-                try {
-                    final JSONObject object = new JSONObject(jsonStr);
-                    JSONArray array = object.getJSONArray("bar");
+                            JSONObject temp = array.getJSONObject(0);
+                            String userJson = temp.toString();
 
-                    JSONObject temp = array.getJSONObject(0);
-                    String userJson = temp.toString();
+                            Gson gson = new Gson();
 
-                    Gson gson = new Gson();
+                            details = new detailsBar();
+                            details = gson.fromJson(userJson, detailsBar.class);
 
-                    details = new detailsBar();
-                    details = gson.fromJson(userJson, detailsBar.class);
-
-                    runOnUiThread(new Runnable() {
-                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                        @Override
-                        public void run() {
 
                             name.setText(details.getBar_name());
                             address.setText(details.getBar_address());
@@ -352,35 +360,30 @@ public class detailsActivityBar extends AppCompatActivity implements GoogleApiCl
                                     .into(frag);
 
 
-                            try {
-                                image = object.getJSONArray("bar_images").getJSONObject(0).getString("bar_images");
-                                image = image.substring(2, image.length() - 2);
-                                image = image.replaceAll("\\\\", "");
+                            image = object.getJSONArray("bar_images").getJSONObject(0).getString("bar_images");
+                            image = image.substring(2, image.length() - 2);
+                            image = image.replaceAll("\\\\", "");
 
-                                for (int i = 0; i < image.length(); ) {
-                                    int j = image.indexOf(',', i);
-                                    if (j == -1) {
-                                        images.add(URL + "/storage/" + image.substring(i, image.length()));
-                                        break;
-                                    } else
-                                        images.add(URL + "/storage/" + image.substring(i, j - 1));
-                                    i = j + 2;
+                            for (int i = 0; i < image.length(); ) {
+                                int j = image.indexOf(',', i);
+                                if (j == -1) {
+                                    images.add(URL + "/storage/" + image.substring(i, image.length()));
+                                    break;
+                                } else
+                                    images.add(URL + "/storage/" + image.substring(i, j - 1));
+                                i = j + 2;
 
-                                }
-
-                                //to randomise pics
-                                Collections.shuffle(images);
-
-                                //to select only 3 pics
-                                images = images.subList(0, 3);
-
-
-                                adapter = new picPagerAdapter(detailsActivityBar.this, images);
-                                viewPager.setAdapter(adapter);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
                             }
+
+                            //to randomise pics
+                            Collections.shuffle(images);
+
+                            //to select only 3 pics
+                            images = images.subList(0, 3);
+
+
+                            adapter = new picPagerAdapter(detailsActivityBar.this, images);
+                            viewPager.setAdapter(adapter);
 
 
                             // for speciality
@@ -405,46 +408,26 @@ public class detailsActivityBar extends AppCompatActivity implements GoogleApiCl
                             speciality.setText(y);
 
                             facilities();
-
-                            pDialog.dismiss();
-                        }
-                    });
-
-                } catch (final JSONException e) {
-                    Log.e(TAG, "Json parsing error: " + e.getMessage());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(),
-                                    "Problem retrieving data. Restart application.",
-                                    Toast.LENGTH_LONG)
-                                    .show();
                             pDialog.dismiss();
 
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            pDialog.dismiss();
                         }
-                    });
-
-                }
-
-            } else {
-                Log.e(TAG, "Couldn't get json from server.");
-                runOnUiThread(new Runnable() {
+                    }
+                },
+                new Response.ErrorListener(){
                     @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(),
-                                "Network problem. Check network connection.",
-                                Toast.LENGTH_LONG)
-                                .show();
+                    public void onErrorResponse(VolleyError error) {
+                        showError(error, detailsActivityBar.this);
                         pDialog.dismiss();
-
                     }
                 });
-            }
 
-            return null;
-        }
-
+        // Adding the request to the queue along with a unique String tag
+        requestQueue.add(jsonObjReq).setTag(this);
     }
+
 
     @SuppressWarnings("ResourceType")
     private void facilities() {
@@ -566,7 +549,7 @@ public class detailsActivityBar extends AppCompatActivity implements GoogleApiCl
         mLastLocation = locationHelper.getLocation();
         snackBarClass.registerInternetCheckReceiver(layout);
 
-        if (!permission.checkPermission())
+        if(!permission.checkPermission())
             permission.requestPermission();
 
     }
@@ -575,6 +558,8 @@ public class detailsActivityBar extends AppCompatActivity implements GoogleApiCl
     @Override
     protected void onPause() {
         super.onPause();
+        if (requestQueue != null)
+            requestQueue.cancelAll(this);
         if (snackBarClass.broadcastReceiver.isOrderedBroadcast())
             unregisterReceiver(snackBarClass.broadcastReceiver);
     }

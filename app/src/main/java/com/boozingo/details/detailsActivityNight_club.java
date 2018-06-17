@@ -35,6 +35,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.boozingo.model.detailsBar;
 import com.bumptech.glide.Glide;
 import com.boozingo.helper.LocationHelper;
 import com.boozingo.helper.Permission;
@@ -239,8 +244,8 @@ public class detailsActivityNight_club extends AppCompatActivity implements Goog
             }
         });
 
-        //to get data from net
-        new net().execute();
+        // to get details
+        detailsRequest();
 
     }
 
@@ -440,6 +445,116 @@ public class detailsActivityNight_club extends AppCompatActivity implements Goog
         }
     }
 
+    private void detailsRequest() {
+
+        final String url = URL + "night_club/" + id;
+        final JsonObjectRequest jsonObjReq;
+
+        jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONObject object = null;
+                        try {
+                            object = new JSONObject(response.toString());
+                            JSONArray array = object.getJSONArray("night_club");
+
+                            JSONObject temp = array.getJSONObject(0);
+                            String userJson = temp.toString();
+
+                            Gson gson = new Gson();
+
+                            details = new detailsNight_club();
+                            details = gson.fromJson(userJson, detailsNight_club.class);
+
+
+                            name.setText(details.getNight_club_name());
+                            address.setText(details.getNight_club_address());
+                            type.setText("(" + getIntent().getStringExtra("type") + ")");
+                            timing.setText(details.getNight_club_time());
+                            geo_location = details.getNight_club_geolocation();
+                            specs = details.getNight_club_details();
+                            cost = details.getNight_club_cost();
+
+
+                            int comma = geo_location.indexOf('-');
+                            latitudeNight_club = geo_location.substring(0, comma);
+                            longitudeNight_club = geo_location.substring(comma + 1);
+
+
+                            String path = "http://maps.google.com/maps/api/staticmap?&zoom=19&size=600x240&markers=color:blue|" + latitudeNight_club + "," + longitudeNight_club;
+
+                            Glide.with(detailsActivityNight_club.this)
+                                    .load(path)
+                                    .into(frag);
+                            image = object.getJSONArray("night_club_images").getJSONObject(0).getString("night_club_images");
+                            image = image.substring(2, image.length() - 2);
+                            image = image.replaceAll("\\\\", "");
+
+                            for (int i = 0; i < image.length(); ) {
+                                int j = image.indexOf(',', i);
+                                if (j == -1) {
+                                    images.add(URL + "/storage/" + image.substring(i, image.length()));
+                                    break;
+                                } else
+                                    images.add(URL + "/storage/" + image.substring(i, j - 1));
+                                i = j + 2;
+
+                            }
+
+                            //to randomise pics
+                            Collections.shuffle(images);
+
+                            //to select only 3 pics
+                            images = images.subList(0, 3);
+
+
+                            adapter = new picPagerAdapter(detailsActivityNight_club.this, images);
+                            viewPager.setAdapter(adapter);
+
+                            // for speciality
+                            String y;
+                            for (int i = 0; i < specs.length(); ) {
+                                int x = specs.indexOf('/', i);
+                                if (x < specs.length() && x != -1) {
+                                    y = speciality.getText() + "\u25CF " + specs.substring(i, x) + "\n";
+                                    speciality.setText(y);
+                                    i = x + 1;
+                                } else {
+                                    y = speciality.getText() + "\u25CF " + specs.substring(i, specs.length());
+                                    speciality.setText(y);
+                                    break;
+                                }
+                            }
+
+                            // for cost of 2 person
+                            y = speciality.getText() + "\n\u25CF Average cost for 2 Boozinga: \u20B9" + cost;
+                            speciality.setText(y);
+
+                            facilities();
+                            pDialog.dismiss();
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            pDialog.dismiss();
+                        }
+                    }
+
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showError(error, detailsActivityNight_club.this);
+                        pDialog.dismiss();
+                    }
+                });
+
+        // Adding the request to the queue along with a unique String tag
+        requestQueue.add(jsonObjReq).setTag(this);
+    }
+
     @SuppressWarnings("ResourceType")
     private void facilities() {
         for (int i = 0; i < 8; i++) {
@@ -560,7 +675,8 @@ public class detailsActivityNight_club extends AppCompatActivity implements Goog
         mLastLocation = locationHelper.getLocation();
         snackBarClass.registerInternetCheckReceiver(layout);
 
-        permission.requestPermission();
+        if(!permission.checkPermission())
+            permission.requestPermission();
 
     }
 
@@ -568,7 +684,10 @@ public class detailsActivityNight_club extends AppCompatActivity implements Goog
     @Override
     protected void onPause() {
         super.onPause();
-        if (snackBarClass.broadcastReceiver.isOrderedBroadcast())            unregisterReceiver(snackBarClass.broadcastReceiver);
+        if (requestQueue != null)
+            requestQueue.cancelAll(this);
+        if (snackBarClass.broadcastReceiver.isOrderedBroadcast())
+            unregisterReceiver(snackBarClass.broadcastReceiver);
     }
 
 

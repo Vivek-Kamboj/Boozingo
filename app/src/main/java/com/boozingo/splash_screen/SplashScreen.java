@@ -129,8 +129,10 @@ public class SplashScreen extends AppCompatActivity implements GoogleApiClient.C
                         } else {
                             Toast.makeText(this, "Permissions are necessary. Allow them from app settings.", Toast.LENGTH_SHORT).show();
                         }
-                    } else
+                    } else {
                         startActivity(new Intent(SplashScreen.this, Cities.class));
+                        finish();
+                    }
                 }
                 break;
         }
