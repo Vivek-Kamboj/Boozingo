@@ -6,6 +6,7 @@
     <string name="disclaimer">You should be 21+.\nBy clicking ENTER you agree to all <u><b>Terms and Conditions</b></u> of Boozingo.</string>
     <string name="quote">"It's not what enters men's mouth that is evil, it's what comes out of their mouths that is - \n<b>Be Responsible</b>"</string>
     <string-array name="cities">
+        <item>Saharanpur</item>
         <item>Delhi</item>
         <item>Lucknow</item>
         <item>Mumbai</item>
